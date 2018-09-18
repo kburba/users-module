@@ -39,7 +39,7 @@ class Navbar extends Component {
           alt={user.name}
         />
         <li className="nav-item">
-          <a href="#" className="nav-link" onClick={this.onLogoutClick}>
+          <a href="" className="nav-link" onClick={this.onLogoutClick}>
             Logout
           </a>
         </li>
