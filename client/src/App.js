@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store";
 import jwt_decode from "jwt-decode";
@@ -13,6 +13,9 @@ import Footer from "./components/layout/Footer";
 import Landing from "./components/layout/Landing";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
+import Dashboard from "./components/Dashboard";
+import PrivateRoute from "./components/common/PrivateRoute";
+import CreateProfile from "./components/CreateProfile";
 
 if (localStorage.jwtToken) {
   const token = localStorage.jwtToken;
@@ -43,6 +46,10 @@ class App extends Component {
             <Route exact path="/" component={Landing} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
+            <Switch>
+              <PrivateRoute exact path="/dashboard" component={Dashboard} />
+            </Switch>
+            <Route exact path="/create-profile" component={CreateProfile} />
             <Footer />
           </div>
         </Router>
