@@ -5,8 +5,10 @@ import TextAreaField from "./common/TextAreaField";
 import InputGroupField from "./common/InputGroupField";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import proptTypes from "prop-types";
-import axios from "axios";
+import propTypes from "prop-types";
+import { withRouter } from "react-router-dom";
+
+import { registerProfile, getCurrentProfile } from "../actions/profileActions";
 
 class CreateProfile extends Component {
   constructor(props) {
@@ -37,6 +39,17 @@ class CreateProfile extends Component {
     }
   };
 
+  componentDidMount() {
+    getCurrentProfile();
+    const { profile } = this.props.profile;
+
+    if (profile === null) {
+      console.log("please register your profile");
+    } else {
+      this.props.history.push("/dashboard");
+    }
+  }
+
   handleChange = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -46,6 +59,24 @@ class CreateProfile extends Component {
   handleSubmit = e => {
     e.preventDefault();
     console.log(this.state);
+
+    const newProfile = {
+      handle: this.state.handle,
+      status: this.state.status,
+      company: this.state.company,
+      website: this.state.website,
+      location: this.state.location,
+      skills: this.state.skills,
+      githubusername: this.state.githubusername,
+      bio: this.state.bio,
+      twitter: this.state.twitter,
+      facebook: this.state.facebook,
+      linkedin: this.state.linkedin,
+      youtube: this.state.youtube,
+      instagram: this.state.instagram
+    };
+
+    this.props.registerProfile(newProfile, this.props.history);
   };
 
   showSocialLinks = () => {
@@ -142,7 +173,7 @@ class CreateProfile extends Component {
                   options={optionsList}
                   value={this.state.status}
                   onChange={this.handleChange}
-                  error={errors.handle}
+                  error={errors.status}
                   info="Give us an idea of where you are at in your career"
                 />
 
@@ -221,12 +252,37 @@ class CreateProfile extends Component {
   }
 }
 
-CreateProfile.proptTypes = {
-  auth: proptTypes.object.isRequired
+CreateProfile.propTypes = {
+  auth: propTypes.object.isRequired,
+  errors: propTypes.object.isRequired,
+  handle: propTypes.string.isRequired,
+  status: propTypes.string.isRequired,
+  company: propTypes.string,
+  website: propTypes.string,
+  location: propTypes.string,
+  skills: propTypes.string.isRequired,
+  githubusername: propTypes.string,
+  bio: propTypes.string,
+  twitter: propTypes.string,
+  facebook: propTypes.string,
+  linkedin: propTypes.string,
+  youtube: propTypes.string,
+  instagram: propTypes.string
 };
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.auth,
+  errors: state.errors,
+  profile: state.profile
 });
 
-export default connect(mapStateToProps)(CreateProfile);
+CreateProfile.defaultProps = {
+  handle: "",
+  status: "",
+  skills: ""
+};
+
+export default connect(
+  mapStateToProps,
+  { registerProfile }
+)(withRouter(CreateProfile));

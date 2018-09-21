@@ -49,7 +49,13 @@ class App extends Component {
             <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
             </Switch>
-            <Route exact path="/create-profile" component={CreateProfile} />
+            <Switch>
+              <PrivateRoute
+                exact
+                path="/create-profile"
+                component={CreateProfile}
+              />
+            </Switch>
             <Footer />
           </div>
         </Router>
