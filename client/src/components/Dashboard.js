@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import propTypes from "prop-types";
 import { getCurrentProfile } from "../actions/profileActions";
 import Spinner from "./common/Spinner";
+import ProfileActions from "./profile/ProfileActions";
 
 class Dashboard extends Component {
   componentDidMount() {
@@ -22,8 +23,12 @@ class Dashboard extends Component {
       if (Object.keys(profile).length > 0) {
         dashboardContent = (
           <div>
-            <h1>Hi {user.name},</h1>
-            <span>You have a profile</span>
+            <p>Welcome {user.name},</p>
+
+            <ProfileActions userID={user.id} />
+
+            <h2>Experience Credentials</h2>
+            <h2>Education Credentials</h2>
           </div>
         );
       } else {

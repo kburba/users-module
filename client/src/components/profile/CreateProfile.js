@@ -1,14 +1,17 @@
 import React, { Component } from "react";
-import TextFieldGroup from "./common/TextFieldGroup";
-import SelectFieldGroup from "./common/SelectFieldGroup";
-import TextAreaField from "./common/TextAreaField";
-import InputGroupField from "./common/InputGroupField";
+import TextFieldGroup from "../common/TextFieldGroup";
+import SelectFieldGroup from "../common/SelectFieldGroup";
+import TextAreaField from "../common/TextAreaField";
+import InputGroupField from "../common/InputGroupField";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 
-import { registerProfile, getCurrentProfile } from "../actions/profileActions";
+import {
+  registerProfile,
+  getCurrentProfile
+} from "../../actions/profileActions";
 
 class CreateProfile extends Component {
   constructor(props) {
@@ -40,10 +43,10 @@ class CreateProfile extends Component {
   };
 
   componentDidMount() {
-    getCurrentProfile();
+    this.props.getCurrentProfile();
     const { profile } = this.props.profile;
 
-    if (profile === null) {
+    if (profile === null || Object.keys(profile).length === 0) {
       console.log("please register your profile");
     } else {
       this.props.history.push("/dashboard");
@@ -260,7 +263,7 @@ CreateProfile.propTypes = {
   company: propTypes.string,
   website: propTypes.string,
   location: propTypes.string,
-  skills: propTypes.string.isRequired,
+  skills: propTypes.array.isRequired,
   githubusername: propTypes.string,
   bio: propTypes.string,
   twitter: propTypes.string,
@@ -284,5 +287,5 @@ CreateProfile.defaultProps = {
 
 export default connect(
   mapStateToProps,
-  { registerProfile }
+  { registerProfile, getCurrentProfile }
 )(withRouter(CreateProfile));
