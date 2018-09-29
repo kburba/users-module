@@ -2,15 +2,22 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import propTypes from "prop-types";
-import { getCurrentProfile } from "../actions/profileActions";
+import { getCurrentProfile, deleteUser } from "../actions/profileActions";
 import Spinner from "./common/Spinner";
 import ProfileActions from "./profile/ProfileActions";
 import Experience from "./profile/Experience";
+import Education from "./profile/Education";
+import { logoutUser } from "../actions/authActions";
 
 class Dashboard extends Component {
   componentDidMount() {
     this.props.getCurrentProfile();
   }
+
+  deleteUser = () => {
+    this.props.deleteUser();
+    this.props.logoutUser();
+  };
 
   render() {
     const { user } = this.props.auth;
@@ -29,11 +36,8 @@ class Dashboard extends Component {
 
             <ProfileActions userID={user.id} />
 
-            <Experience
-              experiences={profile.experience}
-              onDeleteClick={this.onDeleteClick}
-            />
-            <h2>Education Credentials</h2>
+            <Experience experiences={profile.experience} />
+            <Education educations={profile.education} />
           </div>
         );
       } else {
@@ -54,6 +58,9 @@ class Dashboard extends Component {
         <div className="container">
           <h1>Dashboard</h1>
           {dashboardContent}
+          <button className="btn btn-danger mt-5" onClick={this.deleteUser}>
+            Delete my account
+          </button>
         </div>
       </div>
     );
@@ -62,6 +69,8 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   getCurrentProfile: propTypes.func.isRequired,
+  deleteUser: propTypes.func.isRequired,
+  logoutUser: propTypes.func.isRequired,
   auth: propTypes.object.isRequired,
   profile: propTypes.object.isRequired
 };
@@ -73,5 +82,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getCurrentProfile }
+  { getCurrentProfile, deleteUser, logoutUser }
 )(Dashboard);

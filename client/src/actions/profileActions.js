@@ -1,8 +1,20 @@
 import axios from "axios";
-import { PROFILE_LOADING, GET_PROFILE, GET_ERRORS } from "./types";
+import {
+  PROFILE_LOADING,
+  GET_PROFILE,
+  GET_ERRORS,
+  SET_CURRENT_USER
+} from "./types";
+
+// remove user's education
+export const deleteEducation = id => dispatch => {
+  axios
+    .delete(`api/profile/education/${id}`)
+    .then(res => dispatch({ type: GET_PROFILE, payload: res.data }))
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err.response.data }));
+};
 
 // add education to user's profile
-
 export const addEducation = (userData, history) => dispatch => {
   axios
     .post("/api/profile/education", userData)
@@ -36,12 +48,20 @@ export const addExperience = (userData, history) => dispatch => {
     );
 };
 
+// Delete profile and user
+
+export const deleteUser = () => dispatch => {
+  axios
+    .delete("/api/profile")
+    .then(res => dispatch({ type: SET_CURRENT_USER, payload: {} }))
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err.response.data }));
+};
+
 // Register user's profile
 export const createProfile = (userData, history) => dispatch => {
   axios
     .post("/api/profile", userData)
-    .then(res => dispatch({ type: GET_PROFILE, payload: res.data }))
-    .then(history.push("/dashboard"))
+    .then(res => history.push("/dashboard"))
     .catch(err => dispatch({ type: GET_ERRORS, payload: err.response.data }));
 };
 

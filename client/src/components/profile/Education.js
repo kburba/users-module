@@ -1,49 +1,49 @@
 import React, { Component } from "react";
 import Moment from "react-moment";
 import { connect } from "react-redux";
-import { deleteExperience } from "../../actions/profileActions";
+import { deleteEducation } from "../../actions/profileActions";
 import propTypes from "prop-types";
 
-class Experience extends Component {
+class Education extends Component {
   onDeleteClick(id) {
-    this.props.deleteExperience(id);
+    this.props.deleteEducation(id);
   }
 
   render() {
     return (
       <div>
-        {this.props.experiences.length === 0 ? (
-          "No experience."
+        {this.props.educations.length === 0 ? (
+          "No education."
         ) : (
           <div>
-            <h2>Experience Credentials</h2>
+            <h2>Education Credentials</h2>
             <table className="table">
               <thead>
                 <tr>
-                  <th>Company</th>
-                  <th>Title</th>
+                  <th>School</th>
+                  <th>Degree</th>
                   <th>Years</th>
                   <th />
                 </tr>
               </thead>
               <tbody>
-                {this.props.experiences.map(experience => {
+                {this.props.educations.map(education => {
                   return (
-                    <tr key={experience._id}>
-                      <td>{experience.company}</td>
-                      <td>{experience.title}</td>
+                    <tr key={education._id}>
+                      <td>{education.school}</td>
+                      <td>{education.degree}</td>
                       <td>
-                        <Moment format="YYYY-MM-DD">{experience.from}</Moment> -{" "}
-                        {experience.current === true ? (
+                        <Moment format="YYYY-MM-DD">{education.from}</Moment> -{" "}
+                        {education.current === true ? (
                           "Current"
                         ) : (
-                          <Moment format="YYYY/MM/DD">{experience.to}</Moment>
+                          <Moment format="YYYY/MM/DD">{education.to}</Moment>
                         )}
                       </td>
                       <td>
                         <button
                           className="btn btn-danger"
-                          onClick={() => this.onDeleteClick(experience._id)}
+                          onClick={() => this.onDeleteClick(education._id)}
                         >
                           Delete
                         </button>
@@ -60,11 +60,11 @@ class Experience extends Component {
   }
 }
 
-Experience.propTypes = {
-  deleteExperience: propTypes.func.isRequired
+Education.propTypes = {
+  deleteEducation: propTypes.func.isRequired
 };
 
 export default connect(
   null,
-  { deleteExperience }
-)(Experience);
+  { deleteEducation }
+)(Education);

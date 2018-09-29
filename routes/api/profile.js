@@ -16,6 +16,19 @@ const validateEducationInput = require("../../validation/education");
 // @route   DELETE api/profile
 // @desc    Delete user and profile
 // @access  Private
+
+// router.delete(
+//   "/",
+//   passport.authenticate("jwt", { session: false }),
+//   (req, res) => {
+//     Profile.findOneAndRemove({ user: req.user.id }).then(() => {
+//       User.findOneAndRemove({ _id: req.user.id }).then(() =>
+//         res.json({ success: true })
+//       );
+//     });
+//   }
+// );
+
 router.delete(
   "/",
   passport.authenticate("jwt", {
@@ -28,10 +41,11 @@ router.delete(
       .then(() => {
         User.findOneAndRemove({
           _id: req.user.id
-        });
-        res.status(200).json({
-          success: true
-        });
+        }).then(() =>
+          res.status(200).json({
+            success: true
+          })
+        );
       })
       .catch(err => {
         res.status(404).json({
@@ -266,34 +280,35 @@ router.post(
 );
 
 // @route   POST api/profile
-// @desc    Create or update user profile
+// @desc    Create or edit user profile
 // @access  Private
 router.post(
   "/",
-  passport.authenticate("jwt", {
-    session: false
-  }),
+  passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const { errors, isValid } = validateProfileInput(req.body);
 
+    // Check Validation
     if (!isValid) {
-      res.status(400).json(errors);
+      // Return any errors with 400 status
+      return res.status(400).json(errors);
     }
-    // get fields
+
+    // Get fields
     const profileFields = {};
     profileFields.user = req.user.id;
     if (req.body.handle) profileFields.handle = req.body.handle;
     if (req.body.company) profileFields.company = req.body.company;
     if (req.body.website) profileFields.website = req.body.website;
     if (req.body.location) profileFields.location = req.body.location;
+    if (req.body.bio) profileFields.bio = req.body.bio;
     if (req.body.status) profileFields.status = req.body.status;
-    // Skills - split into array
+    if (req.body.githubusername)
+      profileFields.githubusername = req.body.githubusername;
+    // Skills - Spilt into array
     if (typeof req.body.skills !== "undefined") {
       profileFields.skills = req.body.skills.split(",");
     }
-    if (req.body.bio) profileFields.bio = req.body.bio;
-    if (req.body.githubusername)
-      profileFields.githubusername = req.body.githubusername;
 
     // Social
     profileFields.social = {};
@@ -303,38 +318,26 @@ router.post(
     if (req.body.linkedin) profileFields.social.linkedin = req.body.linkedin;
     if (req.body.instagram) profileFields.social.instagram = req.body.instagram;
 
-    Profile.findOne({
-      user: req.user.id
-    }).then(profile => {
+    Profile.findOne({ user: req.user.id }).then(profile => {
       if (profile) {
         // Update
         Profile.findOneAndUpdate(
-          {
-            user: req.user.id
-          },
-          {
-            $set: profileFields
-          },
-          {
-            new: true
-          }
+          { user: req.user.id },
+          { $set: profileFields },
+          { new: true }
         ).then(profile => res.json(profile));
       } else {
         // Create
 
         // Check if handle exists
-        Profile.findOne({
-          handle: profileFields.handle
-        }).then(profile => {
+        Profile.findOne({ handle: profileFields.handle }).then(profile => {
           if (profile) {
-            errors.handle = "Handle already exists";
+            errors.handle = "That handle already exists";
             res.status(400).json(errors);
           }
 
-          // save Profile
-          new Profile(profileFields).save().then(profile => {
-            res.json(profile);
-          });
+          // Save Profile
+          new Profile(profileFields).save().then(profile => res.json(profile));
         });
       }
     });
