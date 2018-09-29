@@ -8,10 +8,7 @@ import { connect } from "react-redux";
 import propTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 
-import {
-  registerProfile,
-  getCurrentProfile
-} from "../../actions/profileActions";
+import { createProfile, getCurrentProfile } from "../../actions/profileActions";
 
 class CreateProfile extends Component {
   constructor(props) {
@@ -79,7 +76,7 @@ class CreateProfile extends Component {
       instagram: this.state.instagram
     };
 
-    this.props.registerProfile(newProfile, this.props.history);
+    this.props.createProfile(newProfile, this.props.history);
   };
 
   showSocialLinks = () => {
@@ -287,5 +284,5 @@ CreateProfile.defaultProps = {
 
 export default connect(
   mapStateToProps,
-  { registerProfile, getCurrentProfile }
+  { createProfile, getCurrentProfile }
 )(withRouter(CreateProfile));

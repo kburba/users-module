@@ -17,6 +17,8 @@ import Dashboard from "./components/Dashboard";
 import PrivateRoute from "./components/common/PrivateRoute";
 import CreateProfile from "./components/profile/CreateProfile";
 import EditProfile from "./components/profile/EditProfile";
+import AddExperience from "./components/profile/AddExperience";
+import AddEducation from "./components/profile/AddEducation";
 
 if (localStorage.jwtToken) {
   const token = localStorage.jwtToken;
@@ -44,24 +46,30 @@ class App extends Component {
         <Router>
           <div className="App">
             <Navbar />
-            <Route exact path="/" component={Landing} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/register" component={Register} />
             <Switch>
+              <Route exact path="/" component={Landing} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
-            </Switch>
-            <Switch>
               <PrivateRoute
                 exact
                 path="/create-profile"
                 component={CreateProfile}
               />
-            </Switch>
-            <Switch>
               <PrivateRoute
                 exact
                 path="/edit-profile/"
                 component={EditProfile}
+              />
+              <PrivateRoute
+                exact
+                path="/add-experience/"
+                component={AddExperience}
+              />
+              <PrivateRoute
+                exact
+                path="/add-education/"
+                component={AddEducation}
               />
             </Switch>
             <Footer />

@@ -5,11 +5,13 @@ import propTypes from "prop-types";
 import { getCurrentProfile } from "../actions/profileActions";
 import Spinner from "./common/Spinner";
 import ProfileActions from "./profile/ProfileActions";
+import Experience from "./profile/Experience";
 
 class Dashboard extends Component {
   componentDidMount() {
     this.props.getCurrentProfile();
   }
+
   render() {
     const { user } = this.props.auth;
     const { profile, loading } = this.props.profile;
@@ -27,7 +29,10 @@ class Dashboard extends Component {
 
             <ProfileActions userID={user.id} />
 
-            <h2>Experience Credentials</h2>
+            <Experience
+              experiences={profile.experience}
+              onDeleteClick={this.onDeleteClick}
+            />
             <h2>Education Credentials</h2>
           </div>
         );
