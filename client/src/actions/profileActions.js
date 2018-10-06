@@ -3,13 +3,30 @@ import {
   PROFILE_LOADING,
   GET_PROFILE,
   GET_ERRORS,
-  SET_CURRENT_USER
+  SET_CURRENT_USER,
+  GET_PROFILES
 } from "./types";
+
+// get profile info by handle
+export const getProfileByHandle = handle => dispatch => {
+  axios
+    .get(`/api/profile/handle/${handle}`)
+    .then(res => dispatch({ type: GET_PROFILE, payload: res.data }))
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err.response.data }));
+};
+
+// get all profiles
+export const getProfiles = () => dispatch => {
+  axios
+    .get("/api/profile/all")
+    .then(res => dispatch({ type: GET_PROFILES, payload: res.data }))
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err.response.data }));
+};
 
 // remove user's education
 export const deleteEducation = id => dispatch => {
   axios
-    .delete(`api/profile/education/${id}`)
+    .delete(`/api/profile/education/${id}`)
     .then(res => dispatch({ type: GET_PROFILE, payload: res.data }))
     .catch(err => dispatch({ type: GET_ERRORS, payload: err.response.data }));
 };

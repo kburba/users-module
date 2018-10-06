@@ -26,5 +26,8 @@
   "devDependencies": {
     "nodemon": "^1.18.3"
   },
-  "proxy": "http://localhost:5000"
+  "proxy": {
+    "target": "https://localhost:5000",
+    "secure": false
+  }
 }
