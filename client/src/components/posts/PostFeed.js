@@ -55,7 +55,8 @@ PostFeed.propTypes = {
   getPosts: propTypes.func.isRequired,
   deletePost: propTypes.func.isRequired,
   likePost: propTypes.func.isRequired,
-  posts: propTypes.object.isRequired
+  posts: propTypes.object.isRequired,
+  auth: propTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({

@@ -3,7 +3,8 @@ import {
   GET_POSTS,
   ADD_POST,
   DELETE_POST,
-  LIKE_POST
+  LIKE_POST,
+  ADD_COMMENT
 } from "../actions/types";
 
 const initialState = {
@@ -14,6 +15,15 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case ADD_COMMENT:
+      const newPosts = state.posts.map(post => {
+        if (post._id === action.payload.post_id) {
+          return action.payload.response;
+        } else {
+          return post;
+        }
+      });
+      return { ...state, posts: [...newPosts], loading: false };
     case LIKE_POST:
       let posts = state.posts;
       posts.map(post => {
@@ -32,18 +42,13 @@ export default (state = initialState, action) => {
             return post.likes.splice(removeIndex, 1);
           } else {
             // add like
-            return post.likes.unshift({
-              user: action.payload.user_id
-            });
+            return post.likes.unshift({ user: action.payload.user_id });
           }
         } else {
           return post;
         }
       });
-      return {
-        ...state,
-        posts: posts
-      };
+      return { ...state, posts: posts };
     case DELETE_POST:
       return {
         ...state,
@@ -58,16 +63,9 @@ export default (state = initialState, action) => {
         loading: false
       };
     case GET_POSTS:
-      return {
-        ...state,
-        posts: action.payload,
-        loading: false
-      };
+      return { ...state, posts: action.payload, loading: false };
     case POST_LOADING:
-      return {
-        ...state,
-        loading: true
-      };
+      return { ...state, loading: true };
     default:
       return state;
   }

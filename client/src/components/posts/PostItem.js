@@ -1,10 +1,24 @@
 import React, { Component } from "react";
+import Comments from "./Comments";
 
 export default class PostItem extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showComments: false
+    };
+
+    this.toggleComments = this.toggleComments.bind(this);
+  }
+
+  toggleComments() {
+    const newValue = !this.state.showComments;
+    this.setState({ showComments: newValue });
+  }
   render() {
     const { post, auth, handleDelete, handleLike } = this.props;
     let deleteButton;
-
     if (post.user === auth.user.id) {
       deleteButton = (
         <button
@@ -22,13 +36,11 @@ export default class PostItem extends Component {
       <div className="card card-body mb-3">
         <div className="row">
           <div className="col-md-2">
-            <a href="profile.html">
-              <img
-                className="rounded-circle d-none d-md-block"
-                src={post.avatar}
-                alt={post.name}
-              />
-            </a>
+            <img
+              className="rounded-circle d-none d-md-block"
+              src={post.avatar}
+              alt={post.name}
+            />
             <br />
             <p className="text-center">{post.name}</p>
           </div>
@@ -42,12 +54,15 @@ export default class PostItem extends Component {
               <i className="text-info fas fa-thumbs-up" />
               <span className="badge badge-light">{post.likes.length}</span>
             </button>
-            <a href="post.html" className="btn btn-info mr-1">
-              Comments
+            <a onClick={this.toggleComments} className="btn btn-info mr-1">
+              Comments ({post.comments.length})
             </a>
             {deleteButton}
           </div>
         </div>
+        {this.state.showComments && (
+          <Comments comments={post.comments} postID={post._id} />
+        )}
       </div>
     );
   }
