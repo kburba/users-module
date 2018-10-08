@@ -12,7 +12,6 @@ class PostFeed extends Component {
   }
 
   handleDelete = id => {
-    console.log(id);
     this.props.deletePost(id);
   };
 

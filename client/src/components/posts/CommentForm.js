@@ -36,23 +36,35 @@ class CommentForm extends Component {
       post_id: this.props.postID
     };
     this.props.addComment(newComment);
+    this.setState({ text: "" });
   };
   render() {
     const { errors } = this.state;
 
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <div className="col-auto">
+      <div className="p-2 card">
+        <form className="form-inline" onSubmit={this.handleSubmit}>
+          <div className="col-md-2">
+            <img
+              className="rounded-circle d-none d-md-block"
+              src={this.props.auth.user.avatar}
+              alt={this.props.auth.user.name}
+            />
+            <br />
+            <p className="text-center small mb-0">
+              {this.props.auth.user.name}
+            </p>
+          </div>
+          <div className="col-md-10">
             <TextAreaField
               name="text"
               placeholder="Add you comment here"
               value={this.state.text}
               error={errors.text}
               onChange={this.handleChange}
+              small
+              wide
             />
-          </div>
-          <div className="col-auto">
             <button type="submit" className="btn btn-sm btn-outline-info">
               Submit
             </button>

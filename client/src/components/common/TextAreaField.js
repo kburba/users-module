@@ -9,7 +9,9 @@ const TextAreaField = ({
   error,
   info,
   onChange,
-  disabled
+  disabled,
+  small,
+  wide
 }) => {
   return (
     <div className="form-group">
@@ -19,8 +21,11 @@ const TextAreaField = ({
         value={value}
         onChange={onChange}
         disabled={disabled}
-        className={classnames("form-control form-control-lg", {
-          "is-invalid": error
+        className={classnames("form-control ", {
+          "is-invalid": error,
+          "form-control-sm": small,
+          "form-control-lg": !small,
+          "w-100": wide
         })}
       />
       {info && <small className="form-text text-muted">{info}</small>}

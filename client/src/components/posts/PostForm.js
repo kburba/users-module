@@ -46,18 +46,29 @@ class PostForm extends Component {
         <div className="card card-info">
           <div className="card-header bg-info text-white">Say Somthing...</div>
           <div className="card-body">
-            <form onSubmit={this.handleSubmit}>
-              <TextAreaField
-                name="text"
-                placeholder="Create a post"
-                value={this.state.text}
-                error={errors.text}
-                onChange={this.handleChange}
+            <div className="col-md-2">
+              <img
+                className="rounded-circle d-none d-md-block"
+                src={this.props.auth.avatar}
+                alt={this.props.auth.name}
               />
-              <button type="submit" className="btn btn-dark">
-                Submit
-              </button>
-            </form>
+              <br />
+              <p className="text-center">{this.props.auth.name}</p>
+            </div>
+            <div className="col-md-6">
+              <form onSubmit={this.handleSubmit}>
+                <TextAreaField
+                  name="text"
+                  placeholder="Create a post"
+                  value={this.state.text}
+                  error={errors.text}
+                  onChange={this.handleChange}
+                />
+                <button type="submit" className="btn btn-dark">
+                  Submit
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>

@@ -10,7 +10,7 @@ export default class Comments extends Component {
     });
     return (
       <div className="row">
-        <div className="col-md-12">
+        <div className="col-md-6 offset-3">
           {commentsAll}
           <CommentForm postID={this.props.postID} />
         </div>
