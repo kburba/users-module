@@ -17,7 +17,11 @@ class PostFeed extends Component {
   };
 
   handleLike = id => {
-    this.props.likePost(id);
+    const payload = {
+      post_id: id,
+      user_id: this.props.auth.user.id
+    };
+    this.props.likePost(payload);
   };
 
   render() {

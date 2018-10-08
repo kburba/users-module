@@ -3,14 +3,15 @@ import {
   GET_POSTS,
   GET_ERRORS,
   ADD_POST,
-  DELETE_POST
+  DELETE_POST,
+  LIKE_POST
 } from "./types";
 import axios from "axios";
 
-export const likePost = post_id => dispatch => {
+export const likePost = postData => dispatch => {
   axios
-    .post(`api/posts/like/${post_id}`)
-    .then(res => dispatch(getPosts()))
+    .post(`api/posts/like/${postData.post_id}`)
+    .then(res => dispatch({ type: LIKE_POST, payload: postData }))
     .catch(err => dispatch({ type: GET_ERRORS, payload: err.response.data }));
 };
 
