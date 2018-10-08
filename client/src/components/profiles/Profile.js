@@ -10,10 +10,20 @@ import ProfileGithub from "./ProfileGithub";
 import Spinner from "../common/Spinner";
 
 import { getProfileByHandle } from "../../actions/profileActions";
+import isEmpty from "../../validations/isEmpty";
 
 class Profile extends Component {
   componentDidMount() {
     this.props.getProfileByHandle(this.props.match.params.handle);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.profile.profile === null &&
+      this.props.profile.loading === true
+    ) {
+      this.props.history.push("/not-found");
+    }
   }
 
   render() {
@@ -36,7 +46,9 @@ class Profile extends Component {
           <ProfileHead profile={profile} />
           <ProfileBio profile={profile} />
           <ProfileCreds profile={profile} />
-          <ProfileGithub profile={profile} />
+          {isEmpty(profile.githubusername) ? null : (
+            <ProfileGithub username={profile.githubusername} />
+          )}
         </div>
       );
     }
