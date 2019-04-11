@@ -5,7 +5,7 @@ import {
   DELETE_POST,
   LIKE_POST,
   ADD_COMMENT
-} from "./../../actions/types";
+} from "./../actions/types";
 
 const initialState = {
   post: null,
