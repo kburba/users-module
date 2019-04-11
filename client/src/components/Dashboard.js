@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import propTypes from "prop-types";
-import { getCurrentProfile, deleteUser } from "../actions/profileActions";
+import { getCurrentProfile, deleteUser } from "./../../actions/profileActions";
 import Spinner from "./common/Spinner";
 import ProfileActions from "./profile/ProfileActions";
 import Experience from "./profile/Experience";
 import Education from "./profile/Education";
-import { logoutUser } from "../actions/authActions";
+import { logoutUser } from "./../../actions/authActions";
 
 class Dashboard extends Component {
   componentDidMount() {
