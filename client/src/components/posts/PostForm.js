@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
 
-import { addPost } from "../../actions/postActions";
+import { addPost } from "../../store/actions/postActions";
 import TextAreaField from "../common/TextAreaField";
 
 class PostForm extends Component {
@@ -86,7 +86,4 @@ const mapStateToProps = state => ({
   auth: state.auth,
   errors: state.errors
 });
-export default connect(
-  mapStateToProps,
-  { addPost }
-)(PostForm);
+export default connect(mapStateToProps, { addPost })(PostForm);

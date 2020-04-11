@@ -9,7 +9,7 @@ import ProfileCreds from "./ProfileCreds";
 import ProfileGithub from "./ProfileGithub";
 import Spinner from "../common/Spinner";
 
-import { getProfileByHandle } from "../../actions/profileActions";
+import { getProfileByHandle } from "../../store/actions/profileActions";
 import isEmpty from "../../validations/isEmpty";
 
 class Profile extends Component {
@@ -74,7 +74,4 @@ const mapStateToProps = state => ({
   profile: state.profile
 });
 
-export default connect(
-  mapStateToProps,
-  { getProfileByHandle }
-)(Profile);
+export default connect(mapStateToProps, { getProfileByHandle })(Profile);

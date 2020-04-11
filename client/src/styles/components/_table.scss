@@ -1,0 +1,53 @@
+.table {
+    table {
+        width: 100%;
+
+        thead {
+            tr {
+                th {
+                    padding: 5px;
+                    &:last-child {
+                        text-align: right;
+                    }
+                }
+            }
+        }
+
+        tbody {
+            tr {
+                &:hover {
+                    td {
+                        background-color: rgba(0, 0, 0, 0.05);
+                    }
+                }
+                &.editing {
+                    td {
+                        height: 100px;
+                    }
+                }
+                td {
+                    padding: 2px;
+                    vertical-align: middle;
+                    height: 50px;
+                    transition: background-color 0.2s ease-in-out, height 0.2s ease-in-out;
+                }
+                td.clickable {
+                    cursor: pointer;
+                }
+                td:last-child {
+                    text-align: right;
+                }
+            }
+        }
+
+        tfoot {
+            border-top: 2px solid lightgray;
+            tr {
+                td {
+                    font-weight: bold;
+                    padding: 5px 0;
+                }
+            }
+        }
+    }
+}

@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import propTypes from "prop-types";
 import { connect } from "react-redux";
-import { getPosts, deletePost, likePost } from "../../actions/postActions";
+import {
+  getPosts,
+  deletePost,
+  likePost
+} from "../../store/actions/postActions";
 
 import PostItem from "./PostItem";
 import Spinner from "../common/Spinner";
@@ -63,7 +67,6 @@ const mapStateToProps = state => ({
   posts: state.posts
 });
 
-export default connect(
-  mapStateToProps,
-  { getPosts, deletePost, likePost }
-)(PostFeed);
+export default connect(mapStateToProps, { getPosts, deletePost, likePost })(
+  PostFeed
+);

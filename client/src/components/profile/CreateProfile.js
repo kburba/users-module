@@ -6,7 +6,7 @@ import TextFieldGroup from "../common/TextFieldGroup";
 import TextAreaField from "../common/TextAreaField";
 import InputGroupField from "../common/InputGroupField";
 import SelectFieldGroup from "../common/SelectFieldGroup";
-import { createProfile } from "../../actions/profileActions";
+import { createProfile } from "../../store/actions/profileActions";
 
 class CreateProfile extends Component {
   constructor(props) {
@@ -251,7 +251,6 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-export default connect(
-  mapStateToProps,
-  { createProfile }
-)(withRouter(CreateProfile));
+export default connect(mapStateToProps, { createProfile })(
+  withRouter(CreateProfile)
+);

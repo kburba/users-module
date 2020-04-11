@@ -37,7 +37,12 @@ export default class ProfileGithub extends Component {
           <div className="row">
             <div className="col-md-6">
               <h4>
-                <a href={repo.html_url} className="text-info" target="_blank">
+                <a
+                  href={repo.html_url}
+                  rel="noopener noreferrer"
+                  className="text-info"
+                  target="_blank"
+                >
                   {" "}
                   {repo.name}
                 </a>

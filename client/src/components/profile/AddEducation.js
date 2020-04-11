@@ -3,7 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
 
-import { addEducation } from "../../actions/profileActions";
+import { addEducation } from "../../store/actions/profileActions";
 
 import TextFieldGroup from "../common/TextFieldGroup";
 import TextAreaField from "../common/TextAreaField";
@@ -168,7 +168,6 @@ const mapStateToProps = state => ({
   profile: state.profile
 });
 
-export default connect(
-  mapStateToProps,
-  { addEducation }
-)(withRouter(AddEducation));
+export default connect(mapStateToProps, { addEducation })(
+  withRouter(AddEducation)
+);

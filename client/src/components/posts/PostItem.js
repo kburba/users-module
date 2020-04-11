@@ -54,9 +54,9 @@ export default class PostItem extends Component {
               <i className="text-info fas fa-thumbs-up" />
               <span className="badge badge-light">{post.likes.length}</span>
             </button>
-            <a onClick={this.toggleComments} className="btn btn-info mr-1">
+            <span onClick={this.toggleComments} className="btn btn-info mr-1">
               Comments ({post.comments.length})
-            </a>
+            </span>
             {deleteButton}
           </div>
         </div>

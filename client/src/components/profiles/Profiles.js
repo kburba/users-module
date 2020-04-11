@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
 import Spinner from "../common/Spinner";
-import { getProfiles } from "../../actions/profileActions";
+import { getProfiles } from "../../store/actions/profileActions";
 
 import ProfileItem from "./ProfileItem";
 
@@ -51,7 +51,4 @@ Profiles.propTypes = {
 const mapStateToProps = state => ({
   profile: state.profile
 });
-export default connect(
-  mapStateToProps,
-  { getProfiles }
-)(Profiles);
+export default connect(mapStateToProps, { getProfiles })(Profiles);

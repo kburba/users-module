@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Moment from "react-moment";
 import { connect } from "react-redux";
-import { deleteEducation } from "../../actions/profileActions";
+import { deleteEducation } from "../../store/actions/profileActions";
 import propTypes from "prop-types";
 
 class Education extends Component {
@@ -64,7 +64,4 @@ Education.propTypes = {
   deleteEducation: propTypes.func.isRequired
 };
 
-export default connect(
-  null,
-  { deleteEducation }
-)(Education);
+export default connect(null, { deleteEducation })(Education);

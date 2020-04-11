@@ -91,7 +91,7 @@ router.post("/login", (req, res) => {
         return res.status(400).json(errors);
     }
 
-    const email = req.body.email;
+    const email = req.body.email.toLowerCase();
     const password = req.body.password;
 
     User.findOne({

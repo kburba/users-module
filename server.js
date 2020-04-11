@@ -7,6 +7,9 @@ const path = require("path");
 const users = require("./routes/api/users");
 const profile = require("./routes/api/profile");
 const posts = require("./routes/api/posts");
+const languages = require("./routes/api/languages");
+const services = require("./routes/api/services");
+const orders = require("./routes/api/orders");
 
 const app = express();
 
@@ -23,12 +26,10 @@ const db = require("./config/keys").mongoURI;
 
 // Connect to Mongo DB
 mongoose
-  .connect(
-    db,
-    {
-      useNewUrlParser: true
-    }
-  )
+  .connect(db, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
   .then(() => console.log("Successfully connected to MongoDB"))
   .catch(err => console.log("Error ", err));
 
@@ -42,6 +43,9 @@ require("./config/passport")(passport);
 app.use("/api/users", users);
 app.use("/api/profile", profile);
 app.use("/api/posts", posts);
+app.use("/api/languages", languages);
+app.use("/api/services", services);
+app.use("/api/orders", orders);
 
 // serve static assets if in production
 if (process.env.NODE_ENV === "production") {

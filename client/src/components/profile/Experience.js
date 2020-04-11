@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Moment from "react-moment";
 import { connect } from "react-redux";
-import { deleteExperience } from "../../actions/profileActions";
+import { deleteExperience } from "../../store/actions/profileActions";
 import propTypes from "prop-types";
 
 class Experience extends Component {
@@ -64,7 +64,4 @@ Experience.propTypes = {
   deleteExperience: propTypes.func.isRequired
 };
 
-export default connect(
-  null,
-  { deleteExperience }
-)(Experience);
+export default connect(null, { deleteExperience })(Experience);
