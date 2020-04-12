@@ -2,18 +2,12 @@ import React, { Dispatch, useEffect } from 'react';
 import { connect } from 'react-redux';
 import Modal from 'react-modal';
 import { useForm } from 'react-hook-form';
-import { ServiceActions, UpdatedService, NewService, Service } from '../../store/types/serviceTypes';
+import { ServiceActions, ServiceForm } from '../../store/types/serviceTypes';
 import { setServicesModal, addServiceAction, updateServiceAction } from '../../store/actions/serviceActions';
 import { RootState } from '../../store/reducers';
 import { LanguageActions } from '../../store/types/languageTypes';
 import { getLanguagesAction } from '../../store/actions/languageActions';
-
-type FormData = {
-    type: 'PROOFREADING' | 'TRANSLATION' | 'EDITING';
-    from: string;
-    to: string;
-    price: string;
-};
+import classnames from 'classnames';
 
 function ServicesModal({
     modalIsOpen,
@@ -26,7 +20,9 @@ function ServicesModal({
     isLoadingLanguages,
     initialValues,
 }: ServModalProps) {
-    const { register, handleSubmit, watch } = useForm<FormData>();
+    const { register, handleSubmit, watch, errors } = useForm<ServiceForm>({
+        defaultValues: initialValues._id ? { ...initialValues } : {},
+    });
 
     useEffect(() => {
         if (modalIsOpen && languages.length < 1) {
@@ -34,14 +30,11 @@ function ServicesModal({
         }
     }, [languages.length, getLanguages, modalIsOpen]);
 
-    function handleAdd(data) {
+    function handleAdd(data: ServiceForm) {
         addService(data);
     }
 
-    function handleEdit(data) {
-        if (!initialValues) {
-            return;
-        }
+    function handleEdit(data: ServiceForm) {
         const updatedService = {
             _id: initialValues._id,
             type: data.type,
@@ -52,8 +45,8 @@ function ServicesModal({
         updateService(updatedService);
     }
 
-    const langTo = languages.filter(lang => lang._id !== watch('from'));
-
+    const langTo = languages.filter((lang) => lang._id !== watch('from'));
+    console.log(errors);
     return (
         <Modal
             isOpen={modalIsOpen}
@@ -61,20 +54,36 @@ function ServicesModal({
             className="VertiModal"
             contentLabel="Example Modal"
         >
-            <form onSubmit={handleSubmit(initialValues ? handleEdit : handleAdd)}>
+            <form onSubmit={handleSubmit(initialValues._id ? handleEdit : handleAdd)}>
                 <div>
                     <label htmlFor="type">Name:</label>
-                    <select name="type" ref={register} defaultValue={initialValues ? initialValues.type : ''}>
+                    <select
+                        name="type"
+                        className={classnames('form-control form-control-lg', {
+                            'is-invalid': !!errors.type,
+                        })}
+                        ref={register({ required: 'Required' })}
+                        defaultValue={initialValues.type}
+                    >
                         <option value="proofreading">Proofreading</option>
                         <option value="editing">Editing</option>
                         <option value="translation">Translation</option>
                         ))}
                     </select>
+                    {!!errors.type && <div className="invalid-feedback">{errors.type?.message}</div>}
                 </div>
                 <div>
                     <label htmlFor="from">From:</label>
-                    <select name="from" placeholder={isLoadingLanguages ? 'Loading...' : 'Select language'} ref={register} defaultValue={initialValues ? initialValues.from._id : ''}>
-                        {languages.map(lang => (
+                    <select
+                        name="from"
+                        placeholder={isLoadingLanguages ? 'Loading...' : 'Select language'}
+                        ref={register}
+                        defaultValue={initialValues.from}
+                        className={classnames('form-control form-control-lg', {
+                            'is-invalid': !!errors.from,
+                        })}
+                    >
+                        {languages.map((lang) => (
                             <option key={lang._id} value={lang._id}>
                                 {lang.name}
                             </option>
@@ -83,8 +92,16 @@ function ServicesModal({
                 </div>
                 <div>
                     <label htmlFor="to">To:</label>
-                    <select name="to" placeholder={isLoadingLanguages ? 'Loading...' : 'Select language'}  ref={register} defaultValue={initialValues ? initialValues.to._id : ''}>
-                        {langTo.map(lang => (
+                    <select
+                        name="to"
+                        placeholder={isLoadingLanguages ? 'Loading...' : 'Select language'}
+                        ref={register}
+                        className={classnames('form-control form-control-lg', {
+                            'is-invalid': !!errors.to,
+                        })}
+                        defaultValue={initialValues.to}
+                    >
+                        {langTo.map((lang) => (
                             <option key={lang._id} value={lang._id}>
                                 {lang.name}
                             </option>
@@ -93,7 +110,18 @@ function ServicesModal({
                 </div>
                 <div>
                     <label htmlFor="price">Price:</label>
-                    <input name="price" defaultValue={initialValues ? initialValues.price : ''} ref={register} />
+                    <input
+                        name="price"
+                        defaultValue={initialValues.price}
+                        className={classnames('form-control form-control-lg', {
+                            'is-invalid': !!errors.price,
+                        })}
+                        ref={register({
+                            required: 'Required',
+                            pattern: { value: /^(\d*\.)?\d+$/, message: 'Must be number' },
+                        })}
+                    />
+                    {!!errors.price && <div className="invalid-feedback">{errors.price?.message}</div>}
                 </div>
                 <input type="submit" />
                 {isSubmitting && 'loading...'}
@@ -102,7 +130,7 @@ function ServicesModal({
     );
 }
 
-const mapStateToProps = ({servicesReducer, languagesReducer}: RootState) => ({
+const mapStateToProps = ({ servicesReducer, languagesReducer }: RootState) => ({
     modalIsOpen: servicesReducer.modalIsOpen,
     languages: languagesReducer.languages,
     isSubmitting: servicesReducer.isSubmitting,
@@ -112,10 +140,10 @@ const mapStateToProps = ({servicesReducer, languagesReducer}: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<ServiceActions | LanguageActions>) => ({
     setModal: (status: boolean) => dispatch(setServicesModal(status)),
     getLanguages: () => dispatch(getLanguagesAction()),
-    addService: (service: NewService) => dispatch(addServiceAction(service)),
-    updateService: (service: UpdatedService) => dispatch(updateServiceAction(service)),
+    addService: (service: ServiceForm) => dispatch(addServiceAction(service)),
+    updateService: (service: ServiceForm) => dispatch(updateServiceAction(service)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServicesModal);
 type ServModalProps = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> & { initialValues: Service | null };
+    ReturnType<typeof mapDispatchToProps> & { initialValues: ServiceForm };

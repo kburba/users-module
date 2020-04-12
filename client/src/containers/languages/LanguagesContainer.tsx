@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { getLanguagesAction, deleteLanguageAction, setLanguagesModal } from '../../store/actions/languageActions';
 
 import { LanguageActions } from '../../store/types/languageTypes';
-import Spinner from '../common/Spinner';
+import Spinner from '../../components/common/Spinner';
 import LanguagesTable from './LanguagesTable';
 import { Button, Container } from '@material-ui/core';
 import { RootState } from '../../store/reducers';
@@ -39,7 +39,7 @@ function LanguagesContainer({ getLanguages, isLoading, setModal, languages }: La
     );
 }
 
-const mapStateToProps = ({languagesReducer}: RootState) => ({
+const mapStateToProps = ({ languagesReducer }: RootState) => ({
     languages: languagesReducer.languages,
     isLoading: languagesReducer.isLoading,
 });

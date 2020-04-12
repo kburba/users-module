@@ -1,8 +1,8 @@
 import React, { Dispatch } from 'react';
 import { connect } from 'react-redux';
-import Table, { TableColumn, TableAction } from '../table/Table';
+import Table, { TableColumn, TableAction } from '../../components/table/Table';
 import { ServiceActions, Service } from '../../store/types/serviceTypes';
-import { deleteServiceAction, setServicesModal } from '../../store/actions/serviceActions';
+import { deleteServiceAction, setEditingServiceId } from '../../store/actions/serviceActions';
 import { RootState } from '../../store/reducers';
 
 export const servicesColumns: TableColumn[] = [
@@ -33,15 +33,18 @@ export const servicesColumns: TableColumn[] = [
         key: 'price',
         title: 'Price',
         valueType: 'currency',
+        isEditable: true,
+        editType: 'input',
     },
 ];
 
-function ServicesTable({ deleteService, isLoading, setModal, services, modalIsOpen }: ServicesTableProps) {
+function ServicesTable({ deleteService, isLoading, setEditingId, services, handleEdit }: ServicesTableProps) {
     const tableActions: TableAction[] = [
         {
             type: 'edit',
             action: (service: Service) => {
-                setModal(true);
+                handleEdit(service);
+                setEditingId(service._id);
             },
         },
         {
@@ -50,17 +53,8 @@ function ServicesTable({ deleteService, isLoading, setModal, services, modalIsOp
         },
     ];
 
-    const ThisIsTest = <div>Das is mein test</div>;
-
     return (
-        <Table
-            data={services}
-            columns={servicesColumns}
-            uniqueKey="_id"
-            actions={tableActions}
-            isLoading={isLoading}
-            customRow={{ show: modalIsOpen, rowElement: ThisIsTest }}
-        />
+        <Table data={services} columns={servicesColumns} uniqueKey="_id" actions={tableActions} isLoading={isLoading} />
     );
 }
 
@@ -72,8 +66,9 @@ const mapStateToProps = ({ servicesReducer }: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<ServiceActions>) => ({
     deleteService: (id: string) => dispatch(deleteServiceAction(id)),
-    setModal: (status: boolean) => dispatch(setServicesModal(status)),
+    setEditingId: (id: string) => dispatch(setEditingServiceId(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServicesTable);
-type ServicesTableProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type ServicesTableProps = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps> & { handleEdit: (service: Service) => void };

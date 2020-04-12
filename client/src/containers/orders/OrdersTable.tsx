@@ -1,6 +1,6 @@
 import React, { Dispatch } from 'react';
 import { connect } from 'react-redux';
-import Table, { TableColumn, TableAction } from '../table/Table';
+import Table, { TableColumn, TableAction } from '../../components/table/Table';
 import { OrderActions, Order } from '../../store/types/orderTypes';
 import { deleteOrderAction, setOrdersModal } from '../../store/actions/orderActions';
 import { Button } from '@material-ui/core';
@@ -27,8 +27,8 @@ const ordersColumns: TableColumn[] = [
         key: 'total',
         title: 'Total',
         valueType: 'currency',
-        totalsType: 'sum'
-    }
+        totalsType: 'sum',
+    },
 ];
 
 function OrdersTable({ orders, deleteOrder, isDeleting, isLoading }: OrderTableProps) {
@@ -36,7 +36,6 @@ function OrdersTable({ orders, deleteOrder, isDeleting, isLoading }: OrderTableP
         {
             type: 'delete',
             action: (order: Order) => deleteOrder(order._id),
-
         },
     ];
 
@@ -49,17 +48,24 @@ function OrdersTable({ orders, deleteOrder, isDeleting, isLoading }: OrderTableP
                     </Button>
                 </Link>
             </div>
-            {orders.length > 0 && 
-            <Table<Order> data={orders} columns={ordersColumns} isLoading={isLoading || isDeleting} actions={tableActions} uniqueKey="_id" onRowClickRoute="/orders" />
-            }
+            {orders.length > 0 && (
+                <Table<Order>
+                    data={orders}
+                    columns={ordersColumns}
+                    isLoading={isLoading || isDeleting}
+                    actions={tableActions}
+                    uniqueKey="_id"
+                    onRowClickRoute="/orders"
+                />
+            )}
         </div>
     );
 }
 
-const mapStateToProps = ({ordersReducer}: RootState) => ({
+const mapStateToProps = ({ ordersReducer }: RootState) => ({
     orders: ordersReducer.orders,
     isLoading: ordersReducer.isLoading,
-    isDeleting: ordersReducer.isDeleting
+    isDeleting: ordersReducer.isDeleting,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<OrderActions>) => ({

@@ -12,7 +12,7 @@ interface FormData {
 }
 
 interface Props {
-    services: Service[],
+    services: Service[];
     modalIsOpen: boolean;
     onSubmit: (values: FormData) => void;
     closeModal: () => void;
@@ -21,13 +21,13 @@ interface Props {
 export default function NewOrderServicesForm({ services, onSubmit, modalIsOpen, closeModal }: Props) {
     const { handleSubmit, register, errors, watch, setValue } = useForm<FormData>();
 
-    const selected = services.find(x => x._id === watch('service'));
+    const selected = services.find((x) => x._id === watch('service'));
 
     function handleServiceChange(e) {
         const serviceId = e.target.value;
-        const selected = services.find(x => x._id === serviceId);
+        const selected = services.find((x) => x._id === serviceId);
         if (selected) {
-            setValue('price', selected.price)
+            setValue('price', selected.price);
         }
     }
     return (

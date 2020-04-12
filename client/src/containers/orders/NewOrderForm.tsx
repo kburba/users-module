@@ -21,12 +21,12 @@ interface FormData {
     total: number;
 }
 
-interface UpdatedService extends Service {
+interface ServiceForm extends Service {
     customPrice: number;
 }
 
 function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, ordersQty }: NewOrderProps) {
-    const [orderServices, setOrderServices] = useState<UpdatedService[]>([]);
+    const [orderServices, setOrderServices] = useState<ServiceForm[]>([]);
     const [showNewOrderRow, setShowNewOrderForm] = useState<boolean>(false);
     const { handleSubmit, register, errors, setValue, watch } = useForm<FormData>();
 
@@ -73,7 +73,8 @@ function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, 
         const selected = services.find((x) => x._id === service);
         if (selected) {
             const updatedServices = [...orderServices];
-            const customPrice = selected.price !== parseFloat(price) ? price : undefined;
+            // const customPrice = selected.price !== parseFloat(price) ? price : undefined;
+            const customPrice = 15.99;
             updatedServices.unshift({ ...selected, customPrice });
             const newTotal = calcNewTotal(price);
             setValue('total', newTotal);

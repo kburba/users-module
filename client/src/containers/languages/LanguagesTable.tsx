@@ -1,6 +1,6 @@
 import React, { Dispatch, useState } from 'react';
 import { connect } from 'react-redux';
-import Table, { TableColumn, TableAction } from '../table/Table';
+import Table, { TableColumn, TableAction } from '../../components/table/Table';
 import { Language, LanguageActions } from '../../store/types/languageTypes';
 import {
     deleteLanguageAction,
@@ -43,8 +43,8 @@ function LanguagesTable({ deleteLanguage, isLoading, languages, addLanguage, upd
         },
     ];
 
-    function handleEditLanguage(language: Language, newValues: NewLanguage ) {
-        updateLanguage({_id: language._id, name: newValues.name})
+    function handleEditLanguage(language: Language, newValues: NewLanguage) {
+        updateLanguage({ _id: language._id, name: newValues.name });
     }
 
     return (

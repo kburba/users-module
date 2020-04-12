@@ -4,14 +4,14 @@ import { getOrdersAction } from '../../store/actions/orderActions';
 import { Switch } from 'react-router-dom';
 
 import { OrderActions } from '../../store/types/orderTypes';
-import Spinner from '../common/Spinner';
+import Spinner from '../../components/common/Spinner';
 import OrdersTable from './OrdersTable';
 import { Container } from '@material-ui/core';
-import PrivateRoute from '../common/PrivateRoute';
+import PrivateRoute from '../../components/common/PrivateRoute';
 import ViewOrder from './ViewOrder';
 import NewOrderForm from './NewOrderForm';
 import { RootState } from '../../store/reducers';
-import ErrorMessage from '../common/ErrorMessage';
+import ErrorMessage from '../../components/common/ErrorMessage';
 import { OrdersState } from '../../store/reducers/ordersReducer';
 
 function OrdersContainer({ getOrders, isLoading, orders, error }: OrdersProps) {
