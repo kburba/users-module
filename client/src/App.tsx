@@ -18,9 +18,9 @@ import Register from './components/auth/Register';
 import Dashboard from './components/Dashboard';
 import PrivateRoute from './components/common/PrivateRoute';
 import NotFound from './components/NotFound';
-import LanguagesContainer from './components/languages/LanguagesContainer';
-import ServicesContainer from './components/services/ServicesContainer';
-import OrdersContainer from './components/orders/OrdersContainer';
+import LanguagesContainer from './containers/languages/LanguagesContainer';
+import ServicesContainer from './containers/services/ServicesContainer';
+import OrdersContainer from './containers/orders/OrdersContainer';
 
 export const customHistory = createBrowserHistory();
 
