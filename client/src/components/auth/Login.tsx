@@ -13,8 +13,8 @@ type FormData = {
     password: string;
 };
 
-function Login({ loginUser, isAuthenticated, errors }: LoginProps) {
-    const { handleSubmit, register } = useForm<FormData>();
+function Login({ loginUser, isAuthenticated, authErrors }: LoginProps) {
+    const { handleSubmit, register, errors } = useForm<FormData>();
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -26,6 +26,7 @@ function Login({ loginUser, isAuthenticated, errors }: LoginProps) {
         loginUser(data);
     }
 
+    console.log(errors, authErrors);
     return (
         <div className="login">
             <div className="container">
@@ -40,24 +41,30 @@ function Login({ loginUser, isAuthenticated, errors }: LoginProps) {
                                     type="email"
                                     placeholder="Email Address"
                                     autoFocus={true}
-                                    ref={register()}
+                                    ref={register({ required: 'Required' })}
                                     className={classnames('form-control form-control-lg', {
-                                        'is-invalid': !!errors.email,
+                                        'is-invalid': !!authErrors.email || !!errors.email,
                                     })}
                                 />
-                                {!!errors.email && <div className="invalid-feedback">{errors.email}</div>}
+                                {(!!authErrors.email || !!errors.email) && (
+                                    <div className="invalid-feedback">{authErrors.email || errors.email?.message}</div>
+                                )}
                             </div>
                             <div className="form-group">
                                 <input
                                     type="password"
                                     placeholder="Password"
                                     name="password"
-                                    ref={register()}
+                                    ref={register({ required: 'Required' })}
                                     className={classnames('form-control form-control-lg', {
-                                        'is-invalid': !!errors.password,
+                                        'is-invalid': !!authErrors.password || !!errors.password,
                                     })}
                                 />
-                                {!!errors.password && <div className="invalid-feedback">{errors.password}</div>}
+                                {(!!authErrors.password || !!errors.password) && (
+                                    <div className="invalid-feedback">
+                                        {authErrors.password || errors.password?.message}
+                                    </div>
+                                )}
                             </div>
                             <input type="submit" className="btn btn-info btn-block mt-4" />
                         </form>
@@ -70,7 +77,7 @@ function Login({ loginUser, isAuthenticated, errors }: LoginProps) {
 
 const mapStateToProps = ({ auth }: RootState) => ({
     isAuthenticated: auth.isAuthenticated,
-    errors: auth.errors,
+    authErrors: auth.errors,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AuthActions>) => ({
