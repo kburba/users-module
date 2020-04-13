@@ -12,11 +12,13 @@ import {
     DELETE_SERVICE_SUCCESS,
     DELETE_SERVICE,
     DELETE_SERVICE_ERROR,
+    SET_SERVICES_EDITING_ID,
 } from '../actions/types';
 import { Service, ServiceActions } from '../types/serviceTypes';
 
 export type ServicesState = {
     error: any;
+    isEditingId: string;
     isLoadedServices: boolean;
     isLoading: boolean;
     isSubmitting: boolean;
@@ -26,6 +28,7 @@ export type ServicesState = {
 
 const initialState: ServicesState = {
     error: null,
+    isEditingId: '',
     isLoadedServices: false,
     isLoading: false,
     isSubmitting: false,
@@ -35,6 +38,11 @@ const initialState: ServicesState = {
 
 export default (state = initialState, action: ServiceActions): ServicesState => {
     switch (action.type) {
+        case SET_SERVICES_EDITING_ID:
+            return {
+                ...state,
+                isEditingId: action.payload,
+            };
         case ADD_SERVICE:
         case UPDATE_SERVICE:
             return {
@@ -73,6 +81,7 @@ export default (state = initialState, action: ServiceActions): ServicesState => 
             return {
                 ...state,
                 modalIsOpen: action.status,
+                isEditingId: action.status === false ? '' : state.isEditingId,
             };
         case DELETE_SERVICE:
             return {

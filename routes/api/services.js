@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 const passport = require('passport');
 
 // Validation
@@ -8,7 +7,6 @@ const validateServiceInput = require('../../validation/services');
 
 // Models
 const Service = require('../../modules/Service');
-const Language = require('../../modules/Language');
 
 // @ROUTE   DELETE api/services/:service_id,
 // @DESC    Delete existing service
@@ -61,41 +59,6 @@ router.put(
         price: req.body.price,
       };
 
-      // let langA = {};
-      // let langB = {};
-
-      // Language.findById(req.body.from, 'name')
-      //   .then((langFrom) => {
-      //     if (!langFrom) {
-      //       return res
-      //         .status(404)
-      //         .json({ langFrom: 'Language from ID not found' });
-      //     }
-      //     langA = langFrom;
-      //   })
-      //   .catch((err) => {
-      //     if (err) {
-      //       return res.status(404).json({
-      //         err: 'could not find lang from',
-      //       });
-      //     }
-      //   });
-      // Language.findById(req.body.to, 'name')
-      //   .then((langTo) => {
-      //     if (!langTo) {
-      //       return res
-      //         .status(404)
-      //         .json({ langTo: 'Language to ID not found' });
-      //     }
-      //     langB = langTo;
-      //   })
-      //   .catch((err) => {
-      //     if (err) {
-      //       return res.status(404).json({
-      //         err: 'could not find lang to',
-      //       });
-      //     }
-      //   });
       Service.findByIdAndUpdate({ _id: req.params.service_id }, serviceFields, {
         new: true,
       })
@@ -165,51 +128,34 @@ router.post(
 
     if (!isValid) {
       return res.status(400).json(errors);
-    } else {
-      // get post fields
-      const newService = new Service({
-        type: req.body.type,
-        from: req.body.from,
-        to: req.body.to,
-        price: req.body.price,
-      });
-
-      Language.findById(req.body.from, 'name')
-        .then((langFrom) => {
-          if (!langFrom) {
-            return res.json({ langFrom: 'Language from ID not found' });
-          }
-          newService.from = langFrom;
-        })
-        .catch((err) => {
-          if (err) {
-            return res.status(404).json({
-              err: 'could not find lang from',
-            });
-          }
-        });
-      Language.findById(req.body.to, 'name')
-        .then((langFrom) => {
-          if (!langFrom) {
-            return res.json({ langFrom: 'Language to ID not found' });
-          }
-          newService.to = langFrom;
-        })
-        .catch((err) => {
-          if (err) {
-            return res.status(404).json({
-              err: 'could not find lang to',
-            });
-          }
-        });
-
-      newService
-        .save()
-        .then((service) => res.json(service))
-        .catch((err) => {
-          return res.status(404).json(err.errors);
-        });
     }
+    // get post fields
+    const newService = new Service({
+      type: req.body.type,
+      from: req.body.from,
+      to: req.body.to,
+      price: req.body.price,
+    });
+
+    newService
+      .save()
+      .then((savedDoc) => {
+        savedDoc.populate(
+          {
+            path: 'from to',
+            select: 'name',
+          },
+          (err, populatedDoc) => {
+            if (err) {
+              return res
+                .status(400)
+                .json({ message: 'Could not populate language' });
+            }
+            return res.json(populatedDoc);
+          }
+        );
+      })
+      .catch((err) => res.status(404).send(err));
   }
 );
 module.exports = router;

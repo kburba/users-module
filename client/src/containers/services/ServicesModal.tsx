@@ -10,17 +10,17 @@ import classnames from 'classnames';
 
 function ServicesModal({
     addService,
-    initialValues,
+    isEditingId,
     isLoadingLanguages,
     isSubmitting,
     languages,
     modalIsOpen,
+    services,
     setModal,
     updateService,
 }: ServModalProps) {
-    const { register, handleSubmit, watch, errors } = useForm<ServiceForm>({
-        defaultValues: initialValues._id ? { ...initialValues } : {},
-    });
+    const service = services.find((x) => x._id === isEditingId);
+    const { register, handleSubmit, watch, errors } = useForm<ServiceForm>();
 
     function handleAdd(data: ServiceForm) {
         addService(data);
@@ -28,7 +28,7 @@ function ServicesModal({
 
     function handleEdit(data: ServiceForm) {
         const updatedService = {
-            _id: initialValues._id,
+            _id: service?._id,
             type: data.type,
             from: data.from,
             to: data.to,
@@ -46,7 +46,7 @@ function ServicesModal({
             className="VertiModal"
             contentLabel="Example Modal"
         >
-            <form onSubmit={handleSubmit(initialValues._id ? handleEdit : handleAdd)}>
+            <form onSubmit={handleSubmit(service?._id ? handleEdit : handleAdd)}>
                 <div>
                     <label htmlFor="type">Name:</label>
                     <select
@@ -55,7 +55,7 @@ function ServicesModal({
                             'is-invalid': !!errors.type,
                         })}
                         ref={register({ required: 'Required' })}
-                        defaultValue={initialValues.type}
+                        defaultValue={service?.type}
                     >
                         <option value="proofreading">Proofreading</option>
                         <option value="editing">Editing</option>
@@ -70,7 +70,7 @@ function ServicesModal({
                         name="from"
                         placeholder={isLoadingLanguages ? 'Loading...' : 'Select language'}
                         ref={register}
-                        defaultValue={initialValues.from}
+                        defaultValue={service?.from._id}
                         className={classnames('form-control form-control-lg', {
                             'is-invalid': !!errors.from,
                         })}
@@ -91,7 +91,7 @@ function ServicesModal({
                         className={classnames('form-control form-control-lg', {
                             'is-invalid': !!errors.to,
                         })}
-                        defaultValue={initialValues.to}
+                        defaultValue={service?.to._id}
                     >
                         {langTo.map((lang) => (
                             <option key={lang._id} value={lang._id}>
@@ -104,7 +104,8 @@ function ServicesModal({
                     <label htmlFor="price">Price:</label>
                     <input
                         name="price"
-                        defaultValue={initialValues.price}
+                        placeholder="Price"
+                        defaultValue={service?.price}
                         className={classnames('form-control form-control-lg', {
                             'is-invalid': !!errors.price,
                         })}
@@ -123,10 +124,12 @@ function ServicesModal({
 }
 
 const mapStateToProps = ({ servicesReducer, languagesReducer }: RootState) => ({
-    modalIsOpen: servicesReducer.modalIsOpen,
-    languages: languagesReducer.languages,
-    isSubmitting: servicesReducer.isSubmitting,
+    isEditingId: servicesReducer.isEditingId,
     isLoadingLanguages: languagesReducer.isLoading,
+    isSubmitting: servicesReducer.isSubmitting,
+    languages: languagesReducer.languages,
+    modalIsOpen: servicesReducer.modalIsOpen,
+    services: servicesReducer.services,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<ServiceActions | LanguageActions>) => ({
@@ -136,5 +139,4 @@ const mapDispatchToProps = (dispatch: Dispatch<ServiceActions | LanguageActions>
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServicesModal);
-type ServModalProps = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> & { initialValues: ServiceForm };
+type ServModalProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;

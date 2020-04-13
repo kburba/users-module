@@ -12,6 +12,7 @@ import {
     DELETE_SERVICE_SUCCESS,
     DELETE_SERVICE,
     DELETE_SERVICE_ERROR,
+    SET_SERVICES_EDITING_ID,
 } from '../actions/types';
 import { Language } from './languageTypes';
 
@@ -33,7 +34,13 @@ export interface Service {
 
 export type ServiceActions = Get | Add | Update | Delete | Set;
 
-type Set = SetServicesModal;
+type Set = SetServicesModal | SetServicesEditingId;
+
+export type SetServicesEditingId = {
+    type: typeof SET_SERVICES_EDITING_ID;
+    payload: string;
+};
+
 export type SetServicesModal = {
     type: typeof SERVICES_MODAL_ISOPEN;
     status: boolean;

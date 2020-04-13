@@ -1,7 +1,7 @@
-import React, { useEffect, Dispatch, useState } from 'react';
+import React, { useEffect, Dispatch } from 'react';
 import { connect } from 'react-redux';
 import { getServicesAction, deleteServiceAction, setServicesModal } from '../../store/actions/serviceActions';
-import { ServiceActions, ServiceForm, Service } from '../../store/types/serviceTypes';
+import { ServiceActions } from '../../store/types/serviceTypes';
 import Spinner from '../../components/common/Spinner';
 import ServicesTable from './ServicesTable';
 import { Button, Container } from '@material-ui/core';
@@ -10,15 +10,7 @@ import ServicesModal from './ServicesModal';
 import { getLanguagesAction } from '../../store/actions/languageActions';
 import { LanguageActions } from '../../store/types/languageTypes';
 
-const initialValues: ServiceForm = {
-    type: 'translation',
-    from: '',
-    to: '',
-    price: '',
-};
-
-function ServicesContainer({ getServices, isLoading, setModal, services, getLanguages }: ServicesProps) {
-    const [editingService, setEditingService] = useState<ServiceForm>(initialValues);
+function ServicesContainer({ getServices, isLoading, setModal, getLanguages }: ServicesProps) {
     useEffect(() => {
         getServices();
     }, [getServices]);
@@ -26,17 +18,6 @@ function ServicesContainer({ getServices, isLoading, setModal, services, getLang
     useEffect(() => {
         getLanguages();
     }, [getLanguages]);
-
-    function handleEdit(service: Service) {
-        const NewEditingService = {
-            ...service,
-            from: service.from._id,
-            to: service.to._id,
-            price: service.price.toString(),
-        };
-        setEditingService(NewEditingService);
-        setModal(true);
-    }
 
     if (isLoading) {
         return (
@@ -55,8 +36,8 @@ function ServicesContainer({ getServices, isLoading, setModal, services, getLang
                     </Button>
                 </div>
             </div>
-            <ServicesTable handleEdit={handleEdit} />
-            <ServicesModal initialValues={editingService} />
+            <ServicesTable />
+            <ServicesModal />
         </Container>
     );
 }
