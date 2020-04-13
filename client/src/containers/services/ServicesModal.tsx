@@ -1,4 +1,4 @@
-import React, { Dispatch, useEffect } from 'react';
+import React, { Dispatch } from 'react';
 import { connect } from 'react-redux';
 import Modal from 'react-modal';
 import { useForm } from 'react-hook-form';
@@ -6,29 +6,21 @@ import { ServiceActions, ServiceForm } from '../../store/types/serviceTypes';
 import { setServicesModal, addServiceAction, updateServiceAction } from '../../store/actions/serviceActions';
 import { RootState } from '../../store/reducers';
 import { LanguageActions } from '../../store/types/languageTypes';
-import { getLanguagesAction } from '../../store/actions/languageActions';
 import classnames from 'classnames';
 
 function ServicesModal({
-    modalIsOpen,
     addService,
-    setModal,
-    isSubmitting,
-    updateService,
-    languages,
-    getLanguages,
-    isLoadingLanguages,
     initialValues,
+    isLoadingLanguages,
+    isSubmitting,
+    languages,
+    modalIsOpen,
+    setModal,
+    updateService,
 }: ServModalProps) {
     const { register, handleSubmit, watch, errors } = useForm<ServiceForm>({
         defaultValues: initialValues._id ? { ...initialValues } : {},
     });
-
-    useEffect(() => {
-        if (modalIsOpen && languages.length < 1) {
-            getLanguages();
-        }
-    }, [languages.length, getLanguages, modalIsOpen]);
 
     function handleAdd(data: ServiceForm) {
         addService(data);
@@ -46,7 +38,7 @@ function ServicesModal({
     }
 
     const langTo = languages.filter((lang) => lang._id !== watch('from'));
-    console.log(errors);
+
     return (
         <Modal
             isOpen={modalIsOpen}
@@ -139,7 +131,6 @@ const mapStateToProps = ({ servicesReducer, languagesReducer }: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<ServiceActions | LanguageActions>) => ({
     setModal: (status: boolean) => dispatch(setServicesModal(status)),
-    getLanguages: () => dispatch(getLanguagesAction()),
     addService: (service: ServiceForm) => dispatch(addServiceAction(service)),
     updateService: (service: ServiceForm) => dispatch(updateServiceAction(service)),
 });

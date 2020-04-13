@@ -17,19 +17,15 @@ const initialValues: ServiceForm = {
     price: '',
 };
 
-function ServicesContainer({ getServices, isLoading, setModal, services, isEditingServiceId }: ServicesProps) {
+function ServicesContainer({ getServices, isLoading, setModal, services, getLanguages }: ServicesProps) {
     const [editingService, setEditingService] = useState<ServiceForm>(initialValues);
     useEffect(() => {
-        if (services.length < 1) {
-            getServices();
-        }
-    }, [getServices, services.length]);
+        getServices();
+    }, [getServices]);
 
-    // useEffect(() => {
-    //     if (modalIsOpen && languages.length < 1) {
-    //         getLanguages();
-    //     }
-    // }, [languages.length, getLanguages, modalIsOpen]);
+    useEffect(() => {
+        getLanguages();
+    }, [getLanguages]);
 
     function handleEdit(service: Service) {
         const NewEditingService = {
@@ -68,7 +64,6 @@ function ServicesContainer({ getServices, isLoading, setModal, services, isEditi
 const mapStateToProps = ({ servicesReducer }: RootState) => ({
     isLoading: servicesReducer.isLoading,
     services: servicesReducer.services,
-    isEditingServiceId: servicesReducer.editingId,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<ServiceActions | LanguageActions>) => ({

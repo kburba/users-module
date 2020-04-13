@@ -2,7 +2,7 @@ import React, { Dispatch } from 'react';
 import { connect } from 'react-redux';
 import Table, { TableColumn, TableAction } from '../../components/table/Table';
 import { ServiceActions, Service } from '../../store/types/serviceTypes';
-import { deleteServiceAction, setEditingServiceId } from '../../store/actions/serviceActions';
+import { deleteServiceAction } from '../../store/actions/serviceActions';
 import { RootState } from '../../store/reducers';
 
 export const servicesColumns: TableColumn[] = [
@@ -38,13 +38,12 @@ export const servicesColumns: TableColumn[] = [
     },
 ];
 
-function ServicesTable({ deleteService, isLoading, setEditingId, services, handleEdit }: ServicesTableProps) {
+function ServicesTable({ deleteService, isLoading, services, handleEdit }: ServicesTableProps) {
     const tableActions: TableAction[] = [
         {
             type: 'edit',
             action: (service: Service) => {
                 handleEdit(service);
-                setEditingId(service._id);
             },
         },
         {
@@ -66,7 +65,6 @@ const mapStateToProps = ({ servicesReducer }: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<ServiceActions>) => ({
     deleteService: (id: string) => dispatch(deleteServiceAction(id)),
-    setEditingId: (id: string) => dispatch(setEditingServiceId(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServicesTable);

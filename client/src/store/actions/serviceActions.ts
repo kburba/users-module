@@ -12,7 +12,6 @@ import {
     GET_SERVICES,
     GET_SERVICES_SUCCESS,
     GET_SERVICES_ERROR,
-    SET_EDITING_SERVICE_ID,
 } from './types';
 import { ServiceActions, Service, ServiceForm } from '../types/serviceTypes';
 
@@ -87,8 +86,4 @@ export function getServicesSuccessAction(services: Service[]): ServiceActions {
 
 export function getServicesErrorAction(error: any): ServiceActions {
     return { type: GET_SERVICES_ERROR, error };
-}
-
-export function setEditingServiceId(id: string): ServiceActions {
-    return { type: SET_EDITING_SERVICE_ID, payload: id };
 }

@@ -1,4 +1,4 @@
-import { takeLatest, put, call } from 'redux-saga/effects';
+import { takeLatest, put, call, select } from 'redux-saga/effects';
 import Axios from 'axios';
 import { AddServiceAction, UpdateServiceAction, DeleteServiceAction } from '../types/serviceTypes';
 import {
@@ -12,6 +12,7 @@ import {
     getServicesErrorAction,
 } from '../actions/serviceActions';
 import { ADD_SERVICE, UPDATE_SERVICE, GET_SERVICES, DELETE_SERVICE } from '../actions/types';
+import { getServicesFromState, getServicesIsLoadedFromState } from './selectors';
 
 function* addServiceSaga({ payload }: AddServiceAction) {
     try {
@@ -43,8 +44,14 @@ function* deleteServiceSaga({ payload }: DeleteServiceAction) {
 
 function* getServicesSaga() {
     try {
-        const services = yield call(Axios.get, '/api/services');
-        yield put(getServicesSuccessAction(services.data));
+        const isLoaded = yield select(getServicesIsLoadedFromState);
+        if (isLoaded) {
+            const servicesFromState = yield select(getServicesFromState);
+            yield put(getServicesSuccessAction(servicesFromState));
+        } else {
+            const services = yield call(Axios.get, '/api/services');
+            yield put(getServicesSuccessAction(services.data));
+        }
     } catch (error) {
         yield put(getServicesErrorAction(error.message));
     }
