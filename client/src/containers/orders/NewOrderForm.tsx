@@ -12,7 +12,30 @@ import { addOrderAction } from '../../store/actions/orderActions';
 import { formatValue } from '../../utils/utils';
 import isEmpty from '../../validations/isEmpty';
 import { RootState } from '../../store/reducers';
-import NewOrderRow from './NewOrderRow';
+import Table, { TableColumn } from '../../components/table/Table';
+import AddServiceModal from './AddServiceModal';
+
+const servicesColumns: TableColumn[] = [
+    {
+        key: 'type',
+        title: 'Type',
+    },
+    {
+        key: 'from',
+        subKey: 'name',
+        title: 'From',
+    },
+    {
+        key: 'to',
+        subKey: 'name',
+        title: 'To',
+    },
+    {
+        key: 'price',
+        title: 'Price',
+        valueType: 'currency',
+    },
+];
 
 interface FormData {
     name: string;
@@ -21,22 +44,18 @@ interface FormData {
     total: number;
 }
 
-interface ServiceForm extends Service {
-    customPrice: number;
-}
-
 function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, ordersQty }: NewOrderProps) {
-    const [orderServices, setOrderServices] = useState<ServiceForm[]>([]);
-    const [showNewOrderRow, setShowNewOrderForm] = useState<boolean>(false);
+    const [orderServices, setOrderServices] = useState<Service[]>([]);
+    const [showAddServiceModal, setShowAddServiceModal] = useState(false);
     const { handleSubmit, register, errors, setValue, watch } = useForm<FormData>();
 
     useEffect(() => {
-        if (services.length < 1) {
-            getServices();
-        }
-    }, [getServices, services.length]);
+        getServices();
+    }, [getServices]);
 
-    const onSubmit = (values) => {
+    const totalPrice = orderServices.reduce((prev, curr) => prev + curr.price, 0);
+
+    function onSubmit(values) {
         const newOrder: {
             details: {
                 name: string;
@@ -50,17 +69,16 @@ function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, 
                 orderId: values.orderId,
             },
             services: [],
-            total: values.total,
+            total: totalPrice,
         };
         orderServices.forEach((service) => {
             const newService = {
                 service: service._id,
-                customPrice: service.customPrice,
             };
             newOrder.services.unshift(newService);
         });
         addOrder(newOrder);
-    };
+    }
 
     function calcNewTotal(addValue) {
         const currentTotal = watch('total');
@@ -69,18 +87,12 @@ function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, 
             : parseFloat(addValue);
     }
 
-    function handleServicesSubmit({ service, price }) {
-        const selected = services.find((x) => x._id === service);
-        if (selected) {
-            const updatedServices = [...orderServices];
-            // const customPrice = selected.price !== parseFloat(price) ? price : undefined;
-            const customPrice = 15.99;
-            updatedServices.unshift({ ...selected, customPrice });
-            const newTotal = calcNewTotal(price);
-            setValue('total', newTotal);
-            setOrderServices(updatedServices);
-            setShowNewOrderForm(false);
-        }
+    function handleServicesSubmit(service: Service) {
+        const updatedServices = [...orderServices];
+        updatedServices.unshift({ ...service });
+        const newTotal = calcNewTotal(service.price);
+        setOrderServices(updatedServices);
+        setShowAddServiceModal(false);
     }
 
     function renderPrice(service) {
@@ -100,73 +112,30 @@ function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, 
             <div>
                 <h2>Order details</h2>
                 <div>
-                    <TextField
-                        label="Order name"
-                        inputRef={register({ required: 'Please name your order' })}
-                        error={typeof errors.name !== 'undefined'}
-                        name="name"
-                        helperText={errors.name && errors.name.message}
-                    ></TextField>
+                    <label>Order name: </label>
+                    <input autoFocus={true} ref={register({ required: 'Please name your order' })} name="name"></input>
                 </div>
                 <div>
-                    <TextField
-                        label="ID"
-                        inputRef={register({ required: 'Please add ID' })}
+                    <label>ID: </label>
+                    <input
+                        ref={register({ required: 'Please add ID' })}
                         defaultValue={ordersQty}
-                        error={typeof errors.orderId !== 'undefined'}
                         name="orderId"
-                        helperText={errors.orderId && errors.orderId.message}
-                    ></TextField>
+                    ></input>
                 </div>
             </div>
             <hr />
             <div>
                 <div className="titleContainer">
                     <h2>Services</h2>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        style={{ borderRadius: '25px' }}
-                        onClick={() => setShowNewOrderForm(true)}
-                    >
-                        Add service
-                    </Button>
+                    <button onClick={() => setShowAddServiceModal(true)}>Add service</button>
                 </div>
-                <table className="table" style={{ backgroundColor: 'white', width: '100%' }}>
-                    {(orderServices.length > 0 || showNewOrderRow) && (
-                        <thead>
-                            <tr>
-                                <th>Type</th>
-                                <th>From</th>
-                                <th>To</th>
-                                <th style={{ width: '20%' }}>Price</th>
-                                <th style={{ textAlign: 'center', width: '150px' }}>Actions</th>
-                            </tr>
-                        </thead>
-                    )}
-                    <tbody>
-                        {showNewOrderRow && (
-                            <NewOrderRow
-                                services={filteredServices}
-                                onSubmit={handleServicesSubmit}
-                                onCancel={() => setShowNewOrderForm(false)}
-                            />
-                        )}
-                        {orderServices.map((orderService) => (
-                            <tr key={orderService._id}>
-                                <td>{orderService.type}</td>
-                                <td>{orderService.from.name}</td>
-                                <td>{orderService.to.name}</td>
-                                <td>{renderPrice(orderService)}</td>
-                                <td></td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <Table data={orderServices} columns={servicesColumns} uniqueKey="_id" />
             </div>
             <div style={{ textAlign: 'right', marginBottom: '15px', alignItems: 'center' }}>
                 <h4 style={{ marginRight: '15px' }}>Totals:</h4>
-                <TextField
+                <input type="text" disabled value={totalPrice} />
+                {/* <TextField
                     inputRef={register({
                         validate: {
                             positive: (value) => parseInt(value, 10) > 0 || 'should be greater than 0',
@@ -176,7 +145,7 @@ function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, 
                     name="total"
                     error={typeof errors.total !== 'undefined'}
                     helperText={errors.total && errors.total.message}
-                ></TextField>
+                ></TextField> */}
             </div>
             <div style={{ textAlign: 'right' }}>
                 <Button
@@ -199,6 +168,12 @@ function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, 
                     {isSubmitting && <CircularProgress size={24} className="absolute-position" />}
                 </Button>
             </div>
+            <AddServiceModal
+                services={services}
+                isOpen={showAddServiceModal}
+                closeModal={() => setShowAddServiceModal(false)}
+                addNewService={handleServicesSubmit}
+            />
         </div>
     );
 }

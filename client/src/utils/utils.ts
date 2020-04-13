@@ -1,5 +1,9 @@
-import { TableColumn } from "../components/table/Table";
+import { TableColumn } from '../components/table/Table';
 import moment from 'moment';
+
+export function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+}
 
 export function calcTotals<T>(data: T[], columns: TableColumn[]) {
     let totals = {};
@@ -21,16 +25,17 @@ export function calcTotals<T>(data: T[], columns: TableColumn[]) {
 }
 
 export function formatValue(value: number, valueType?: TableColumn['valueType']) {
-    if (typeof value === "undefined") {
+    if (typeof value === 'undefined') {
         return '';
-   }
+    }
     switch (valueType) {
-        case "timestamp":
+        case 'timestamp':
             return moment(value).fromNow();
         case 'currency':
             return new Intl.NumberFormat('en-GB', {
-                style: 'currency', currency: 'EUR'
-            }).format(value)
+                style: 'currency',
+                currency: 'EUR',
+            }).format(value);
         default:
             return value;
     }
