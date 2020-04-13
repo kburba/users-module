@@ -11,10 +11,8 @@ import LanguagesModal from './LanguagesModal';
 
 function LanguagesContainer({ getLanguages, isLoading, setModal, languages }: LanguagesProps) {
     useEffect(() => {
-        if (languages.length < 1) {
-            getLanguages();
-        }
-    }, [getLanguages, languages.length]);
+        getLanguages();
+    }, [getLanguages]);
 
     if (isLoading) {
         return (

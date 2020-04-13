@@ -26,7 +26,6 @@ function Login({ loginUser, isAuthenticated, authErrors }: LoginProps) {
         loginUser(data);
     }
 
-    console.log(errors, authErrors);
     return (
         <div className="login">
             <div className="container">
