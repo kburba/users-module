@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import moment from 'moment';
-import { Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 import { IconButton, TextField } from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
@@ -9,6 +9,7 @@ import { formatValue, calcTotals } from '../../utils/utils';
 import { useForm } from 'react-hook-form';
 import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
+import { VariousState } from '../../store/reducers/variousReducer';
 
 export type TableColumn = {
     key: string;
@@ -18,6 +19,7 @@ export type TableColumn = {
     totalsType?: 'avg' | 'sum';
     isEditable?: boolean;
     editType?: 'input';
+    linkTo?: string;
 };
 
 export type TableAction = {
@@ -31,6 +33,7 @@ type TableProps<T> = {
     uniqueKey: string;
     actions?: TableAction[];
     isLoading?: boolean;
+    isLoadingCell?: VariousState['isLoadingCell'];
     onRowClickRoute?: string;
     editingRow?: string;
     onSubmit?(item: T, values): void;
@@ -42,18 +45,18 @@ type TableProps<T> = {
 };
 
 export default function Table<T>({
-    data,
-    columns,
-    uniqueKey,
-    isLoading,
     actions,
-    onRowClickRoute,
-    editingRow,
-    onSubmit,
-    onCancel,
+    isLoadingCell,
+    columns,
     customRow,
+    data,
+    editingRow,
+    isLoading,
+    onCancel,
+    onRowClickRoute,
+    onSubmit,
+    uniqueKey,
 }: TableProps<T>) {
-    const [newRoute, setNewRoute] = useState<string | null>(null);
     const { register, errors, handleSubmit } = useForm();
 
     function handleActionClick(type: 'edit' | 'delete', item: T) {
@@ -74,15 +77,7 @@ export default function Table<T>({
         }
     }
 
-    function handleRowClick(item: T) {
-        setNewRoute(`${onRowClickRoute}/${item[uniqueKey]}`);
-    }
-
     const totals = calcTotals<T>(data, columns);
-
-    if (newRoute) {
-        return <Redirect to={newRoute} />;
-    }
 
     return (
         <div className="table">
@@ -92,7 +87,7 @@ export default function Table<T>({
                         {columns.map((column, index) => (
                             <th key={index + column.key}>{column.title}</th>
                         ))}
-                        <th>Action</th>
+                        {actions && <th>Action</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -105,13 +100,20 @@ export default function Table<T>({
                         return (
                             <tr key={item[uniqueKey]} className={classnames({ editing: isEditingRow })}>
                                 {columns.map((column, index) => {
+                                    const cellIsLoading =
+                                        isLoadingCell?.column === column.key && isLoadingCell?.row === item[uniqueKey];
                                     const value = column.subKey ? item[column.key][column.subKey] : item[column.key];
                                     const formattedValue = formatValue(value, column.valueType);
-                                    const title =
+                                    let columnValue: string | number | JSX.Element = formattedValue;
+                                    if (column.linkTo) {
+                                        const link = `${column.linkTo}/${item[uniqueKey]}`;
+                                        columnValue = <Link to={link}>{formattedValue}</Link>;
+                                    } else {
+                                    }
+                                    const title: string =
                                         column.valueType === 'timestamp'
                                             ? moment(item[column.key]).format('LLL')
-                                            : item[column.key];
-                                    const handleClick = () => (onRowClickRoute ? handleRowClick(item) : null);
+                                            : value;
                                     if (isEditingRow && column.isEditable) {
                                         return (
                                             <td
@@ -121,7 +123,7 @@ export default function Table<T>({
                                             >
                                                 <TextField
                                                     inputRef={register({ required: true })}
-                                                    defaultValue={item[column.key]}
+                                                    defaultValue={value}
                                                     name={column.key}
                                                     error={typeof errors[column.key] !== 'undefined'}
                                                     helperText={typeof errors[column.key] !== 'undefined' && 'Error'}
@@ -132,11 +134,13 @@ export default function Table<T>({
                                     return (
                                         <td
                                             key={index + column.key}
-                                            className={classnames({ clickable: onRowClickRoute })}
+                                            className={classnames({
+                                                loading: cellIsLoading,
+                                                clickable: onRowClickRoute,
+                                            })}
                                             title={title}
-                                            onClick={handleClick}
                                         >
-                                            {formattedValue}
+                                            {columnValue}
                                         </td>
                                     );
                                 })}
@@ -150,7 +154,13 @@ export default function Table<T>({
                                         </IconButton>
                                     </td>
                                 ) : (
-                                    <td>
+                                    <td
+                                        className={classnames({
+                                            loading:
+                                                isLoadingCell?.column === 'actions' &&
+                                                isLoadingCell?.row === item[uniqueKey],
+                                        })}
+                                    >
                                         {actions &&
                                             actions.map((action) => {
                                                 if (action.type === 'edit') {

@@ -20,9 +20,9 @@ import PrivateRoute from './components/common/PrivateRoute';
 import NotFound from './components/NotFound';
 import LanguagesContainer from './containers/languages/LanguagesContainer';
 import ServicesContainer from './containers/services/ServicesContainer';
-import OrdersContainer from './containers/orders/OrdersContainer';
+// import OrdersContainer from './containers/orders/OrdersContainer';
 
-export const customHistory = createBrowserHistory();
+export const history = createBrowserHistory();
 
 if (localStorage.jwtToken) {
     const token = localStorage.jwtToken;
@@ -38,14 +38,14 @@ if (localStorage.jwtToken) {
     const currentTime = Date.now() / 1000;
     if (decoded.exp < currentTime) {
         store.dispatch(logoutUser());
-        customHistory.push('/login');
+        window.location.replace('/login');
     }
 }
 
 export default function App() {
     return (
         <Provider store={store}>
-            <Router history={customHistory}>
+            <Router history={history}>
                 <CssBaseline>
                     <div className="App">
                         <Navbar />
@@ -56,7 +56,7 @@ export default function App() {
                             <PrivateRoute exact path="/dashboard" component={Dashboard} />
                             <PrivateRoute exact path="/languages" component={LanguagesContainer} />
                             <PrivateRoute exact path="/services" component={ServicesContainer} />
-                            <PrivateRoute path="/orders" component={OrdersContainer} />
+                            {/* <PrivateRoute path="/orders" component={OrdersContainer} /> */}
                             <Route exact path="/not-found" component={NotFound} />
                         </Switch>
                         <Footer />

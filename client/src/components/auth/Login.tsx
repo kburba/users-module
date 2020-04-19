@@ -2,7 +2,7 @@ import React, { Dispatch, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { loginUser } from '../../store/actions/authActions';
 
-import { customHistory as history } from '../../App';
+import { history } from '../../App';
 import { RootState } from '../../store/reducers';
 import { AuthActions } from '../../store/types/authTypes';
 import { useForm } from 'react-hook-form';

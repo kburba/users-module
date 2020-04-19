@@ -1,18 +1,17 @@
 import {
-    SERVICES_MODAL_ISOPEN,
-    GET_SERVICES,
-    GET_SERVICES_SUCCESS,
-    GET_SERVICES_ERROR,
-    UPDATE_SERVICE,
-    UPDATE_SERVICE_SUCCESS,
-    UPDATE_SERVICE_ERROR,
-    ADD_SERVICE_ERROR,
     ADD_SERVICE,
+    ADD_SERVICE_ERROR,
     ADD_SERVICE_SUCCESS,
-    DELETE_SERVICE_SUCCESS,
-    DELETE_SERVICE,
     DELETE_SERVICE_ERROR,
+    DELETE_SERVICE_SUCCESS,
+    GET_SERVICES,
+    GET_SERVICES_ERROR,
+    GET_SERVICES_SUCCESS,
+    SERVICES_MODAL_ISOPEN,
     SET_SERVICES_EDITING_ID,
+    UPDATE_SERVICE,
+    UPDATE_SERVICE_ERROR,
+    UPDATE_SERVICE_SUCCESS,
 } from '../actions/types';
 import { Service, ServiceActions } from '../types/serviceTypes';
 
@@ -74,6 +73,7 @@ export default (state = initialState, action: ServiceActions): ServicesState => 
                 ...state,
                 isSubmitting: false,
                 services: updatedServices,
+                isEditingId: '',
                 modalIsOpen: false,
             };
         }
@@ -82,11 +82,6 @@ export default (state = initialState, action: ServiceActions): ServicesState => 
                 ...state,
                 modalIsOpen: action.status,
                 isEditingId: action.status === false ? '' : state.isEditingId,
-            };
-        case DELETE_SERVICE:
-            return {
-                ...state,
-                isLoading: true,
             };
         case DELETE_SERVICE_SUCCESS: {
             const filteredServices = state.services.filter((service) => service._id !== action.payload);

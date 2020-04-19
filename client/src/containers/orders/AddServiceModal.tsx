@@ -9,20 +9,20 @@ export default function AddServiceModal({
     isOpen,
     closeModal,
     addNewService,
+    isEditingId,
 }: {
     services: Service[];
     isOpen: boolean;
     closeModal: () => void;
     addNewService: (service: Service) => void;
+    isEditingId: string;
 }) {
     const { register, handleSubmit, watch, errors, setValue } = useForm<ServiceForm>();
     const serviceTypes = services.map((x) => x.type).filter(onlyUnique);
     const servicesFrom = services.filter((x) => x.type === (watch('type') || serviceTypes[0])).filter(onlyUnique);
     const servicesTo = services.filter((x) => x.from._id === (watch('from') || servicesFrom[0]._id)).filter(onlyUnique);
-    console.log('servicesFrom', servicesFrom);
     function onSubmit(data: ServiceForm) {
         const selectedService = services.find((x) => x._id === data.to);
-        console.log('selectedService', selectedService);
         if (selectedService) {
             addNewService(selectedService);
         }
@@ -44,6 +44,8 @@ export default function AddServiceModal({
         setValue('from', '');
     }
 
+    const editService = services.find((x) => x._id === isEditingId);
+    console.log('editSerice', editService);
     return (
         <Modal isOpen={isOpen} onRequestClose={closeModal} className="VertiModal" contentLabel="Add Service Modal">
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -52,8 +54,10 @@ export default function AddServiceModal({
                     <select
                         name="type"
                         ref={register({ required: 'Required' })}
+                        placeholder="Select type"
                         onChange={(e) => handleTypeChange(e.target.value)}
-                        defaultValue={serviceTypes[0]}
+                        // defaultValue={serviceTypes[0]}
+                        defaultValue={editService?.type}
                     >
                         {serviceTypes &&
                             serviceTypes.map((type) => (
@@ -71,8 +75,7 @@ export default function AddServiceModal({
                         placeholder={'Select language (' + servicesFrom.length + ')'}
                         ref={register}
                         onChange={(e) => handleFromChange(e.target.value)}
-
-                        // defaultValue={servicesFrom && servicesFrom[0].from._id}
+                        defaultValue={editService?.from._id}
                     >
                         {servicesFrom &&
                             servicesFrom.map((service) => (
@@ -88,7 +91,7 @@ export default function AddServiceModal({
                         name="to"
                         placeholder={'Select language (' + servicesTo.length + ')'}
                         ref={register}
-                        // defaultValue={servicesTo && servicesTo[0]._id}
+                        defaultValue={editService?.to._id}
                         onChange={(e) => handleServiceChange(e.target.value)}
                     >
                         {servicesTo &&
@@ -105,13 +108,17 @@ export default function AddServiceModal({
                         name="price"
                         placeholder="Price"
                         disabled={true}
+                        defaultValue={editService?.price}
                         ref={register({
                             required: 'Required',
                             pattern: { value: /^(\d*\.)?\d+$/, message: 'Must be number' },
                         })}
                     />
                 </div>
-                <input type="submit" />
+                <div className="margin--top text-right">
+                    <button onClick={closeModal}>Cancel</button>
+                    <button type="submit">Save</button>
+                </div>
             </form>
         </Modal>
     );

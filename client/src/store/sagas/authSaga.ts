@@ -4,7 +4,7 @@ import jwt_decode from 'jwt-decode';
 import { LOGIN_USER } from '../actions/types';
 import { setCurrentUser, loginUserError } from '../actions/authActions';
 import setAuthToken from '../../utils/setAuthToken';
-import { customHistory as history } from '../../App';
+import { history } from '../../App';
 
 interface LoginUserType {
     type: typeof LOGIN_USER;

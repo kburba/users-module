@@ -11,7 +11,7 @@ const Language = require('../../modules/Language');
 router.delete(
   '/:lang_id',
   passport.authenticate('jwt', {
-    session: false
+    session: false,
   }),
   (req, res) => {
     Language.findByIdAndDelete(req.params.lang_id, (err, lang) => {
@@ -28,14 +28,13 @@ router.delete(
   }
 );
 
-
 // @ROUTE   PUT api/languages/:lang_id,
 // @DESC    Update existing language
 // @ACCESS  Private
 router.put(
   '/:lang_id',
   passport.authenticate('jwt', {
-    session: false
+    session: false,
   }),
   (req, res) => {
     Language.findById(req.params.lang_id, (err, lang) => {
@@ -62,15 +61,15 @@ router.put(
 router.get(
   '/',
   passport.authenticate('jwt', {
-    session: false
+    session: false,
   }),
   (req, res) => {
     Language.find(null, 'name createdAt')
-      .sort('-createdAt')
+      .sort('name')
       .then((languages) => {
         if (!languages) {
           const errors = {
-            nolanguages: 'There are no languages'
+            nolanguages: 'There are no languages',
           };
           return res.status(404).json(errors);
         }
@@ -79,7 +78,7 @@ router.get(
       })
       .catch((err) => {
         res.status(404).json({
-          noposts: 'Cannot get languages'
+          noposts: 'Cannot get languages',
         });
       });
   }
@@ -91,12 +90,12 @@ router.get(
 router.post(
   '/',
   passport.authenticate('jwt', {
-    session: false
+    session: false,
   }),
   (req, res) => {
     // get post fields
     const newLang = new Language({
-      name: req.body.name
+      name: req.body.name,
     });
 
     newLang.save().then((language) => res.json(language));

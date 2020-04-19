@@ -93,7 +93,7 @@ router.get(
   }),
   (req, res) => {
     Service.find()
-      .sort('-createdAt')
+      .sort('from')
       .populate('from', 'name')
       .populate('to', 'name')
       .then((services) => {

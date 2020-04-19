@@ -1,5 +1,5 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
-// import { customHistory } from '../../App';
+// import { history } from '../../App';
 import Axios from 'axios';
 import { AddOrderAction, UpdateOrderAction, DeleteOrderAction } from '../types/orderTypes';
 import {
@@ -17,7 +17,6 @@ import { ADD_ORDER, UPDATE_ORDER, GET_ORDERS, DELETE_ORDER } from '../actions/ty
 function* addOrderSaga({ payload }: AddOrderAction) {
     try {
         const response = yield call(Axios.post, '/api/orders', payload);
-        // const history = customHistory;
         // history.push('/orders');
         yield put(addOrderSuccessAction(response.data));
     } catch (error) {
@@ -49,6 +48,7 @@ function* getOrdersSaga() {
         const orders = yield call(Axios.get, '/api/orders');
         yield put(getOrdersSuccessAction(orders.data));
     } catch (error) {
+        console.log('error', error);
         yield put(getOrdersErrorAction(error.message));
     }
 }

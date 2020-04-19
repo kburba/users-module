@@ -13,6 +13,7 @@ import {
 } from '../actions/serviceActions';
 import { ADD_SERVICE, UPDATE_SERVICE, GET_SERVICES, DELETE_SERVICE } from '../actions/types';
 import { getServicesFromState, getServicesIsLoadedFromState } from './selectors';
+import { setLoadingCell } from '../actions/variousActions';
 
 function* addServiceSaga({ payload }: AddServiceAction) {
     try {
@@ -37,6 +38,7 @@ function* deleteServiceSaga({ payload }: DeleteServiceAction) {
     try {
         yield call(Axios.delete, `/api/services/${payload}`);
         yield put(deleteServicesSuccessAction(payload));
+        yield put(setLoadingCell({ column: '', row: '' }));
     } catch (error) {
         yield put(deleteServiceErrorAction(error.message));
     }

@@ -22,6 +22,7 @@ const ordersColumns: TableColumn[] = [
         key: 'details',
         subKey: 'name',
         title: 'Name',
+        linkTo: '/orders',
     },
     {
         key: 'total',
@@ -55,7 +56,7 @@ function OrdersTable({ orders, deleteOrder, isDeleting, isLoading }: OrderTableP
                     isLoading={isLoading || isDeleting}
                     actions={tableActions}
                     uniqueKey="_id"
-                    onRowClickRoute="/orders"
+                    // onRowClickRoute="/orders"
                 />
             )}
         </div>

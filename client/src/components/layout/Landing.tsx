@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { RootState } from '../../store/reducers';
-import { customHistory as history } from '../../App';
+import { history } from '../../App';
 
 function Landing({ isAuthenticated }) {
     useEffect(() => {

@@ -8,7 +8,7 @@ import { RootState } from '../../store/reducers';
 import { LanguageActions } from '../../store/types/languageTypes';
 import classnames from 'classnames';
 
-function ServicesModal({
+export function ServicesModal({
     addService,
     isEditingId,
     isLoadingLanguages,
@@ -37,7 +37,17 @@ function ServicesModal({
         updateService(updatedService);
     }
 
-    const langTo = languages.filter((lang) => lang._id !== watch('from'));
+    const existingLangsTo = services.filter((x) => x.from._id === watch('from')).map((x) => x.to._id);
+    const langTo = languages
+        .filter((lang) => lang._id !== watch('from') && existingLangsTo.indexOf(lang._id) === -1)
+        .sort((a, b) => {
+            if (a.name > b.name) {
+                return 1;
+            } else if (a.name < b.name) {
+                return -1;
+            }
+            return 0;
+        });
 
     return (
         <Modal
@@ -116,8 +126,12 @@ function ServicesModal({
                     />
                     {!!errors.price && <div className="invalid-feedback">{errors.price?.message}</div>}
                 </div>
-                <input type="submit" />
-                {isSubmitting && 'loading...'}
+                <div className="margin--top text-right">
+                    <button type="button" onClick={() => setModal(false)} style={{ marginRight: '15px' }}>
+                        Cancel
+                    </button>
+                    <button type="submit">{isSubmitting ? 'loading...' : 'Save'}</button>
+                </div>
             </form>
         </Modal>
     );

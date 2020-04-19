@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import moment from 'moment';
 import { RootState } from '../../store/reducers';
+import { servicesColumns } from '../services/ServicesTable';
+import Table from '../../components/table/Table';
 
 function formatCurrency(value) {
     if (typeof value === 'number') {
@@ -17,6 +19,7 @@ function formatCurrency(value) {
 
 function ViewOrder({ orders, match }: ViewOrderProps) {
     const orderById = orders.find((x) => x._id === match.params.id);
+    console.log(orderById);
     return (
         <div>
             <Link to="/orders">Back to orders</Link>
@@ -35,6 +38,7 @@ function ViewOrder({ orders, match }: ViewOrderProps) {
                     )}
                 </div>
                 <h3>Order services</h3>
+                {/* {orderById && <Table data={orderById.services} columns={servicesColumns} uniqueKey="_id" />} */}
                 {orderById && (
                     <ul>
                         {orderById.services.map((orderService) => (
