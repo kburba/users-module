@@ -13,6 +13,7 @@ import {
     getOrdersErrorAction,
 } from '../actions/orderActions';
 import { ADD_ORDER, UPDATE_ORDER, GET_ORDERS, DELETE_ORDER } from '../actions/types';
+import { resetLoadingCell } from '../actions/variousActions';
 
 function* addOrderSaga({ payload }: AddOrderAction) {
     try {
@@ -38,6 +39,7 @@ function* deleteOrderSaga({ payload }: DeleteOrderAction) {
     try {
         yield call(Axios.delete, `/api/orders/${payload}`);
         yield put(deleteOrdersSuccessAction(payload));
+        yield put(resetLoadingCell());
     } catch (error) {
         yield put(deleteOrderErrorAction(error.response.data.error));
     }

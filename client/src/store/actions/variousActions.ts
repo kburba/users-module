@@ -8,3 +8,9 @@ export function setLoadingCell(cell: VariousState['isLoadingCell']): VariousActi
         payload: cell,
     };
 }
+export function resetLoadingCell(): VariousActions {
+    return {
+        type: SET_LOADING_CELL,
+        payload: { column: '', row: '' },
+    };
+}

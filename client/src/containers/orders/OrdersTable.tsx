@@ -6,6 +6,9 @@ import { deleteOrderAction, setOrdersModal } from '../../store/actions/orderActi
 import { Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { RootState } from '../../store/reducers';
+import { setLoadingCell } from '../../store/actions/variousActions';
+import { VariousState } from '../../store/reducers/variousReducer';
+import { VariousActions } from '../../store/types/variousTypes';
 
 const ordersColumns: TableColumn[] = [
     {
@@ -36,7 +39,10 @@ function OrdersTable({ orders, deleteOrder, isDeleting, isLoading }: OrderTableP
     const tableActions: TableAction[] = [
         {
             type: 'delete',
-            action: (order: Order) => deleteOrder(order._id),
+            action: (order: Order) => {
+                setLoadingCell({ column: 'actions', row: order._id });
+                deleteOrder(order._id);
+            },
         },
     ];
 
@@ -69,9 +75,10 @@ const mapStateToProps = ({ ordersReducer }: RootState) => ({
     isDeleting: ordersReducer.isDeleting,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<OrderActions>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<OrderActions | VariousActions>) => ({
     deleteOrder: (id: string) => dispatch(deleteOrderAction(id)),
     setModal: (status: boolean) => dispatch(setOrdersModal(status)),
+    setLoadingCell: (cell: VariousState['isLoadingCell']) => dispatch(setLoadingCell(cell)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrdersTable);

@@ -118,7 +118,9 @@ export default function Table<T>({
                                         return (
                                             <td
                                                 key={index + column.key}
-                                                className={classnames({ clickable: onRowClickRoute })}
+                                                className={classnames({
+                                                    clickable: onRowClickRoute,
+                                                })}
                                                 title={title}
                                             >
                                                 <TextField
@@ -137,6 +139,7 @@ export default function Table<T>({
                                             className={classnames({
                                                 loading: cellIsLoading,
                                                 clickable: onRowClickRoute,
+                                                'text-right': column.valueType === 'currency',
                                             })}
                                             title={title}
                                         >
@@ -199,7 +202,12 @@ export default function Table<T>({
                     <tr>
                         {columns.map((column, index) => {
                             return (
-                                <td key={index + column.key}>{formatValue(totals[column.key], column.valueType)}</td>
+                                <td
+                                    key={index + column.key}
+                                    className={classnames({ 'text-right': column.valueType === 'currency' })}
+                                >
+                                    {formatValue(totals[column.key], column.valueType)}
+                                </td>
                             );
                         })}
                         <td></td>
