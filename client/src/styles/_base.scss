@@ -29,6 +29,14 @@
 .margin {
     &--top {
         margin-top: 15px;
+
+        &__big {
+            margin-top: 30px;
+        }
+
+        &__small {
+            margin-top: 5px;
+        }
     }
 }
 

@@ -12,6 +12,9 @@ import { addOrderAction } from '../../store/actions/orderActions';
 import { RootState } from '../../store/reducers';
 import NewOrderServices from './NewOrderServices';
 import AddServiceModal from './AddServiceModal';
+import TextField from '../../components/common/TextField';
+import Table from '../../components/table/Table';
+import SelectField from '../../components/common/SelectField';
 
 interface FormData {
     name: string;
@@ -23,7 +26,8 @@ interface FormData {
 function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, ordersQty }: NewOrderProps) {
     const [orderServices, setOrderServices] = useState<Service[]>([]);
     const [showAddServiceModal, setShowAddServiceModal] = useState(false);
-    const { handleSubmit, register } = useForm<FormData>();
+    const { handleSubmit, register, errors } = useForm<FormData>();
+    console.log('errors', errors);
 
     useEffect(() => {
         getServices();
@@ -71,65 +75,73 @@ function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, 
         setShowAddServiceModal(false);
     }
 
+    const serviceTypesOptions = [
+        {
+            value: 'proofreading',
+            text: 'Proofreading',
+        },
+        {
+            value: 'translation',
+            text: 'Translation',
+        },
+        {
+            value: 'editing',
+            text: 'Editing',
+        },
+    ];
+
     return (
-        <div>
+        <div className="newOrder">
             <Link to="/orders">Back to orders</Link>
-            <div>
-                <h2>Order details</h2>
-                <div>
-                    <label>Order name: </label>
-                    <input autoFocus={true} ref={register({ required: 'Please name your order' })} name="name"></input>
-                </div>
-                <div>
-                    <label>ID: </label>
-                    <input
-                        ref={register({ required: 'Please add ID' })}
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="section">
+                    <h2>Order details</h2>
+                    <TextField
+                        label="Order ID"
+                        placeholder="Please enter order ID"
+                        inputRef={register({ required: 'Please add ID' })}
                         defaultValue={ordersQty}
                         name="orderId"
-                    ></input>
+                        error={errors.orderId?.message}
+                    />
+                    <TextField
+                        name="name"
+                        inputRef={register({ required: 'Please enter your order name' })}
+                        autofocus={true}
+                        label="Order name"
+                        placeholder="Please enter order name"
+                        error={errors.name?.message}
+                    />
                 </div>
-            </div>
-            {/* <div>
-                <div className="titleContainer">
-                    <h2>Services</h2>
-                    <button onClick={() => setShowAddServiceModal(true)}>Add service</button>
+                <div className="section">
+                    <h2>Order services</h2>
+                    <SelectField name="type" label="Type" options={serviceTypesOptions} />
                 </div>
-                <Table data={orderServices} columns={servicesColumns} actions={servicesTableActions} uniqueKey="_id" />
-            </div>
-            <AddServiceModal
-                services={services}
-                isOpen={showAddServiceModal}
-                closeModal={() => setShowAddServiceModal(false)}
-                addNewService={handleServicesSubmit}
-                isEditingId={editServiceId}
-            /> */}
-            {/* <NewOrderServices services={services} orderServices={orderServices} setOrderServices={setOrderServices} /> */}
-            <hr />
-
-            <div style={{ textAlign: 'right', marginBottom: '15px', alignItems: 'center' }}>
-                <h4 style={{ marginRight: '15px' }}>Totals: {totalPrice}</h4>
-            </div>
-            <div style={{ textAlign: 'right' }}>
-                <Button
-                    style={{ marginRight: '15px' }}
-                    onClick={() => history.goBack()}
-                    color="default"
-                    variant="outlined"
-                    size="large"
-                >
-                    <ClearIcon /> Cancel
-                </Button>
-                <Button
-                    variant="contained"
-                    onClick={handleSubmit(onSubmit)}
-                    color="secondary"
-                    size="large"
-                    disabled={isSubmitting}
-                >
-                    <SaveIcon /> Save order
-                    {isSubmitting && <CircularProgress size={24} className="absolute-position" />}
-                </Button>
-            </div>
+                <div style={{ textAlign: 'right', marginBottom: '15px', alignItems: 'center' }}>
+                    <h4 style={{ marginRight: '15px' }}>Totals: {totalPrice}</h4>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                    <Button
+                        style={{ marginRight: '15px' }}
+                        onClick={() => history.push('/orders')}
+                        color="default"
+                        variant="outlined"
+                        size="large"
+                    >
+                        <ClearIcon /> Cancel
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={handleSubmit(onSubmit)}
+                        color="secondary"
+                        size="large"
+                        disabled={isSubmitting}
+                    >
+                        <SaveIcon /> Save order
+                        {isSubmitting && <CircularProgress size={24} className="absolute-position" />}
+                    </Button>
+                </div>
+            </form>
         </div>
     );
 }
