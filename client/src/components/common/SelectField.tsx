@@ -6,25 +6,27 @@ export type SelectFieldOption = {
     value: string | number;
 };
 export default function SelectField({
-    label,
-    inputRef,
-    name,
-    placeholder,
     defaultValue,
+    disabled,
     error,
-    options,
+    inputRef,
+    label,
+    name,
     onChange,
+    options,
+    placeholder,
     value,
 }: {
-    label?: string;
-    inputRef?: any;
-    name: string;
-    placeholder?: string;
     defaultValue?: string | number;
+    disabled?: boolean;
     error?: string | FieldError | React.ReactElement;
+    inputRef?: any;
+    label?: string;
+    name: string;
     onChange?: (name: string, value: string | number) => void;
-    value?: string | number;
     options: SelectFieldOption[];
+    placeholder?: string;
+    value?: string | number;
 }) {
     return (
         <div className="formField formField--select">
@@ -37,6 +39,7 @@ export default function SelectField({
                     onChange={(e) => onChange && onChange(name, e.target.value)}
                     defaultValue={defaultValue}
                     value={value}
+                    disabled={disabled}
                 >
                     <option value="" disabled hidden>
                         Select

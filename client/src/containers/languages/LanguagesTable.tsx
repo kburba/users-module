@@ -9,18 +9,18 @@ import {
     updateLanguageAction,
 } from '../../store/actions/languageActions';
 import { RootState } from '../../store/reducers';
+import { ValueTypes } from '../../components/table/columns';
 
 const languagesColumns: TableColumn[] = [
     {
         key: 'createdAt',
         title: 'Created',
-        valueType: 'timestamp',
+        valueType: ValueTypes.timestamp,
     },
     {
         key: 'name',
         title: 'Name',
         isEditable: true,
-        editType: 'input',
     },
 ];
 

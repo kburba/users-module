@@ -33,7 +33,7 @@ function OrdersContainer({ getOrders, isLoading, error }: ReduxProps) {
                 <h1>Orders</h1>
             </div>
             {error && <ErrorMessage error={error} />}
-            <div>Show orders: by month, by client, monthly client orders</div>
+            <div>TODO: by month, by client, monthly client orders</div>
             <Switch>
                 <PrivateRoute exact path="/orders" component={OrdersTable} />
                 <PrivateRoute path="/orders/new" component={NewOrderForm} />

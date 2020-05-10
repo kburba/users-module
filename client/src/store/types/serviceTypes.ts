@@ -24,7 +24,7 @@ export interface ServiceForm {
     price: string;
 }
 
-export type ServiceWithDetails = Service & { pagesQty: number };
+export type ServiceWithDetails = Service & { pagesQty: string; totalPrice: number };
 
 export interface Service {
     _id: string;

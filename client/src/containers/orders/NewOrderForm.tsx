@@ -13,16 +13,17 @@ import { RootState } from '../../store/reducers';
 import TextField from '../../components/common/TextField';
 import SelectField, { SelectFieldOption } from '../../components/common/SelectField';
 import Table, { TableAction } from '../../components/table/Table';
-import { servicesColumns } from '../services/ServicesTable';
 import { getClientsAction } from '../../store/actions/clientActions';
 import { ClientsActions } from '../../store/types/clientTypes';
 import { formatValue } from '../../utils/utils';
+import columns, { ValueTypes } from '../../components/table/columns';
+import NewOrderServicesModal from './NewOrderServicesModal';
 
 interface FormData {
     name: string;
     orderId: string;
     service: Service;
-    pagesQty: number;
+    pagesQty: string;
     total: number;
     client: string;
 }
@@ -37,6 +38,7 @@ function NewOrderForm({
     ordersQty,
     services,
 }: NewOrderProps) {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [orderServices, setOrderServices] = useState<ServiceWithDetails[]>([]);
     const [servicesFilter, setServicesFilter] = useState<Pick<Service, 'type'> & { from: string; to: string }>({
         type: 'translation',
@@ -52,8 +54,6 @@ function NewOrderForm({
     useEffect(() => {
         getClients();
     }, [getClients]);
-
-    const totalPrice = orderServices.reduce((prev, curr) => prev + curr.price, 0);
 
     function onSubmit(values) {
         const newOrder: {
@@ -76,7 +76,7 @@ function NewOrderForm({
         orderServices.forEach((service) => {
             const newService = {
                 service: service._id,
-                pagesQty: values.pagesQty,
+                pagesQty: service.pagesQty,
             };
             newOrder.services.unshift(newService);
         });
@@ -106,9 +106,15 @@ function NewOrderForm({
             type: 'addToList',
             action: (service: Service) => {
                 const updatedServices = [...orderServices];
-                updatedServices.unshift(service: {...service, pagesQty: watch('pagesQty')});
+                const newService = {
+                    ...service,
+                    pagesQty: watch('pagesQty'),
+                    totalPrice: service.price * parseFloat(watch('pagesQty')),
+                };
+                console.log('newService', newService);
+                updatedServices.unshift(newService);
                 setOrderServices(updatedServices);
-                setValue('pagesQty', 0);
+                setValue('pagesQty', '');
             },
         },
     ];
@@ -174,6 +180,7 @@ function NewOrderForm({
     });
 
     const clientOptions = clients.map((client) => ({ text: client.name, value: client._id }));
+    const totalPrice = orderServices.reduce((prev, curr) => prev + curr.totalPrice, 0);
 
     return (
         <div className="newOrder">
@@ -211,9 +218,21 @@ function NewOrderForm({
                 </div>
                 <div className="section">
                     <h2>Order services {orderServices.length > 0 && `(${orderServices.length})`}</h2>
+                    <div className="text-right margin--bottom">
+                        <Button variant="contained" color="primary" onClick={() => setModalIsOpen(true)}>
+                            + Add Service
+                        </Button>
+                    </div>
                     <Table
                         data={orderServices}
-                        columns={servicesColumns}
+                        columns={[
+                            columns.type,
+                            columns.from,
+                            columns.to,
+                            columns.pagesQty,
+                            columns.price,
+                            columns.totalPrice,
+                        ]}
                         uniqueKey="_id"
                         actions={servicesTableActions}
                     />
@@ -242,20 +261,19 @@ function NewOrderForm({
                     <TextField
                         name="pagesQty"
                         inputRef={register({ required: 'Please enter number of pages' })}
-                        autofocus={true}
                         label="Number of pages"
                         placeholder="Please enter number of pages"
                         error={errors.pagesQty?.message}
                     />
                     <Table
                         data={filteredServices}
-                        columns={servicesColumns}
+                        columns={[columns.from, columns.to, columns.price]}
                         uniqueKey="_id"
                         actions={servicesTableActions}
                     />
                 </div>
                 <div style={{ textAlign: 'right', marginBottom: '15px', alignItems: 'center' }}>
-                    <h4 style={{ marginRight: '15px' }}>Totals: {formatValue(totalPrice, 'currency')}</h4>
+                    <h4 style={{ marginRight: '15px' }}>Totals: {formatValue(totalPrice, ValueTypes.currency)}</h4>
                 </div>
                 <div style={{ textAlign: 'right' }}>
                     <Button
@@ -279,6 +297,19 @@ function NewOrderForm({
                     </Button>
                 </div>
             </form>
+            <NewOrderServicesModal
+                errors={errors}
+                filteredServices={filteredServices}
+                handleServiceFilterChange={handleServiceFilterChange}
+                isOpen={modalIsOpen}
+                languagesFrom={languagesFrom}
+                languagesTo={languagesTo}
+                registerRef={register}
+                serviceTypesOptions={serviceTypesOptions}
+                servicesFilter={servicesFilter}
+                setModal={setModalIsOpen}
+                addService={() => {}}
+            />
         </div>
     );
 }

@@ -10,15 +10,15 @@ import { useForm } from 'react-hook-form';
 import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
 import { VariousState } from '../../store/reducers/variousReducer';
+import { ValueTypes } from './columns';
 
 export type TableColumn = {
     key: string;
     title: string;
     subKey?: string;
-    valueType?: 'timestamp' | 'currency';
+    valueType?: ValueTypes;
     totalsType?: 'avg' | 'sum';
     isEditable?: boolean;
-    editType?: 'input';
     linkTo?: string;
     cellType?: string;
 };
@@ -83,7 +83,7 @@ export default function Table<T>({
                         {columns.map((column, index) => (
                             <th
                                 key={index + column.key}
-                                className={classnames({ 'text-right': column.valueType === 'currency' })}
+                                className={classnames({ 'text-right': column.valueType === ValueTypes.currency })}
                             >
                                 {column.title}
                             </th>
@@ -110,7 +110,7 @@ export default function Table<T>({
                                         columnValue = <Link to={link}>{formattedValue}</Link>;
                                     }
                                     const title: string =
-                                        column.valueType === 'timestamp'
+                                        column.valueType === ValueTypes.timestamp
                                             ? moment(item[column.key]).format('LLL')
                                             : value;
                                     if (isEditingRow && column.isEditable) {
@@ -150,7 +150,7 @@ export default function Table<T>({
                                             className={classnames({
                                                 loading: cellIsLoading,
                                                 clickable: onRowClickRoute,
-                                                'text-right': column.valueType === 'currency',
+                                                'text-right': column.valueType === ValueTypes.currency,
                                             })}
                                             title={title}
                                         >
@@ -225,7 +225,7 @@ export default function Table<T>({
                             return (
                                 <td
                                     key={index + column.key}
-                                    className={classnames({ 'text-right': column.valueType === 'currency' })}
+                                    className={classnames({ 'text-right': column.valueType === ValueTypes.currency })}
                                 >
                                     {formatValue(totals[column.key], column.valueType)}
                                 </td>

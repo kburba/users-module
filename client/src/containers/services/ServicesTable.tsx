@@ -7,38 +7,15 @@ import { RootState } from '../../store/reducers';
 import { VariousState } from '../../store/reducers/variousReducer';
 import { setLoadingCell } from '../../store/actions/variousActions';
 import { VariousActions } from '../../store/types/variousTypes';
+import columns from './../../components/table/columns';
 
 export const servicesColumns: TableColumn[] = [
-    {
-        key: '_id',
-        title: 'ID',
-    },
-    {
-        key: 'createdAt',
-        title: 'Created',
-        valueType: 'timestamp',
-    },
-    {
-        key: 'type',
-        title: 'Type',
-    },
-    {
-        key: 'from',
-        subKey: 'name',
-        title: 'From',
-    },
-    {
-        key: 'to',
-        subKey: 'name',
-        title: 'To',
-    },
-    {
-        key: 'price',
-        title: 'Price',
-        valueType: 'currency',
-        isEditable: true,
-        editType: 'input',
-    },
+    columns.id,
+    columns.createdAt,
+    columns.type,
+    columns.from,
+    columns.to,
+    columns.price,
 ];
 
 function ServicesTable({

@@ -22,6 +22,7 @@ function ClientView({ match, getClient, clientById }: ReduxProps) {
     return (
         <div>
             <h3>Client info</h3>
+            <div>TODO: client's dictionary</div>
             <div>{clientById?.name}</div>
             <h3>Orders</h3>
             {clientById?.orders && (

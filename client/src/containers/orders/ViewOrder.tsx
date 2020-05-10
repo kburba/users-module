@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import moment from 'moment';
 import { RootState } from '../../store/reducers';
+import columns from '../../components/table/columns';
+import Table from '../../components/table/Table';
 
 function formatCurrency(value) {
     if (typeof value === 'number') {
@@ -41,14 +43,28 @@ function ViewOrder({ orders, match }: ViewOrderProps) {
                     )}
                 </div>
                 <h3>Order services</h3>
+                {/* {orderById && (
+                    <Table
+                        data={orderById.services}
+                        columns={[
+                            columns.type,
+                            columns.from,
+                            columns.to,
+                            columns.pagesQty,
+                            columns.price,
+                            columns.totalPrice,
+                        ]}
+                        uniqueKey="_id"
+                    />
+                )} */}
                 {orderById && (
                     <ul>
                         {orderById.services.map((orderService) => (
-                            <li key={orderService._id}>{`${orderService.service.type}: ${
-                                orderService.service.from.name
-                            } -> ${orderService.service.to.name} (${formatCurrency(
-                                orderService.service.price,
-                            )}) - ${formatCurrency(orderService.customPrice)}`}</li>
+                            <li key={orderService._id}>
+                                {`${orderService.service.type}: ${orderService.service.from.name} -> ${
+                                    orderService.service.to.name
+                                } (${formatCurrency(orderService.service.price)})`}
+                            </li>
                         ))}
                     </ul>
                 )}

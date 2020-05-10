@@ -1,5 +1,6 @@
 import { TableColumn } from '../components/table/Table';
 import moment from 'moment';
+import { ValueTypes } from '../components/table/columns';
 
 export function onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
@@ -29,9 +30,9 @@ export function formatValue(value: number, valueType?: TableColumn['valueType'])
         return '';
     }
     switch (valueType) {
-        case 'timestamp':
+        case ValueTypes.timestamp:
             return moment(value).fromNow();
-        case 'currency':
+        case ValueTypes.currency:
             return new Intl.NumberFormat('en-GB', {
                 style: 'currency',
                 currency: 'EUR',

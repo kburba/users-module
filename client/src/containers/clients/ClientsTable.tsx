@@ -9,6 +9,7 @@ import {
     getClientsAction,
 } from '../../store/actions/clientActions';
 import { ClientsActions, Client } from '../../store/types/clientTypes';
+import { ValueTypes } from '../../components/table/columns';
 
 export const clientsColumns: TableColumn[] = [
     {
@@ -18,7 +19,7 @@ export const clientsColumns: TableColumn[] = [
     {
         key: 'createdAt',
         title: 'Created',
-        valueType: 'timestamp',
+        valueType: ValueTypes.timestamp,
     },
     {
         key: 'name',

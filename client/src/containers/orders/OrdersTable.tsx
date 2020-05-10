@@ -9,12 +9,13 @@ import { RootState } from '../../store/reducers';
 import { setLoadingCell } from '../../store/actions/variousActions';
 import { VariousState } from '../../store/reducers/variousReducer';
 import { VariousActions } from '../../store/types/variousTypes';
+import { ValueTypes } from '../../components/table/columns';
 
 export const ordersColumns: TableColumn[] = [
     {
         key: 'createdAt',
         title: 'Created',
-        valueType: 'timestamp',
+        valueType: ValueTypes.timestamp,
     },
     {
         key: 'details',
@@ -40,7 +41,7 @@ export const ordersColumns: TableColumn[] = [
     {
         key: 'total',
         title: 'Total',
-        valueType: 'currency',
+        valueType: ValueTypes.currency,
         totalsType: 'sum',
     },
 ];
