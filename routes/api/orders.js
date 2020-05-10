@@ -14,7 +14,7 @@ const Order = require('../../modules/Order');
 router.delete(
   '/:id',
   passport.authenticate('jwt', {
-    session: false
+    session: false,
   }),
   (req, res) => {
     Order.findByIdAndDelete(req.params.id, (err, order) => {
@@ -24,7 +24,7 @@ router.delete(
       if (!order) {
         return res.status(404).json({
           success: false,
-          error: `Order ID: ${req.params.id} not found!`
+          error: `Order ID: ${req.params.id} not found!`,
         });
       }
 
@@ -39,7 +39,7 @@ router.delete(
 router.put(
   '/:lang_id',
   passport.authenticate('jwt', {
-    session: false
+    session: false,
   }),
   (req, res) => {
     Language.findById(req.params.lang_id, (err, lang) => {
@@ -54,7 +54,7 @@ router.put(
 
       lang.details = req.body.details;
 
-      lang.save(err => {
+      lang.save((err) => {
         if (err) {
           res.send(err);
         }
@@ -70,26 +70,27 @@ router.put(
 router.get(
   '/',
   passport.authenticate('jwt', {
-    session: false
+    session: false,
   }),
   (req, res) => {
-    Order.find(null, 'anusas createdAt updatedAt details services total')
+    Order.find(null, 'client createdAt updatedAt details services total')
       .sort('-createdAt')
+      .populate('client', 'name')
       .populate({
         path: 'services.service',
-        populate: { path: 'from to', select: 'name' }
+        populate: { path: 'from to', select: 'name' },
       })
-      .then(orders => {
+      .then((orders) => {
         if (!orders) {
           const errors = {
-            noItems: 'Error finding orders.'
+            noItems: 'Error finding orders.',
           };
           return res.status(404).json(errors);
         }
 
         return res.status(200).json(orders);
       })
-      .catch(err => res.status(404).json(err.errors));
+      .catch((err) => res.status(404).json(err.errors));
   }
 );
 
@@ -107,35 +108,39 @@ router.post(
 
     // get post fields
 
-    const { details, services, total } = req.body;
+    const { details, services, total, client } = req.body;
     const newOrder = new Order({
       details,
       services,
-      total
+      client,
+      total,
     });
-
-    newOrder.status = 'testas';
 
     newOrder
       .save()
-      .then(order => {
+      .then((order) => {
         order.populate(
-          {
-            path: 'services.service',
-            populate: { path: 'from to', select: 'name' }
-          },
+          [
+            {
+              path: 'services.service',
+              populate: { path: 'from to', select: 'name' },
+            },
+            {
+              path: 'client',
+              populate: { path: 'client', select: 'name' },
+            },
+          ],
           (err, doc) => {
             if (err) {
               return res
                 .status(400)
-                .json({ message: 'Could not populate language' });
+                .json({ message: 'Could not populate new order values' });
             }
             return res.json(doc);
           }
         );
-        // console.log('order', order);
       })
-      .catch(err => res.status(400).json(err.errors));
+      .catch((err) => res.status(400).json(err.errors));
   }
 );
 module.exports = router;

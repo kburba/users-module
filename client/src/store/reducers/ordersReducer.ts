@@ -16,21 +16,23 @@ import {
 import { Order } from '../types/orderTypes';
 
 export type OrdersState = {
-    orders: Order[];
+    error: null | string | { message: string };
+    isDeleting: boolean;
+    isLoadedOrders: boolean;
     isLoading: boolean;
     isSubmitting: boolean;
-    isDeleting: boolean;
-    error: null | string | { message: string };
     modalIsOpen: boolean;
+    orders: Order[];
 };
 
 const initialState: OrdersState = {
-    orders: [],
+    error: null,
+    isDeleting: false,
+    isLoadedOrders: false,
     isLoading: false,
     isSubmitting: false,
-    isDeleting: false,
-    error: null,
     modalIsOpen: false,
+    orders: [],
 };
 
 export default (state = initialState, action): OrdersState => {
@@ -96,6 +98,7 @@ export default (state = initialState, action): OrdersState => {
                 ...state,
                 orders: action.payload,
                 isLoading: false,
+                isLoadedOrders: true,
                 error: null,
             };
         case ADD_ORDER_ERROR:

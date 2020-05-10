@@ -1,7 +1,7 @@
 import React, { Dispatch, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { getServicesAction } from '../../store/actions/serviceActions';
-import { ServiceActions, Service } from '../../store/types/serviceTypes';
+import { ServiceActions, Service, ServiceWithDetails } from '../../store/types/serviceTypes';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, CircularProgress } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
@@ -10,28 +10,48 @@ import { useForm } from 'react-hook-form';
 import { NewOrder, OrderActions } from '../../store/types/orderTypes';
 import { addOrderAction } from '../../store/actions/orderActions';
 import { RootState } from '../../store/reducers';
-import NewOrderServices from './NewOrderServices';
-import AddServiceModal from './AddServiceModal';
 import TextField from '../../components/common/TextField';
-import Table from '../../components/table/Table';
-import SelectField from '../../components/common/SelectField';
+import SelectField, { SelectFieldOption } from '../../components/common/SelectField';
+import Table, { TableAction } from '../../components/table/Table';
+import { servicesColumns } from '../services/ServicesTable';
+import { getClientsAction } from '../../store/actions/clientActions';
+import { ClientsActions } from '../../store/types/clientTypes';
+import { formatValue } from '../../utils/utils';
 
 interface FormData {
     name: string;
     orderId: string;
     service: Service;
+    pagesQty: number;
     total: number;
+    client: string;
 }
 
-function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, ordersQty }: NewOrderProps) {
-    const [orderServices, setOrderServices] = useState<Service[]>([]);
-    const [showAddServiceModal, setShowAddServiceModal] = useState(false);
-    const { handleSubmit, register, errors } = useForm<FormData>();
-    console.log('errors', errors);
+function NewOrderForm({
+    addOrder,
+    clients,
+    getClients,
+    getServices,
+    history,
+    isSubmitting,
+    ordersQty,
+    services,
+}: NewOrderProps) {
+    const [orderServices, setOrderServices] = useState<ServiceWithDetails[]>([]);
+    const [servicesFilter, setServicesFilter] = useState<Pick<Service, 'type'> & { from: string; to: string }>({
+        type: 'translation',
+        from: '',
+        to: '',
+    });
+    const { handleSubmit, register, errors, setValue, watch } = useForm<FormData>();
 
     useEffect(() => {
         getServices();
     }, [getServices]);
+
+    useEffect(() => {
+        getClients();
+    }, [getClients]);
 
     const totalPrice = orderServices.reduce((prev, curr) => prev + curr.price, 0);
 
@@ -41,6 +61,7 @@ function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, 
                 name: string;
                 orderId: string;
             };
+            client: string;
             services: any[];
             total: number;
         } = {
@@ -48,32 +69,49 @@ function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, 
                 name: values.name,
                 orderId: values.orderId,
             },
+            client: values.client,
             services: [],
             total: totalPrice,
         };
         orderServices.forEach((service) => {
             const newService = {
                 service: service._id,
+                pagesQty: values.pagesQty,
             };
             newOrder.services.unshift(newService);
         });
         addOrder(newOrder);
     }
 
-    function handleServicesSubmit(service: Service) {
-        const updatedServices = [...orderServices];
-        updatedServices.unshift({ ...service });
-        setOrderServices(updatedServices);
-        setShowAddServiceModal(false);
+    function handleServiceFilterChange(name: string, value: string | number) {
+        const newFilter = {
+            ...servicesFilter,
+            [name]: value,
+        };
+        if (name === 'type' || name === 'from') {
+            newFilter.to = '';
+        }
+        if (name === 'type') {
+            newFilter.to = '';
+            newFilter.from = '';
+        }
+        if (name === 'from' && services.filter((x) => x.from._id === value).length === 1) {
+            newFilter.to = services.filter((x) => x.from._id === value)[0].to._id;
+        }
+        setServicesFilter(newFilter);
     }
 
-    function handleServiceDelete(id: string) {
-        console.log('deleting', id);
-        console.log('updatedServices', orderServices);
-        const updatedServices = [...orderServices].filter((x) => x._id !== id);
-        setOrderServices(updatedServices);
-        setShowAddServiceModal(false);
-    }
+    const servicesTableActions: TableAction[] = [
+        {
+            type: 'addToList',
+            action: (service: Service) => {
+                const updatedServices = [...orderServices];
+                updatedServices.unshift(service: {...service, pagesQty: watch('pagesQty')});
+                setOrderServices(updatedServices);
+                setValue('pagesQty', 0);
+            },
+        },
+    ];
 
     const serviceTypesOptions = [
         {
@@ -89,6 +127,53 @@ function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, 
             text: 'Editing',
         },
     ];
+    const languagesFrom: SelectFieldOption[] = [];
+    const languagesTo: SelectFieldOption[] = [];
+
+    services.forEach((service) => {
+        if (
+            service.type === servicesFilter.type &&
+            languagesFrom.findIndex((x) => x.value === service.from._id) === -1
+        ) {
+            languagesFrom.push({
+                text: service.from.name,
+                value: service.from._id,
+            });
+        }
+
+        if (
+            service.type === servicesFilter.type &&
+            service.from._id === servicesFilter.from &&
+            languagesTo.findIndex((x) => x.value === service.to._id) === -1
+        ) {
+            languagesTo.push({
+                text: service.to.name,
+                value: service.to._id,
+            });
+        }
+    });
+
+    const filteredServices = services.filter((service) => {
+        const filtersToPass = Object.keys(servicesFilter).length + 1;
+        let filtersPassed = 0;
+        if (service.type === servicesFilter.type) {
+            filtersPassed++;
+        }
+        if (servicesFilter.from === '' || service.from._id === servicesFilter.from) {
+            filtersPassed++;
+        }
+        if (servicesFilter.to === '' || service.to._id === servicesFilter.to) {
+            filtersPassed++;
+        }
+        // already in list
+        if (orderServices.findIndex((x) => x._id === service._id) === -1) {
+            filtersPassed++;
+        }
+
+        return filtersToPass === filtersPassed;
+    });
+
+    const clientOptions = clients.map((client) => ({ text: client.name, value: client._id }));
 
     return (
         <div className="newOrder">
@@ -114,11 +199,63 @@ function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, 
                     />
                 </div>
                 <div className="section">
-                    <h2>Order services</h2>
-                    <SelectField name="type" label="Type" options={serviceTypesOptions} />
+                    <h2>Order client</h2>
+                    <SelectField
+                        inputRef={register({ required: 'Please add client' })}
+                        name="client"
+                        defaultValue=""
+                        label="Client"
+                        options={clientOptions}
+                        error={errors.client?.message}
+                    />
+                </div>
+                <div className="section">
+                    <h2>Order services {orderServices.length > 0 && `(${orderServices.length})`}</h2>
+                    <Table
+                        data={orderServices}
+                        columns={servicesColumns}
+                        uniqueKey="_id"
+                        actions={servicesTableActions}
+                    />
+                    <hr />
+                    <SelectField
+                        value={servicesFilter.type}
+                        name="type"
+                        label="Type"
+                        options={serviceTypesOptions}
+                        onChange={handleServiceFilterChange}
+                    />
+                    <SelectField
+                        value={servicesFilter.from}
+                        name="from"
+                        label="From"
+                        options={languagesFrom}
+                        onChange={handleServiceFilterChange}
+                    />
+                    <SelectField
+                        value={servicesFilter.to}
+                        name="to"
+                        label="To"
+                        options={languagesTo}
+                        onChange={handleServiceFilterChange}
+                    />
+                    <TextField
+                        name="pagesQty"
+                        inputRef={register({ required: 'Please enter number of pages' })}
+                        autofocus={true}
+                        label="Number of pages"
+                        placeholder="Please enter number of pages"
+                        error={errors.pagesQty?.message}
+                    />
+                    <Table
+                        data={filteredServices}
+                        columns={servicesColumns}
+                        uniqueKey="_id"
+                        actions={servicesTableActions}
+                    />
                 </div>
                 <div style={{ textAlign: 'right', marginBottom: '15px', alignItems: 'center' }}>
-                    <h4 style={{ marginRight: '15px' }}>Totals: {totalPrice}</h4>
+                    <h4 style={{ marginRight: '15px' }}>Totals: {formatValue(totalPrice, 'currency')}</h4>
                 </div>
                 <div style={{ textAlign: 'right' }}>
                     <Button
@@ -146,14 +283,16 @@ function NewOrderForm({ services, getServices, addOrder, history, isSubmitting, 
     );
 }
 
-const mapStateToProps = ({ servicesReducer, ordersReducer }: RootState) => ({
+const mapStateToProps = ({ servicesReducer, ordersReducer, clientsReducer }: RootState) => ({
     services: servicesReducer.services,
     isSubmitting: ordersReducer.isSubmitting,
     ordersQty: ordersReducer.orders.length,
+    clients: clientsReducer.clients,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<ServiceActions | OrderActions>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<ServiceActions | OrderActions | ClientsActions>) => ({
     getServices: () => dispatch(getServicesAction()),
+    getClients: () => dispatch(getClientsAction()),
     addOrder: (newOrder: NewOrder) => dispatch(addOrderAction(newOrder)),
 });
 

@@ -18,11 +18,13 @@ import { Language } from './languageTypes';
 
 export interface ServiceForm {
     _id?: string;
-    type: 'proofreading' | 'translation' | 'editing';
+    type: '' | 'proofreading' | 'translation' | 'editing';
     from: string;
     to: string;
     price: string;
 }
+
+export type ServiceWithDetails = Service & { pagesQty: number };
 
 export interface Service {
     _id: string;

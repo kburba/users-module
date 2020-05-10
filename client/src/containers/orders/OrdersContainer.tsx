@@ -14,12 +14,10 @@ import { RootState } from '../../store/reducers';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import { OrdersState } from '../../store/reducers/ordersReducer';
 
-function OrdersContainer({ getOrders, isLoading, orders, error }: OrdersProps) {
+function OrdersContainer({ getOrders, isLoading, error }: ReduxProps) {
     useEffect(() => {
-        if (orders.length < 1) {
-            getOrders();
-        }
-    }, [getOrders, orders.length]);
+        getOrders();
+    }, [getOrders]);
 
     if (isLoading) {
         return (
@@ -35,6 +33,7 @@ function OrdersContainer({ getOrders, isLoading, orders, error }: OrdersProps) {
                 <h1>Orders</h1>
             </div>
             {error && <ErrorMessage error={error} />}
+            <div>Show orders: by month, by client, monthly client orders</div>
             <Switch>
                 <PrivateRoute exact path="/orders" component={OrdersTable} />
                 <PrivateRoute path="/orders/new" component={NewOrderForm} />
@@ -62,4 +61,4 @@ const mapDispatchToProps = (dispatch: Dispatch<OrderActions>) => ({
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrdersContainer);
 
-type OrdersProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type ReduxProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;

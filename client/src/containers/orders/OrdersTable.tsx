@@ -10,7 +10,7 @@ import { setLoadingCell } from '../../store/actions/variousActions';
 import { VariousState } from '../../store/reducers/variousReducer';
 import { VariousActions } from '../../store/types/variousTypes';
 
-const ordersColumns: TableColumn[] = [
+export const ordersColumns: TableColumn[] = [
     {
         key: 'createdAt',
         title: 'Created',
@@ -22,10 +22,20 @@ const ordersColumns: TableColumn[] = [
         title: 'ID',
     },
     {
+        key: 'client',
+        subKey: 'name',
+        title: 'Client',
+    },
+    {
         key: 'details',
         subKey: 'name',
         title: 'Name',
         linkTo: '/orders',
+    },
+    {
+        key: 'services',
+        title: 'Services',
+        cellType: 'services',
     },
     {
         key: 'total',
@@ -62,7 +72,6 @@ function OrdersTable({ orders, deleteOrder, isDeleting, isLoading }: OrderTableP
                     isLoading={isLoading || isDeleting}
                     actions={tableActions}
                     uniqueKey="_id"
-                    // onRowClickRoute="/orders"
                 />
             )}
         </div>

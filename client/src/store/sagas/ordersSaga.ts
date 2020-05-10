@@ -1,5 +1,5 @@
-import { takeLatest, put, call } from 'redux-saga/effects';
-// import { history } from '../../App';
+import { takeLatest, put, call, select } from 'redux-saga/effects';
+import { history } from '../../App';
 import Axios from 'axios';
 import { AddOrderAction, UpdateOrderAction, DeleteOrderAction } from '../types/orderTypes';
 import {
@@ -14,12 +14,13 @@ import {
 } from '../actions/orderActions';
 import { ADD_ORDER, UPDATE_ORDER, GET_ORDERS, DELETE_ORDER } from '../actions/types';
 import { resetLoadingCell } from '../actions/variousActions';
+import { getOrdersIsLoadedFromState, getOrdersFromState } from './selectors';
 
 function* addOrderSaga({ payload }: AddOrderAction) {
     try {
         const response = yield call(Axios.post, '/api/orders', payload);
-        // history.push('/orders');
         yield put(addOrderSuccessAction(response.data));
+        history.push('/orders');
     } catch (error) {
         yield put(addOrderErrorAction(error.response.data));
     }
@@ -47,8 +48,14 @@ function* deleteOrderSaga({ payload }: DeleteOrderAction) {
 
 function* getOrdersSaga() {
     try {
-        const orders = yield call(Axios.get, '/api/orders');
-        yield put(getOrdersSuccessAction(orders.data));
+        const isLoaded = yield select(getOrdersIsLoadedFromState);
+        if (isLoaded) {
+            const ordersFromState = yield select(getOrdersFromState);
+            yield put(getOrdersSuccessAction(ordersFromState));
+        } else {
+            const orders = yield call(Axios.get, '/api/orders');
+            yield put(getOrdersSuccessAction(orders.data));
+        }
     } catch (error) {
         console.log('error', error);
         yield put(getOrdersErrorAction(error.message));

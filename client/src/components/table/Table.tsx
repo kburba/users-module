@@ -20,10 +20,11 @@ export type TableColumn = {
     isEditable?: boolean;
     editType?: 'input';
     linkTo?: string;
+    cellType?: string;
 };
 
 export type TableAction = {
-    type: 'edit' | 'delete';
+    type: 'addToList' | 'edit' | 'delete';
     action: Function;
 };
 
@@ -38,17 +39,12 @@ type TableProps<T> = {
     editingRow?: string;
     onSubmit?(item: T, values): void;
     onCancel?(): void;
-    customRow?: {
-        show: boolean;
-        rowElement: JSX.Element;
-    };
 };
 
 export default function Table<T>({
     actions,
     isLoadingCell,
     columns,
-    customRow,
     data,
     editingRow,
     isLoading,
@@ -59,7 +55,7 @@ export default function Table<T>({
 }: TableProps<T>) {
     const { register, errors, handleSubmit } = useForm();
 
-    function handleActionClick(type: 'edit' | 'delete', item: T) {
+    function handleActionClick(type: TableAction['type'], item: T) {
         if (actions) {
             const clickAction = actions.find((x) => x.type === type);
             if (clickAction) {
@@ -85,13 +81,17 @@ export default function Table<T>({
                 <thead>
                     <tr>
                         {columns.map((column, index) => (
-                            <th key={index + column.key}>{column.title}</th>
+                            <th
+                                key={index + column.key}
+                                className={classnames({ 'text-right': column.valueType === 'currency' })}
+                            >
+                                {column.title}
+                            </th>
                         ))}
                         {actions && <th>Action</th>}
                     </tr>
                 </thead>
                 <tbody>
-                    {customRow && customRow.show && customRow.rowElement}
                     {data.map((item) => {
                         const isEditingRow = editingRow === item[uniqueKey];
                         function handleEdit(values) {
@@ -108,7 +108,6 @@ export default function Table<T>({
                                     if (column.linkTo) {
                                         const link = `${column.linkTo}/${item[uniqueKey]}`;
                                         columnValue = <Link to={link}>{formattedValue}</Link>;
-                                    } else {
                                     }
                                     const title: string =
                                         column.valueType === 'timestamp'
@@ -130,6 +129,18 @@ export default function Table<T>({
                                                     error={typeof errors[column.key] !== 'undefined'}
                                                     helperText={typeof errors[column.key] !== 'undefined' && 'Error'}
                                                 />
+                                            </td>
+                                        );
+                                    }
+                                    if (column.cellType === 'services') {
+                                        return (
+                                            <td key={index + column.key}>
+                                                {item[column.key].map((service) => (
+                                                    <div key={service._id}>
+                                                        {service.service.type}: {service.service.from.name} -{' '}
+                                                        {service.service.to.name}
+                                                    </div>
+                                                ))}
                                             </td>
                                         );
                                     }
@@ -187,6 +198,16 @@ export default function Table<T>({
                                                         >
                                                             <DeleteIcon />
                                                         </IconButton>
+                                                    );
+                                                } else if (action.type === 'addToList') {
+                                                    return (
+                                                        <button
+                                                            key={action.type}
+                                                            type="button"
+                                                            onClick={() => handleActionClick('addToList', item)}
+                                                        >
+                                                            Add
+                                                        </button>
                                                     );
                                                 } else {
                                                     return null;

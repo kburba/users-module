@@ -8,34 +8,41 @@ const OrderSchema = new Schema(
     details: {
       name: {
         type: String,
-        required: true
+        required: true,
       },
       orderId: {
         type: String,
-        required: true
-      }
+        required: true,
+      },
+    },
+    client: {
+      type: Schema.Types.ObjectId,
+      ref: 'client',
     },
     services: [
       {
         service: {
           type: Schema.Types.ObjectId,
-          ref: 'services'
+          ref: 'services',
+        },
+        pagesQty: {
+          type: Number,
         },
         customPrice: {
-          type: Number
-        }
-      }
+          type: Number,
+        },
+      },
     ],
     total: {
       type: Number,
-      required: true
+      required: true,
     },
     status: {
-      type: String
-    }
+      type: String,
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 

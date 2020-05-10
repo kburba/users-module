@@ -65,6 +65,11 @@ class Navbar extends Component {
                                 </Link>
                             </li>
                             <li className="nav-item">
+                                <Link className="nav-link" to="/clients">
+                                    Clients
+                                </Link>
+                            </li>
+                            <li className="nav-item">
                                 <Link className="nav-link" to="/services">
                                     Services
                                 </Link>

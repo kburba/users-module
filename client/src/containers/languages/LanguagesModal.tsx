@@ -5,9 +5,10 @@ import { useForm } from 'react-hook-form';
 import { LanguageActions, Language } from '../../store/types/languageTypes';
 import { setLanguagesModal, addLanguageAction, updateLanguageAction } from '../../store/actions/languageActions';
 import { RootState } from '../../store/reducers';
-import { TextField, Button, CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 import { LanguagesState } from '../../store/reducers/languagesReducer';
 import { Clear as ClearIcon, Save as SaveIcon } from '@material-ui/icons';
+import TextField from '../../components/common/TextField';
 
 type FormData = {
     name: string;
@@ -50,15 +51,15 @@ function LanguagesModal({
             contentLabel="Example Modal"
         >
             <form onSubmit={handleSubmit(initialValues ? handleEdit : handleAdd)}>
-                <div>
-                    <TextField
-                        label="Language name"
-                        inputRef={register({ required: true })}
-                        error={typeof errors.name !== 'undefined'}
-                        name="name"
-                        helperText={errors.name && errors.name.message}
-                    ></TextField>
-                </div>
+                <TextField
+                    label="Language"
+                    placeholder="Enter name"
+                    inputRef={register({ required: 'Please add name' })}
+                    name="name"
+                    defaultValue={initialValues?.name}
+                    error={errors.name?.message}
+                    autofocus
+                />
                 <div style={{ marginTop: '15px' }}>
                     <Button
                         style={{ marginRight: '15px' }}

@@ -7,6 +7,8 @@ import { setServicesModal, addServiceAction, updateServiceAction } from '../../s
 import { RootState } from '../../store/reducers';
 import { LanguageActions } from '../../store/types/languageTypes';
 import classnames from 'classnames';
+import TextField from '../../components/common/TextField';
+import SelectField from '../../components/common/SelectField';
 
 export function ServicesModal({
     addService,
@@ -47,7 +49,16 @@ export function ServicesModal({
                 return -1;
             }
             return 0;
-        });
+        })
+        .map((lang) => ({
+            text: lang.name,
+            value: lang._id,
+        }));
+
+    const languagesDropdown = languages.map((lang) => ({
+        text: lang.name,
+        value: lang._id,
+    }));
 
     return (
         <Modal
@@ -74,58 +85,25 @@ export function ServicesModal({
                     </select>
                     {!!errors.type && <div className="invalid-feedback">{errors.type?.message}</div>}
                 </div>
-                <div>
-                    <label htmlFor="from">From:</label>
-                    <select
-                        name="from"
-                        placeholder={isLoadingLanguages ? 'Loading...' : 'Select language'}
-                        ref={register}
-                        defaultValue={service?.from._id}
-                        className={classnames('form-control form-control-lg', {
-                            'is-invalid': !!errors.from,
-                        })}
-                    >
-                        {languages.map((lang) => (
-                            <option key={lang._id} value={lang._id}>
-                                {lang.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label htmlFor="to">To:</label>
-                    <select
-                        name="to"
-                        placeholder={isLoadingLanguages ? 'Loading...' : 'Select language'}
-                        ref={register}
-                        className={classnames('form-control form-control-lg', {
-                            'is-invalid': !!errors.to,
-                        })}
-                        defaultValue={service?.to._id}
-                    >
-                        {langTo.map((lang) => (
-                            <option key={lang._id} value={lang._id}>
-                                {lang.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label htmlFor="price">Price:</label>
-                    <input
-                        name="price"
-                        placeholder="Price"
-                        defaultValue={service?.price}
-                        className={classnames('form-control form-control-lg', {
-                            'is-invalid': !!errors.price,
-                        })}
-                        ref={register({
-                            required: 'Required',
-                            pattern: { value: /^(\d*\.)?\d+$/, message: 'Must be number' },
-                        })}
-                    />
-                    {!!errors.price && <div className="invalid-feedback">{errors.price?.message}</div>}
-                </div>
+                <SelectField
+                    defaultValue={service?.from._id}
+                    name="from"
+                    label="From"
+                    inputRef={register}
+                    options={languagesDropdown}
+                />
+                <SelectField defaultValue={service?.to._id} name="to" label="To" inputRef={register} options={langTo} />
+                <TextField
+                    label="Price"
+                    placeholder="Enter price"
+                    inputRef={register({
+                        required: 'Please add price',
+                        pattern: { value: /^(\d*\.)?\d+$/, message: 'Must be number' },
+                    })}
+                    name="price"
+                    defaultValue={service?.price}
+                    error={errors.price?.message}
+                />
                 <div className="margin--top text-right">
                     <button type="button" onClick={() => setModal(false)} style={{ marginRight: '15px' }}>
                         Cancel
