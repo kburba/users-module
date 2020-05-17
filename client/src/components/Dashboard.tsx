@@ -15,88 +15,93 @@ import { ServicesState } from '../store/reducers/servicesReducer';
 import { LanguagesState } from '../store/reducers/languagesReducer';
 
 function Dashboard({
-    getClients,
-    getServices,
-    getLanguages,
-    getOrders,
-    orders,
-    languages,
-    services,
-    clients,
+  getClients,
+  getServices,
+  getLanguages,
+  getOrders,
+  orders,
+  languages,
+  services,
+  clients,
 }: ReduxProps) {
-    useEffect(() => {
-        getClients();
-        getServices();
-        getOrders();
-        getLanguages();
-    }, [getClients, getServices, getOrders, getLanguages]);
+  useEffect(() => {
+    getClients();
+    getServices();
+    getOrders();
+    getLanguages();
+  }, [getClients, getServices, getOrders, getLanguages]);
 
-    return (
-        <div className="container">
-            <h1>Dashboard</h1>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div>
-                    <h3>Orders</h3>
-                    <div>Total orders: {orders.length}</div>
-                    <Link to="/orders">
-                        <button className="btn">Go to Orders</button>
-                    </Link>
-                </div>
-                <div>
-                    <h3>Clients</h3>
-                    <div>Total clients: {clients.length}</div>
-                    <Link to="/clients">
-                        <button className="btn">Go to Clients</button>
-                    </Link>
-                </div>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div>
-                    <h3>Services</h3>
-
-                    <div>Total services: {services.length}</div>
-                    <Link to="/services">
-                        <button className="btn">Go to Services</button>
-                    </Link>
-                </div>
-                <div>
-                    <h3>Languages</h3>
-                    <div>Total languages: {languages.length}</div>
-                    <Link to="/languages">
-                        <button className="btn">Go to Languages</button>
-                    </Link>
-                </div>
-            </div>
+  return (
+    <div className="container">
+      <h1>Dashboard</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div>
+          <h3>Orders</h3>
+          <div>Total orders: {orders.length}</div>
+          <Link to="/orders">
+            <button className="btn">Go to Orders</button>
+          </Link>
         </div>
-    );
+        <div>
+          <h3>Clients</h3>
+          <div>Total clients: {clients.length}</div>
+          <Link to="/clients">
+            <button className="btn">Go to Clients</button>
+          </Link>
+        </div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div>
+          <h3>Services</h3>
+
+          <div>Total services: {services.length}</div>
+          <Link to="/services">
+            <button className="btn">Go to Services</button>
+          </Link>
+        </div>
+        <div>
+          <h3>Languages</h3>
+          <div>Total languages: {languages.length}</div>
+          <Link to="/languages">
+            <button className="btn">Go to Languages</button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 type ReduxStateProps = {
-    orders: OrdersState['orders'];
-    clients: ClientsState['clients'];
-    services: ServicesState['services'];
-    languages: LanguagesState['languages'];
+  orders: OrdersState['orders'];
+  clients: ClientsState['clients'];
+  services: ServicesState['services'];
+  languages: LanguagesState['languages'];
 };
 
 const mapStateToProps = ({
-    ordersReducer,
-    clientsReducer,
-    servicesReducer,
-    languagesReducer,
+  ordersReducer,
+  clientsReducer,
+  servicesReducer,
+  languagesReducer,
 }: RootState): ReduxStateProps => ({
-    orders: ordersReducer.orders,
-    clients: clientsReducer.clients,
-    services: servicesReducer.services,
-    languages: languagesReducer.languages,
+  orders: ordersReducer.orders,
+  clients: clientsReducer.clients,
+  services: servicesReducer.services,
+  languages: languagesReducer.languages,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<ClientsActions | OrderActions | ServiceActions | LanguageActions>) => ({
-    getClients: () => dispatch(getClientsAction()),
-    getOrders: () => dispatch(getOrdersAction()),
-    getServices: () => dispatch(getServicesAction()),
-    getLanguages: () => dispatch(getLanguagesAction()),
+const mapDispatchToProps = (
+  dispatch: Dispatch<
+    ClientsActions | OrderActions | ServiceActions | LanguageActions
+  >
+) => ({
+  getClients: () => dispatch(getClientsAction()),
+  getOrders: () => dispatch(getOrdersAction()),
+  getServices: () => dispatch(getServicesAction()),
+  getLanguages: () => dispatch(getLanguagesAction()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
 
-type ReduxProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type ReduxProps = ReturnType<typeof mapStateToProps> &
+  ReturnType<typeof mapDispatchToProps>;

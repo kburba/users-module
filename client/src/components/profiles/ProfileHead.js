@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import isEmpty from "../../validations/isEmpty";
+import React, { Component } from 'react';
+import isEmpty from '../../validations/isEmpty';
 
 export default class ProfileHead extends Component {
   render() {
@@ -20,7 +20,7 @@ export default class ProfileHead extends Component {
             <div className="text-center">
               <h1 className="display-4 text-center">{profile.user.name}</h1>
               <p className="lead text-center">
-                {profile.status}{" "}
+                {profile.status}{' '}
                 {isEmpty(profile.company) ? null : (
                   <span>at {profile.company}</span>
                 )}

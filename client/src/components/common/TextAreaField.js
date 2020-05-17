@@ -1,6 +1,6 @@
-import React from "react";
-import classnames from "classnames";
-import propTypes from "prop-types";
+import React from 'react';
+import classnames from 'classnames';
+import propTypes from 'prop-types';
 
 const TextAreaField = ({
   name,
@@ -11,7 +11,7 @@ const TextAreaField = ({
   onChange,
   disabled,
   small,
-  wide
+  wide,
 }) => {
   return (
     <div className="form-group">
@@ -21,11 +21,11 @@ const TextAreaField = ({
         value={value}
         onChange={onChange}
         disabled={disabled}
-        className={classnames("form-control ", {
-          "is-invalid": error,
-          "form-control-sm": small,
-          "form-control-lg": !small,
-          "w-100": wide
+        className={classnames('form-control ', {
+          'is-invalid': error,
+          'form-control-sm': small,
+          'form-control-lg': !small,
+          'w-100': wide,
         })}
       />
       {info && <small className="form-text text-muted">{info}</small>}
@@ -41,7 +41,7 @@ TextAreaField.propTypes = {
   info: propTypes.string,
   error: propTypes.string,
   onChange: propTypes.func.isRequired,
-  disabled: propTypes.string
+  disabled: propTypes.string,
 };
 
 export default TextAreaField;

@@ -1,14 +1,14 @@
 /** store.js */
-import rootSaga from "./sagas/rootSaga";
-import reducers, { RootState } from "./reducers";
-import createSagaMiddleware from "redux-saga";
-import { createStore, compose, applyMiddleware } from "redux";
+import createSagaMiddleware from 'redux-saga';
+import { createStore, compose, applyMiddleware } from 'redux';
+import rootSaga from './sagas/rootSaga';
+import reducers, { RootState } from './reducers';
 /** Saga Middleware */
 const sagaMiddleware = createSagaMiddleware();
 /** Create redux store */
 const initialState = {};
-const composeEnhancers =
-  window["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"] || compose;
+// @ts-ignore
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore<RootState, any, any, any>(
   reducers,

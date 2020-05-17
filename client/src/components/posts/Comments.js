@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import CommentForm from "./CommentForm";
-import CommentItem from "./CommentItem";
+import React, { Component } from 'react';
+import CommentForm from './CommentForm';
+import CommentItem from './CommentItem';
 
 export default class Comments extends Component {
   render() {
     const { comments } = this.props;
-    const commentsAll = comments.map(comment => {
+    const commentsAll = comments.map((comment) => {
       return <CommentItem key={comment._id} data={comment} />;
     });
     return (

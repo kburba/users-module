@@ -1,39 +1,39 @@
-import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import propTypes from "prop-types";
+import React, { Component } from 'react';
+import { Link, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import propTypes from 'prop-types';
 
-import { addEducation } from "../../store/actions/profileActions";
+import { addEducation } from '../../store/actions/profileActions';
 
-import TextFieldGroup from "../common/TextFieldGroup";
-import TextAreaField from "../common/TextAreaField";
+import TextFieldGroup from '../common/TextFieldGroup';
+import TextAreaField from '../common/TextAreaField';
 
 class AddEducation extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      school: "",
-      degree: "",
-      fieldofstudy: "",
-      from: "",
-      to: "",
+      school: '',
+      degree: '',
+      fieldofstudy: '',
+      from: '',
+      to: '',
       current: false,
-      description: "",
-      disabled: "",
-      errors: {}
+      description: '',
+      disabled: '',
+      errors: {},
     };
   }
 
-  componentWillReceiveProps = nextProps => {
+  componentWillReceiveProps = (nextProps) => {
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
     }
   };
 
-  onChange = e => {
+  onChange = (e) => {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -42,11 +42,11 @@ class AddEducation extends Component {
     const newDisabled = !this.state.disabled;
     this.setState({
       current: newCheck,
-      disabled: newDisabled
+      disabled: newDisabled,
     });
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
 
     const newEducation = {
@@ -56,7 +56,7 @@ class AddEducation extends Component {
       from: this.state.from,
       to: this.state.to,
       current: this.state.current,
-      description: this.state.description
+      description: this.state.description,
     };
 
     this.props.addEducation(newEducation, this.props.history);
@@ -124,7 +124,7 @@ class AddEducation extends Component {
                   onChange={this.onChange}
                   value={this.state.to}
                   error={errors.to}
-                  disabled={this.state.disabled ? "disabled" : ""}
+                  disabled={this.state.disabled ? 'disabled' : ''}
                 />
 
                 <input
@@ -160,12 +160,12 @@ class AddEducation extends Component {
 
 AddEducation.propTypes = {
   errors: propTypes.object.isRequired,
-  profile: propTypes.object.isRequired
+  profile: propTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   errors: state.errors,
-  profile: state.profile
+  profile: state.profile,
 });
 
 export default connect(mapStateToProps, { addEducation })(

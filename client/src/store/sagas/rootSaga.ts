@@ -8,5 +8,11 @@ import clientsSaga from './clientsSaga';
 
 // import watchers from other files
 export default function* rootSaga() {
-    yield all([fork(languagesSaga), fork(authSaga), fork(serviceSaga), fork(ordersSaga), fork(clientsSaga)]);
+  yield all([
+    fork(languagesSaga),
+    fork(authSaga),
+    fork(serviceSaga),
+    fork(ordersSaga),
+    fork(clientsSaga),
+  ]);
 }

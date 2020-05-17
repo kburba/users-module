@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import Moment from "react-moment";
-import isEmpty from "../../validations/isEmpty";
+import React, { Component } from 'react';
+import Moment from 'react-moment';
+import isEmpty from '../../validations/isEmpty';
 
 export default class ProfileCreds extends Component {
   render() {
@@ -13,7 +13,7 @@ export default class ProfileCreds extends Component {
           <p>
             <Moment format="MMM YYYY">{item.from}</Moment>
             {item.current === true ? (
-              " - Current"
+              ' - Current'
             ) : (
               <Moment format="MMM YYYY">{item.to}</Moment>
             )}
@@ -35,9 +35,9 @@ export default class ProfileCreds extends Component {
         <li key={index} className="list-group-item">
           <h4>{item.title}</h4>
           <p>
-            <Moment format="MMM YYYY">{item.from}</Moment> -{" "}
+            <Moment format="MMM YYYY">{item.from}</Moment> -{' '}
             {item.current === true ? (
-              "Current"
+              'Current'
             ) : (
               <Moment format="MMM YYYY">{item.to}</Moment>
             )}
@@ -63,13 +63,13 @@ export default class ProfileCreds extends Component {
         <div className="col-md-6">
           <h3 className="text-center text-info">Experience</h3>
           <ul className="list-group">
-            {isEmpty(profile.experience) ? "No experience yet." : experiences}
+            {isEmpty(profile.experience) ? 'No experience yet.' : experiences}
           </ul>
         </div>
         <div className="col-md-6">
           <h3 className="text-center text-info">Education</h3>
           <ul className="list-group">
-            {isEmpty(profile.education) ? "No education yet." : educations}
+            {isEmpty(profile.education) ? 'No education yet.' : educations}
           </ul>
         </div>
       </div>

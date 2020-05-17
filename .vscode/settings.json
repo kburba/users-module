@@ -1,8 +1,0 @@
-{
-    "eslint.codeActionsOnSave.mode": "problems",
-    "files.eol": "\n",
-    "editor.formatOnSave": true,
-    "eslint.format.enable": true,
-    "prettier.jsxSingleQuote": true,
-    "prettier.singleQuote": true
-}

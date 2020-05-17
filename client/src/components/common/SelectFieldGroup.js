@@ -1,6 +1,6 @@
-import React from "react";
-import classnames from "classnames";
-import propTypes from "prop-types";
+import React from 'react';
+import classnames from 'classnames';
+import propTypes from 'prop-types';
 
 const SelectFieldGroup = ({
   name,
@@ -9,7 +9,7 @@ const SelectFieldGroup = ({
   info,
   options,
   onChange,
-  disabled
+  disabled,
 }) => {
   return (
     <div className="form-group">
@@ -18,11 +18,11 @@ const SelectFieldGroup = ({
         value={value}
         onChange={onChange}
         disabled={disabled}
-        className={classnames("form-control form-control-lg", {
-          "is-invalid": error
+        className={classnames('form-control form-control-lg', {
+          'is-invalid': error,
         })}
       >
-        {options.map(option => (
+        {options.map((option) => (
           <option key={option.label} value={option.value}>
             {option.label}
           </option>
@@ -41,7 +41,7 @@ SelectFieldGroup.propTypes = {
   info: propTypes.string,
   error: propTypes.string,
   onChange: propTypes.func.isRequired,
-  disabled: propTypes.string
+  disabled: propTypes.string,
 };
 
 export default SelectFieldGroup;

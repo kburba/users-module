@@ -26,45 +26,53 @@ import ClientsContainer from './containers/clients/ClientsContainer';
 export const history = createBrowserHistory();
 
 if (localStorage.jwtToken) {
-    const token = localStorage.jwtToken;
+  const token = localStorage.jwtToken;
 
-    // Set token to Auth header
-    setAuthToken(token);
-    // Decode token to get user data
-    const decoded = JwtDecode<{ exp: number }>(token);
-    // Set current user
-    store.dispatch(setCurrentUser(decoded));
+  // Set token to Auth header
+  setAuthToken(token);
+  // Decode token to get user data
+  const decoded = JwtDecode<{ exp: number }>(token);
+  // Set current user
+  store.dispatch(setCurrentUser(decoded));
 
-    // check if token is expired
-    const currentTime = Date.now() / 1000;
-    if (decoded.exp < currentTime) {
-        store.dispatch(logoutUser());
-        window.location.replace('/login');
-    }
+  // check if token is expired
+  const currentTime = Date.now() / 1000;
+  if (decoded.exp < currentTime) {
+    store.dispatch(logoutUser());
+    window.location.replace('/login');
+  }
 }
 
 export default function App() {
-    return (
-        <Provider store={store}>
-            <Router history={history}>
-                <CssBaseline>
-                    <div className="App">
-                        <Navbar />
-                        <Switch>
-                            <Route exact path="/" component={Landing} />
-                            <Route exact path="/login" component={Login} />
-                            <Route exact path="/register" component={Register} />
-                            <PrivateRoute exact path="/dashboard" component={Dashboard} />
-                            <PrivateRoute exact path="/languages" component={LanguagesContainer} />
-                            <PrivateRoute exact path="/services" component={ServicesContainer} />
-                            <PrivateRoute path="/clients" component={ClientsContainer} />
-                            <PrivateRoute path="/orders" component={OrdersContainer} />
-                            <Route exact path="/not-found" component={NotFound} />
-                        </Switch>
-                        <Footer />
-                    </div>
-                </CssBaseline>
-            </Router>
-        </Provider>
-    );
+  return (
+    <Provider store={store}>
+      <Router history={history}>
+        <CssBaseline>
+          <div className="App">
+            <Navbar />
+            <Switch>
+              <Route exact path="/" component={Landing} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
+              <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              <PrivateRoute
+                exact
+                path="/languages"
+                component={LanguagesContainer}
+              />
+              <PrivateRoute
+                exact
+                path="/services"
+                component={ServicesContainer}
+              />
+              <PrivateRoute path="/clients" component={ClientsContainer} />
+              <PrivateRoute path="/orders" component={OrdersContainer} />
+              <Route exact path="/not-found" component={NotFound} />
+            </Switch>
+            <Footer />
+          </div>
+        </CssBaseline>
+      </Router>
+    </Provider>
+  );
 }

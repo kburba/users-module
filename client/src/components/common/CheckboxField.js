@@ -1,6 +1,6 @@
-import React from "react";
-import classnames from "classnames";
-import propTypes from "prop-types";
+import React from 'react';
+import classnames from 'classnames';
+import propTypes from 'prop-types';
 
 const CheckBoxField = ({
   name,
@@ -9,13 +9,13 @@ const CheckBoxField = ({
   label,
   id,
   onChange,
-  disabled
+  disabled,
 }) => {
   return (
     <div className="form-check mb-4">
       <input
-        className={classnames("form-check-input", {
-          "is-invalid": error
+        className={classnames('form-check-input', {
+          'is-invalid': error,
         })}
         type="checkbox"
         name={name}
@@ -39,11 +39,11 @@ CheckBoxField.propTypes = {
   onChange: propTypes.func.isRequired,
   disabled: propTypes.string,
   label: propTypes.string,
-  id: propTypes.string
+  id: propTypes.string,
 };
 
 CheckBoxField.defaultProps = {
-  type: "checkbox"
+  type: 'checkbox',
 };
 
 export default CheckBoxField;

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import isEmpty from "../../validations/isEmpty";
+import React, { Component } from 'react';
+import isEmpty from '../../validations/isEmpty';
 
 export default class ProfileBio extends Component {
   render() {

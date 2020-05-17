@@ -8,49 +8,49 @@ import Table from '../../components/table/Table';
 import { ordersColumns } from '../orders/OrdersTable';
 
 function ClientView({ match, getClient, clientById }: ReduxProps) {
-    const clientId = match.params.id;
-    useEffect(() => {
-        document.title = 'Client title';
-    }, []);
+  const clientId = match.params.id;
+  useEffect(() => {
+    document.title = 'Client title';
+  }, []);
 
-    useEffect(() => {
-        if (clientById?._id !== clientId) {
-            getClient(clientId);
-        }
-    }, [getClient, clientId, clientById]);
+  useEffect(() => {
+    if (clientById?._id !== clientId) {
+      getClient(clientId);
+    }
+  }, [getClient, clientId, clientById]);
 
-    return (
-        <div>
-            <h3>Client info</h3>
-            <div>TODO: client's dictionary</div>
-            <div>{clientById?.name}</div>
-            <h3>Orders</h3>
-            {clientById?.orders && (
-                <Table
-                    data={clientById.orders}
-                    columns={ordersColumns}
-                    // isLoading={isLoading || isDeleting}
-                    // actions={tableActions}
-                    uniqueKey="_id"
-                />
-            )}
-        </div>
-    );
+  return (
+    <div>
+      <h3>Client info</h3>
+      <div>TODO: client's dictionary</div>
+      <div>{clientById?.name}</div>
+      <h3>Orders</h3>
+      {clientById?.orders && (
+        <Table
+          data={clientById.orders}
+          columns={ordersColumns}
+          // isLoading={isLoading || isDeleting}
+          // actions={tableActions}
+          uniqueKey="_id"
+        />
+      )}
+    </div>
+  );
 }
 
 const mapStateToProps = ({ clientsReducer }: RootState) => ({
-    clientById: clientsReducer.clientById,
+  clientById: clientsReducer.clientById,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<ClientsActions>) => ({
-    getClient: (id: string) => dispatch(getClientById(id)),
+  getClient: (id: string) => dispatch(getClientById(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ClientView);
 
 type MatchParams = {
-    id: string;
+  id: string;
 };
 type ReduxProps = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> &
-    RouteComponentProps<MatchParams>;
+  ReturnType<typeof mapDispatchToProps> &
+  RouteComponentProps<MatchParams>;

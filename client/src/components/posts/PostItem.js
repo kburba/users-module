@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import Comments from "./Comments";
+import React, { Component } from 'react';
+import Comments from './Comments';
 
 export default class PostItem extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      showComments: false
+      showComments: false,
     };
 
     this.toggleComments = this.toggleComments.bind(this);
@@ -16,6 +16,7 @@ export default class PostItem extends Component {
     const newValue = !this.state.showComments;
     this.setState({ showComments: newValue });
   }
+
   render() {
     const { post, auth, handleDelete, handleLike } = this.props;
     let deleteButton;

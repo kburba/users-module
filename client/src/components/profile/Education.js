@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import Moment from "react-moment";
-import { connect } from "react-redux";
-import { deleteEducation } from "../../store/actions/profileActions";
-import propTypes from "prop-types";
+import React, { Component } from 'react';
+import Moment from 'react-moment';
+import { connect } from 'react-redux';
+import propTypes from 'prop-types';
+import { deleteEducation } from '../../store/actions/profileActions';
 
 class Education extends Component {
   onDeleteClick(id) {
@@ -13,7 +13,7 @@ class Education extends Component {
     return (
       <div>
         {this.props.educations.length === 0 ? (
-          "No education."
+          'No education.'
         ) : (
           <div>
             <h2>Education Credentials</h2>
@@ -27,15 +27,15 @@ class Education extends Component {
                 </tr>
               </thead>
               <tbody>
-                {this.props.educations.map(education => {
+                {this.props.educations.map((education) => {
                   return (
                     <tr key={education._id}>
                       <td>{education.school}</td>
                       <td>{education.degree}</td>
                       <td>
-                        <Moment format="YYYY-MM-DD">{education.from}</Moment> -{" "}
+                        <Moment format="YYYY-MM-DD">{education.from}</Moment> -{' '}
                         {education.current === true ? (
-                          "Current"
+                          'Current'
                         ) : (
                           <Moment format="YYYY/MM/DD">{education.to}</Moment>
                         )}
@@ -61,7 +61,7 @@ class Education extends Component {
 }
 
 Education.propTypes = {
-  deleteEducation: propTypes.func.isRequired
+  deleteEducation: propTypes.func.isRequired,
 };
 
 export default connect(null, { deleteEducation })(Education);

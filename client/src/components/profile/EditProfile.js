@@ -1,36 +1,36 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
-import propTypes from "prop-types";
-import TextFieldGroup from "../common/TextFieldGroup";
-import TextAreaField from "../common/TextAreaField";
-import InputGroupField from "../common/InputGroupField";
-import SelectFieldGroup from "../common/SelectFieldGroup";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link, withRouter } from 'react-router-dom';
+import propTypes from 'prop-types';
+import TextFieldGroup from '../common/TextFieldGroup';
+import TextAreaField from '../common/TextAreaField';
+import InputGroupField from '../common/InputGroupField';
+import SelectFieldGroup from '../common/SelectFieldGroup';
 import {
   createProfile,
-  getCurrentProfile
-} from "../../store/actions/profileActions";
-import isEmpty from "../../validations/isEmpty";
+  getCurrentProfile,
+} from '../../store/actions/profileActions';
+import isEmpty from '../../validations/isEmpty';
 
 class CreateProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
       displaySocialInputs: false,
-      handle: "",
-      company: "",
-      website: "",
-      location: "",
-      status: "",
-      skills: "",
-      githubusername: "",
-      bio: "",
-      twitter: "",
-      facebook: "",
-      linkedin: "",
-      youtube: "",
-      instagram: "",
-      errors: {}
+      handle: '',
+      company: '',
+      website: '',
+      location: '',
+      status: '',
+      skills: '',
+      githubusername: '',
+      bio: '',
+      twitter: '',
+      facebook: '',
+      linkedin: '',
+      youtube: '',
+      instagram: '',
+      errors: {},
     };
 
     this.onChange = this.onChange.bind(this);
@@ -47,35 +47,35 @@ class CreateProfile extends Component {
     }
 
     if (nextProps.profile.profile) {
-      const profile = nextProps.profile.profile;
+      const { profile } = nextProps.profile;
 
       // Bring skills array back to CSV
-      const skillsCSV = profile.skills.join(",");
+      const skillsCSV = profile.skills.join(',');
 
       // If profile field doesnt exist, make empty string
-      profile.company = !isEmpty(profile.company) ? profile.company : "";
-      profile.website = !isEmpty(profile.website) ? profile.website : "";
-      profile.location = !isEmpty(profile.location) ? profile.location : "";
+      profile.company = !isEmpty(profile.company) ? profile.company : '';
+      profile.website = !isEmpty(profile.website) ? profile.website : '';
+      profile.location = !isEmpty(profile.location) ? profile.location : '';
       profile.githubusername = !isEmpty(profile.githubusername)
         ? profile.githubusername
-        : "";
-      profile.bio = !isEmpty(profile.bio) ? profile.bio : "";
+        : '';
+      profile.bio = !isEmpty(profile.bio) ? profile.bio : '';
       profile.social = !isEmpty(profile.social) ? profile.social : {};
       profile.twitter = !isEmpty(profile.social.twitter)
         ? profile.social.twitter
-        : "";
+        : '';
       profile.facebook = !isEmpty(profile.social.facebook)
         ? profile.social.facebook
-        : "";
+        : '';
       profile.linkedin = !isEmpty(profile.social.linkedin)
         ? profile.social.linkedin
-        : "";
+        : '';
       profile.youtube = !isEmpty(profile.social.youtube)
         ? profile.social.youtube
-        : "";
+        : '';
       profile.instagram = !isEmpty(profile.social.instagram)
         ? profile.social.instagram
-        : "";
+        : '';
 
       // Set component fields state
       this.setState({
@@ -90,7 +90,7 @@ class CreateProfile extends Component {
         twitter: profile.twitter,
         facebook: profile.facebook,
         linkedin: profile.linkedin,
-        youtube: profile.youtube
+        youtube: profile.youtube,
       });
     }
   }
@@ -111,7 +111,7 @@ class CreateProfile extends Component {
       facebook: this.state.facebook,
       linkedin: this.state.linkedin,
       youtube: this.state.youtube,
-      instagram: this.state.instagram
+      instagram: this.state.instagram,
     };
 
     this.props.createProfile(profileData, this.props.history);
@@ -179,15 +179,15 @@ class CreateProfile extends Component {
 
     // Select options for status
     const options = [
-      { label: "* Select Professional Status", value: 0 },
-      { label: "Developer", value: "Developer" },
-      { label: "Junior Developer", value: "Junior Developer" },
-      { label: "Senior Developer", value: "Senior Developer" },
-      { label: "Manager", value: "Manager" },
-      { label: "Student or Learning", value: "Student or Learning" },
-      { label: "Instructor or Teacher", value: "Instructor or Teacher" },
-      { label: "Intern", value: "Intern" },
-      { label: "Other", value: "Other" }
+      { label: '* Select Professional Status', value: 0 },
+      { label: 'Developer', value: 'Developer' },
+      { label: 'Junior Developer', value: 'Junior Developer' },
+      { label: 'Senior Developer', value: 'Senior Developer' },
+      { label: 'Manager', value: 'Manager' },
+      { label: 'Student or Learning', value: 'Student or Learning' },
+      { label: 'Instructor or Teacher', value: 'Instructor or Teacher' },
+      { label: 'Intern', value: 'Intern' },
+      { label: 'Other', value: 'Other' },
     ];
 
     return (
@@ -272,8 +272,8 @@ class CreateProfile extends Component {
                   <button
                     type="button"
                     onClick={() => {
-                      this.setState(prevState => ({
-                        displaySocialInputs: !prevState.displaySocialInputs
+                      this.setState((prevState) => ({
+                        displaySocialInputs: !prevState.displaySocialInputs,
                       }));
                     }}
                     className="btn btn-light"
@@ -301,12 +301,12 @@ CreateProfile.propTypes = {
   createProfile: propTypes.func.isRequired,
   getCurrentProfile: propTypes.func.isRequired,
   profile: propTypes.object.isRequired,
-  errors: propTypes.object.isRequired
+  errors: propTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   profile: state.profile,
-  errors: state.errors
+  errors: state.errors,
 });
 
 export default connect(mapStateToProps, { createProfile, getCurrentProfile })(

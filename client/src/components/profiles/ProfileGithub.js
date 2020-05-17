@@ -1,15 +1,15 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 export default class ProfileGithub extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      clienctID: "17c148cb053baadcb29e",
-      clientSecret: "ba92ce48487d9e76dfcfd5a96a09b9ad41488535",
+      clienctID: '17c148cb053baadcb29e',
+      clientSecret: 'ba92ce48487d9e76dfcfd5a96a09b9ad41488535',
       count: 5,
-      sort: "created: asc",
-      repos: []
+      sort: 'created: asc',
+      repos: [],
     };
   }
 
@@ -20,18 +20,19 @@ export default class ProfileGithub extends Component {
     fetch(
       `https://api.github.com/users/${username}/repos?per_page=${count}&sort=${sort}&client_id=${clientID}&client_secret=${clientSecret}`
     )
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (this.refs.myRef) {
           this.setState({ repos: data });
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }
+
   render() {
     const { repos } = this.state;
 
-    const repoItems = repos.map(repo => {
+    const repoItems = repos.map((repo) => {
       return (
         <div key={repo.id} className="card card-body mb-2">
           <div className="row">
@@ -43,7 +44,7 @@ export default class ProfileGithub extends Component {
                   className="text-info"
                   target="_blank"
                 >
-                  {" "}
+                  {' '}
                   {repo.name}
                 </a>
               </h4>

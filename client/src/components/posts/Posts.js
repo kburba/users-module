@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import PostForm from "./PostForm";
-import PostFeed from "./PostFeed";
+import PostForm from './PostForm';
+import PostFeed from './PostFeed';
 
 class Posts extends Component {
   render() {

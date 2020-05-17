@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   POST_LOADING,
   GET_POSTS,
@@ -5,73 +6,72 @@ import {
   ADD_POST,
   DELETE_POST,
   LIKE_POST,
-  ADD_COMMENT
-} from "./types";
-import axios from "axios";
+  ADD_COMMENT,
+} from './types';
 
-export const addComment = postData => dispatch => {
+export const addComment = (postData) => (dispatch) => {
   axios
     .post(`api/posts/comment/${postData.post_id}`, postData)
-    .then(res =>
+    .then((res) =>
       dispatch({
         type: ADD_COMMENT,
-        payload: { response: res.data, post_id: postData.post_id }
+        payload: { response: res.data, post_id: postData.post_id },
       })
     )
-    .catch(err => dispatch({ type: GET_ERRORS, payload: err.response.data }));
+    .catch((err) => dispatch({ type: GET_ERRORS, payload: err.response.data }));
 };
 
-export const likePost = postData => dispatch => {
+export const likePost = (postData) => (dispatch) => {
   axios
     .post(`api/posts/like/${postData.post_id}`)
-    .then(res => dispatch({ type: LIKE_POST, payload: postData }))
-    .catch(err => dispatch({ type: GET_ERRORS, payload: err.response.data }));
+    .then((res) => dispatch({ type: LIKE_POST, payload: postData }))
+    .catch((err) => dispatch({ type: GET_ERRORS, payload: err.response.data }));
 };
 
-export const deletePost = post_id => dispatch => {
+export const deletePost = (post_id) => (dispatch) => {
   axios
     .delete(`api/posts/${post_id}`)
-    .then(res =>
+    .then((res) =>
       dispatch({
         type: DELETE_POST,
-        payload: post_id
+        payload: post_id,
       })
     )
-    .catch(err =>
+    .catch((err) =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
+        payload: err.response.data,
       })
     );
 };
 
-export const getPosts = () => dispatch => {
+export const getPosts = () => (dispatch) => {
   dispatch(setPostsLoading());
   axios
-    .get("/api/posts")
-    .then(res => dispatch({ type: GET_POSTS, payload: res.data }))
-    .catch(err => dispatch({ type: GET_POSTS, payload: null }));
+    .get('/api/posts')
+    .then((res) => dispatch({ type: GET_POSTS, payload: res.data }))
+    .catch((err) => dispatch({ type: GET_POSTS, payload: null }));
 };
 
-export const addPost = postData => dispatch => {
+export const addPost = (postData) => (dispatch) => {
   axios
-    .post("/api/posts", postData)
-    .then(res =>
+    .post('/api/posts', postData)
+    .then((res) =>
       dispatch({
         type: ADD_POST,
-        payload: res.data
+        payload: res.data,
       })
     )
-    .catch(err =>
+    .catch((err) =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
+        payload: err.response.data,
       })
     );
 };
 
 export const setPostsLoading = () => {
   return {
-    type: POST_LOADING
+    type: POST_LOADING,
   };
 };

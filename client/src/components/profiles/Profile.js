@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
-import propTypes from "prop-types";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import propTypes from 'prop-types';
 
-import ProfileHead from "./ProfileHead";
-import ProfileBio from "./ProfileBio";
-import ProfileCreds from "./ProfileCreds";
-import ProfileGithub from "./ProfileGithub";
-import Spinner from "../common/Spinner";
+import ProfileHead from './ProfileHead';
+import ProfileBio from './ProfileBio';
+import ProfileCreds from './ProfileCreds';
+import ProfileGithub from './ProfileGithub';
+import Spinner from '../common/Spinner';
 
-import { getProfileByHandle } from "../../store/actions/profileActions";
-import isEmpty from "../../validations/isEmpty";
+import { getProfileByHandle } from '../../store/actions/profileActions';
+import isEmpty from '../../validations/isEmpty';
 
 class Profile extends Component {
   componentDidMount() {
@@ -22,7 +22,7 @@ class Profile extends Component {
       nextProps.profile.profile === null &&
       this.props.profile.loading === true
     ) {
-      this.props.history.push("/not-found");
+      this.props.history.push('/not-found');
     }
   }
 
@@ -67,11 +67,11 @@ class Profile extends Component {
 
 Profile.propTypes = {
   getProfileByHandle: propTypes.func.isRequired,
-  profile: propTypes.object.isRequired
+  profile: propTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
-  profile: state.profile
+const mapStateToProps = (state) => ({
+  profile: state.profile,
 });
 
 export default connect(mapStateToProps, { getProfileByHandle })(Profile);

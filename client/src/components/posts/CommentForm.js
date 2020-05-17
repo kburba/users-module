@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import propTypes from "prop-types";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import propTypes from 'prop-types';
 
-import { addComment } from "../../store/actions/postActions";
-import TextAreaField from "../common/TextAreaField";
+import { addComment } from '../../store/actions/postActions';
+import TextAreaField from '../common/TextAreaField';
 
 class CommentForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      text: "",
-      errors: {}
+      text: '',
+      errors: {},
     };
   }
 
@@ -21,23 +21,25 @@ class CommentForm extends Component {
     }
   }
 
-  handleChange = e => {
+  handleChange = (e) => {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
-  handleSubmit = e => {
+
+  handleSubmit = (e) => {
     e.preventDefault();
 
     const newComment = {
       text: this.state.text,
       name: this.props.auth.user.name,
       avatar: this.props.auth.user.avatar,
-      post_id: this.props.postID
+      post_id: this.props.postID,
     };
     this.props.addComment(newComment);
-    this.setState({ text: "" });
+    this.setState({ text: '' });
   };
+
   render() {
     const { errors } = this.state;
 
@@ -78,11 +80,11 @@ class CommentForm extends Component {
 CommentForm.propTypes = {
   addComment: propTypes.func.isRequired,
   auth: propTypes.object.isRequired,
-  errors: propTypes.object.isRequired
+  errors: propTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   errors: state.errors,
-  auth: state.auth
+  auth: state.auth,
 });
 export default connect(mapStateToProps, { addComment })(CommentForm);

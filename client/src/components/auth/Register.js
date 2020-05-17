@@ -1,21 +1,21 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { registerUser } from "../../store/actions/authActions";
-import propTypes from "prop-types";
-import { withRouter } from "react-router-dom";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import propTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import { registerUser } from '../../store/actions/authActions';
 
-import TextFieldGroup from "../common/TextFieldGroup";
+import TextFieldGroup from '../common/TextFieldGroup';
 
 class Register extends Component {
   constructor() {
     super();
 
     this.state = {
-      name: "",
-      email: "",
-      password: "",
-      password2: "",
-      errors: {}
+      name: '',
+      email: '',
+      password: '',
+      password2: '',
+      errors: {},
     };
   }
 
@@ -25,23 +25,23 @@ class Register extends Component {
     }
   }
 
-  handleInputChange = e => {
-    const value = e.target.value;
-    const name = e.target.name;
+  handleInputChange = (e) => {
+    const { value } = e.target;
+    const { name } = e.target;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
 
     const newUser = {
       name: this.state.name,
       email: this.state.email,
       password: this.state.password,
-      password2: this.state.password2
+      password2: this.state.password2,
     };
 
     this.props.registerUser(newUser, this.props.history);
@@ -110,12 +110,12 @@ class Register extends Component {
 Register.propTypes = {
   registerUser: propTypes.func.isRequired,
   auth: propTypes.object.isRequired,
-  errors: propTypes.object.isRequired
+  errors: propTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
-  errors: state.errors
+  errors: state.errors,
 });
 
 export default connect(mapStateToProps, { registerUser })(withRouter(Register));

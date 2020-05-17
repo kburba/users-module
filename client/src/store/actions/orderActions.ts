@@ -11,61 +11,61 @@ import {
   ADD_ORDER_ERROR,
   DELETE_ORDER,
   DELETE_ORDER_SUCCESS,
-  DELETE_ORDER_ERROR
-} from "../actions/types";
+  DELETE_ORDER_ERROR,
+} from './types';
 import {
   OrderActions,
   Order,
   NewOrder,
-  UpdatedOrder
-} from "../types/orderTypes";
+  UpdatedOrder,
+} from '../types/orderTypes';
 
 export function setOrdersModal(status: boolean): OrderActions {
   return {
     type: ORDERS_MODAL_ISOPEN,
-    status
+    status,
   };
 }
 
 export function updateOrderAction(service: UpdatedOrder): OrderActions {
   return {
     type: UPDATE_ORDER,
-    payload: service
+    payload: service,
   };
 }
 
 export function updateOrderSuccessAction(service: UpdatedOrder): OrderActions {
   return {
     type: UPDATE_ORDER_SUCCESS,
-    payload: service
+    payload: service,
   };
 }
 
 export function updateOrderErrorAction(error: any): OrderActions {
   return {
     type: UPDATE_ORDER_ERROR,
-    error
+    error,
   };
 }
 
 export function addOrderAction(data: NewOrder): OrderActions {
   return {
     type: ADD_ORDER,
-    payload: data
+    payload: data,
   };
 }
 
 export function addOrderSuccessAction(service: Order): OrderActions {
   return {
     type: ADD_ORDER_SUCCESS,
-    payload: service
+    payload: service,
   };
 }
 
 export function addOrderErrorAction(error: any): OrderActions {
   return {
     type: ADD_ORDER_ERROR,
-    error
+    error,
   };
 }
 
