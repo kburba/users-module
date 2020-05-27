@@ -1,6 +1,5 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
 import Axios from 'axios';
-import jwt_decode from 'jwt-decode';
 import { LOGIN_USER, GET_CURRENT_USER } from '../actions/types';
 import {
   setCurrentUser,
@@ -34,13 +33,8 @@ function* loginUserSaga({ payload }: LoginUserType) {
     // Set token to Auth header
     setAuthToken(token);
 
-    // Decode token to get user data
-    const decoded = jwt_decode(token);
-
     // Set current user
-    // yield put(setCurrentUser(decoded));
     yield put(getCurrentUser());
-    // history.push('/orders');
   } catch (error) {
     yield put(loginUserError(error.response.data));
   }
