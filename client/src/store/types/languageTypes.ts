@@ -14,8 +14,12 @@ import {
   LANGUAGES_MODAL_ISOPEN,
 } from '../actions/types';
 
+export type NewLanguage = Pick<Language, 'code' | 'name' | 'nativeName'>;
+
 export type Language = {
   _id: string;
+  code: string;
+  nativeName: string;
   name: string;
   createdAt?: string;
 };
@@ -67,7 +71,7 @@ type Update =
 
 export interface AddLanguageAction {
   type: typeof ADD_LANGUAGE;
-  payload: string;
+  payload: NewLanguage;
 }
 
 export interface AddLanguageSuccessAction {

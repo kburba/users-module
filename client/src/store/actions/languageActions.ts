@@ -13,7 +13,7 @@ import {
   UPDATE_LANGUAGE_SUCCESS,
   LANGUAGES_MODAL_ISOPEN,
 } from './types';
-import { LanguageActions, Language } from '../types/languageTypes';
+import { LanguageActions, Language, NewLanguage } from '../types/languageTypes';
 
 export function setLanguagesModal(status: boolean): LanguageActions {
   return {
@@ -45,10 +45,10 @@ export function updateLanguageErrorAction(error: any): LanguageActions {
   };
 }
 
-export function addLanguageAction(name: string): LanguageActions {
+export function addLanguageAction(language: NewLanguage): LanguageActions {
   return {
     type: ADD_LANGUAGE,
-    payload: name,
+    payload: language,
   };
 }
 

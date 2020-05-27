@@ -41,5 +41,6 @@ export default {
     key: 'totalPrice',
     title: 'Total',
     valueType: ValueTypes.currency,
+    totalsType: 'sum',
   },
 };

@@ -10,8 +10,10 @@ import { ordersColumns } from '../orders/OrdersTable';
 function ClientView({ match, getClient, clientById }: ReduxProps) {
   const clientId = match.params.id;
   useEffect(() => {
-    document.title = 'Client title';
-  }, []);
+    if (clientById) {
+      document.title = clientById.name;
+    }
+  }, [clientById]);
 
   useEffect(() => {
     if (clientById?._id !== clientId) {

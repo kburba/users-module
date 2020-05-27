@@ -13,6 +13,9 @@ import {
   DELETE_ORDER,
   DELETE_ORDER_SUCCESS,
   DELETE_ORDER_ERROR,
+  GET_ORDER_BY_ID_STARTED,
+  GET_ORDER_BY_ID_SUCCEED,
+  GET_ORDER_BY_ID_FAILED,
 } from '../actions/types';
 import { Service } from './serviceTypes';
 import { Client } from './clientTypes';
@@ -60,7 +63,9 @@ interface OrderDetails {
 interface OrderService {
   _id: string;
   service: Service;
-  customPrice: number;
+  customPrice?: number;
+  pagesQty?: number;
+  totalPrice?: number;
 }
 
 export interface Order {
@@ -72,12 +77,33 @@ export interface Order {
   total: number;
 }
 
-export type OrderActions = Get | Add | Update | Delete | SetOrdersModal;
+export type OrderActions =
+  | Get
+  | GetById
+  | Add
+  | Update
+  | Delete
+  | SetOrdersModal;
 
 export type SetOrdersModal = {
   type: typeof ORDERS_MODAL_ISOPEN;
   status: boolean;
 };
+
+export type GetOrderById = {
+  type: typeof GET_ORDER_BY_ID_STARTED;
+  payload: string;
+};
+export type GetOrderByIdSucceed = {
+  type: typeof GET_ORDER_BY_ID_SUCCEED;
+  payload: Order;
+};
+export type GetOrderByIdFailed = {
+  type: typeof GET_ORDER_BY_ID_FAILED;
+  error: string;
+};
+
+type GetById = GetOrderById | GetOrderByIdSucceed | GetOrderByIdFailed;
 
 export type GetOrdersAction = {
   type: typeof GET_ORDERS;
@@ -102,7 +128,7 @@ export interface UpdateOrderAction {
 
 export interface UpdateOrderSuccessAction {
   type: typeof UPDATE_ORDER_SUCCESS;
-  payload: UpdatedOrder;
+  payload: Order;
 }
 
 export interface UpdateOrderErrorAction {

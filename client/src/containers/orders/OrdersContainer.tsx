@@ -8,8 +8,8 @@ import { OrderActions } from '../../store/types/orderTypes';
 import Spinner from '../../components/common/Spinner';
 import OrdersTable from './OrdersTable';
 import PrivateRoute from '../../components/common/PrivateRoute';
-import ViewOrder from './ViewOrder';
-import NewOrderForm from './NewOrderForm';
+// import ViewOrder from './ViewOrder';
+// import NewOrderForm from './NewOrderForm';
 import { RootState } from '../../store/reducers';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import { OrdersState } from '../../store/reducers/ordersReducer';
@@ -35,9 +35,9 @@ function OrdersContainer({ getOrders, isLoading, error }: ReduxProps) {
       {error && <ErrorMessage error={error} />}
       <div>TODO: by month, by client, monthly client orders</div>
       <Switch>
-        <PrivateRoute exact path="/orders" component={OrdersTable} />
-        <PrivateRoute path="/orders/new" component={NewOrderForm} />
-        <PrivateRoute path="/orders/:id" component={ViewOrder} />
+        <PrivateRoute path="/orders" component={OrdersTable} />
+        {/* <PrivateRoute path="/orders/new" component={NewOrderForm} /> */}
+        {/* <PrivateRoute exact path="/orders/:id" component={ViewOrder} /> */}
       </Switch>
     </Container>
   );

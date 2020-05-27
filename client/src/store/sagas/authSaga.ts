@@ -1,23 +1,33 @@
-import { takeLatest, put } from 'redux-saga/effects';
+import { takeLatest, put, call } from 'redux-saga/effects';
 import Axios from 'axios';
 import jwt_decode from 'jwt-decode';
-import { LOGIN_USER } from '../actions/types';
-import { setCurrentUser, loginUserError } from '../actions/authActions';
+import { LOGIN_USER, GET_CURRENT_USER } from '../actions/types';
+import {
+  setCurrentUser,
+  loginUserError,
+  getCurrentUser,
+} from '../actions/authActions';
 import setAuthToken from '../../utils/setAuthToken';
-import { history } from '../../App';
 
 interface LoginUserType {
   type: typeof LOGIN_USER;
   payload: { email: string; password: string };
 }
 
+function loginApi(authParams) {
+  return Axios.post('/api/users/login', authParams)
+    .then((response) => response)
+    .catch((errors) => {
+      throw errors;
+    });
+}
+
 function* loginUserSaga({ payload }: LoginUserType) {
   try {
     const { email, password } = payload;
-    const loginData = yield Axios.post('/api/users/login', { email, password });
-
+    const response = yield call(loginApi, { email, password });
     // Save to localStorage
-    const { token } = loginData.data;
+    const { token } = response.data;
 
     yield localStorage.setItem('jwtToken', token);
 
@@ -28,13 +38,25 @@ function* loginUserSaga({ payload }: LoginUserType) {
     const decoded = jwt_decode(token);
 
     // Set current user
-    yield put(setCurrentUser(decoded));
-    history.push('/orders');
+    // yield put(setCurrentUser(decoded));
+    yield put(getCurrentUser());
+    // history.push('/orders');
   } catch (error) {
     yield put(loginUserError(error.response.data));
   }
 }
 
+function* getCurrentUserSaga() {
+  try {
+    const response = yield call(Axios.get, '/api/users/me');
+    console.log('response', response.data);
+    yield put(setCurrentUser(response.data));
+  } catch (e) {
+    console.log('error current user', e.message);
+  }
+}
+
 export default function* authWatcherSaga() {
   yield takeLatest(LOGIN_USER, loginUserSaga);
+  yield takeLatest(GET_CURRENT_USER, getCurrentUserSaga);
 }

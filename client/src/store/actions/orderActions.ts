@@ -12,12 +12,18 @@ import {
   DELETE_ORDER,
   DELETE_ORDER_SUCCESS,
   DELETE_ORDER_ERROR,
+  GET_ORDER_BY_ID_STARTED,
+  GET_ORDER_BY_ID_SUCCEED,
+  GET_ORDER_BY_ID_FAILED,
 } from './types';
 import {
   OrderActions,
   Order,
   NewOrder,
   UpdatedOrder,
+  GetOrderById,
+  GetOrderByIdSucceed,
+  GetOrderByIdFailed,
 } from '../types/orderTypes';
 
 export function setOrdersModal(status: boolean): OrderActions {
@@ -34,7 +40,7 @@ export function updateOrderAction(service: UpdatedOrder): OrderActions {
   };
 }
 
-export function updateOrderSuccessAction(service: UpdatedOrder): OrderActions {
+export function updateOrderSuccessAction(service: Order): OrderActions {
   return {
     type: UPDATE_ORDER_SUCCESS,
     payload: service,
@@ -91,4 +97,23 @@ export function getOrdersSuccessAction(services: Order[]): OrderActions {
 
 export function getOrdersErrorAction(error: any): OrderActions {
   return { type: GET_ORDERS_ERROR, error };
+}
+
+export function getOrderById(id: string): GetOrderById {
+  return {
+    type: GET_ORDER_BY_ID_STARTED,
+    payload: id,
+  };
+}
+export function getOrderByIdSucceed(order: Order): GetOrderByIdSucceed {
+  return {
+    type: GET_ORDER_BY_ID_SUCCEED,
+    payload: order,
+  };
+}
+export function getOrderByIdFailed(error: string): GetOrderByIdFailed {
+  return {
+    type: GET_ORDER_BY_ID_FAILED,
+    error,
+  };
 }

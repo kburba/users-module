@@ -1,19 +1,19 @@
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
-const passport = require('passport');
+const passport = require("passport");
 
-const validateOrdersInput = require('../../validation/orders');
+const validateOrdersInput = require("../../validation/orders");
 
-const Language = require('../../modules/Language');
-const Order = require('../../modules/Order');
+const Language = require("../../modules/Language");
+const Order = require("../../modules/Order");
 
 // @ROUTE   DELETE api/orders/:id,
 // @DESC    Delete existing language
 // @ACCESS  Private
 router.delete(
-  '/:id',
-  passport.authenticate('jwt', {
+  "/:id",
+  passport.authenticate("jwt", {
     session: false,
   }),
   (req, res) => {
@@ -37,8 +37,8 @@ router.delete(
 // @DESC    Update existing language
 // @ACCESS  Private
 router.put(
-  '/:lang_id',
-  passport.authenticate('jwt', {
+  "/:lang_id",
+  passport.authenticate("jwt", {
     session: false,
   }),
   (req, res) => {
@@ -58,32 +58,62 @@ router.put(
         if (err) {
           res.send(err);
         }
-        res.json({ message: 'Language updated' });
+        res.json({ message: "Language updated" });
       });
     });
   }
 );
 
-// @ROUTE   GET api/orders
-// @DESC    Get all orders
+// @ROUTE   GET api/orders/:id
+// @DESC    Get order by ID
 // @ACCESS  Private
 router.get(
-  '/',
-  passport.authenticate('jwt', {
+  "/:id",
+  passport.authenticate("jwt", {
     session: false,
   }),
   (req, res) => {
-    Order.find(null, 'client createdAt updatedAt details services total')
-      .sort('-createdAt')
-      .populate('client', 'name')
+    const orderId = req.params.id;
+    Order.findById(orderId, "client createdAt updatedAt details services total")
+      .sort("-createdAt")
+      .populate("client", "name")
       .populate({
-        path: 'services.service',
-        populate: { path: 'from to', select: 'name' },
+        path: "services.service",
+        populate: { path: "from to", select: "name" },
       })
       .then((orders) => {
         if (!orders) {
           const errors = {
-            noItems: 'Error finding orders.',
+            noItems: "Error finding orders.",
+          };
+          return res.status(404).json(errors);
+        }
+
+        return res.status(200).json(orders);
+      })
+      .catch((err) => res.status(404).json(err.errors));
+  }
+);
+// @ROUTE   GET api/orders
+// @DESC    Get all orders
+// @ACCESS  Private
+router.get(
+  "/",
+  passport.authenticate("jwt", {
+    session: false,
+  }),
+  (req, res) => {
+    Order.find(null, "client createdAt updatedAt details services total")
+      .sort("-createdAt")
+      .populate("client", "name")
+      .populate({
+        path: "services.service",
+        populate: { path: "from to", select: "name" },
+      })
+      .then((orders) => {
+        if (!orders) {
+          const errors = {
+            noItems: "Error finding orders.",
           };
           return res.status(404).json(errors);
         }
@@ -98,8 +128,8 @@ router.get(
 // @desc    Add new order
 // @access  Private
 router.post(
-  '/',
-  passport.authenticate('jwt', { session: false }),
+  "/",
+  passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const { errors, isValid } = validateOrdersInput(req.body);
     if (!isValid) {
@@ -122,19 +152,19 @@ router.post(
         order.populate(
           [
             {
-              path: 'services.service',
-              populate: { path: 'from to', select: 'name' },
+              path: "services.service",
+              populate: { path: "from to", select: "name" },
             },
             {
-              path: 'client',
-              populate: { path: 'client', select: 'name' },
+              path: "client",
+              populate: { path: "client", select: "name" },
             },
           ],
           (err, doc) => {
             if (err) {
               return res
                 .status(400)
-                .json({ message: 'Could not populate new order values' });
+                .json({ message: "Could not populate new order values" });
             }
             return res.json(doc);
           }

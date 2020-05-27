@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import moment from 'moment';
 import { RootState } from '../../store/reducers';
 import columns from '../../components/table/columns';
 import Table from '../../components/table/Table';
+import { Container } from '@material-ui/core';
+import { getOrderById } from '../../store/actions/orderActions';
+import { GetOrderById } from '../../store/types/orderTypes';
+import { Dispatch } from 'redux';
 
 function formatCurrency(value) {
   if (typeof value === 'number') {
@@ -16,73 +20,83 @@ function formatCurrency(value) {
   return '';
 }
 
-function ViewOrder({ orders, match }: ViewOrderProps) {
-  const orderById = orders.find((x) => x._id === match.params.id);
+function ViewOrder({ orders, match, orderById, getOrderById }: ViewOrderProps) {
+  const orderId = match.params.id;
+
+  useEffect(() => {
+    if (orderById?._id !== orderId) {
+      getOrderById(orderId);
+    }
+  }, [getOrderById, orderId, orderById]);
+
+  const order = orderById;
+
+  const flatServices = order
+    ? order.services.map((x) => ({
+        ...x,
+        type: x.service.type,
+        from: x.service.from,
+        to: x.service.to,
+        price: x.service.price,
+      }))
+    : [];
   return (
-    <div>
+    <Container>
       <Link to="/orders">Back to orders</Link>
       <div>
-        {orderById && (
+        {order && (
           <h2>
-            {orderById.details.orderId}: {orderById.details.name}
+            {order.details.orderId}: {order.details.name}
           </h2>
         )}
         <h3>Order details</h3>
         <div>
-          {orderById && (
+          {order && (
             <div>
-              <div>Created: {moment(orderById.createdAt).format('LLLL')}</div>
+              <div>Created: {moment(order.createdAt).format('LLLL')}</div>
             </div>
           )}
         </div>
         <h3>Client</h3>
         <div>
-          {orderById && orderById.client && (
-            <Link to={`/clients/${orderById.client._id}`}>
-              {orderById.client.name}
-            </Link>
+          {order && order.client && (
+            <Link to={`/clients/${order.client._id}`}>{order.client.name}</Link>
           )}
         </div>
         <h3>Order services</h3>
-        {/* {orderById && (
-                    <Table
-                        data={orderById.services}
-                        columns={[
-                            columns.type,
-                            columns.from,
-                            columns.to,
-                            columns.pagesQty,
-                            columns.price,
-                            columns.totalPrice,
-                        ]}
-                        uniqueKey="_id"
-                    />
-                )} */}
-        {orderById && (
-          <ul>
-            {orderById.services.map((orderService) => (
-              <li key={orderService._id}>
-                {`${orderService.service.type}: ${
-                  orderService.service.from.name
-                } -> ${orderService.service.to.name} (${formatCurrency(
-                  orderService.service.price
-                )})`}
-              </li>
-            ))}
-          </ul>
+        {order && (
+          <Table
+            data={flatServices}
+            columns={[
+              columns.type,
+              columns.from,
+              columns.to,
+              columns.pagesQty,
+              columns.price,
+              columns.totalPrice,
+            ]}
+            uniqueKey="_id"
+            // actions={servicesTableActions}
+          />
         )}
-        {orderById?.total && <h2>Total: {formatCurrency(orderById.total)}</h2>}
+        {order?.total && <h2>Total: {formatCurrency(order.total)}</h2>}
       </div>
-    </div>
+    </Container>
   );
 }
 
-const mapStateToProps = ({ ordersReducer }: RootState) => ({
-  orders: ordersReducer.orders,
+const mapDispatchToProps = (dispatch: Dispatch<GetOrderById>) => ({
+  getOrderById: (id: string) => dispatch(getOrderById(id)),
 });
 
-export default connect(mapStateToProps)(ViewOrder);
+const mapStateToProps = ({ ordersReducer }: RootState) => ({
+  orders: ordersReducer.orders,
+  orderById: ordersReducer.orderById,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ViewOrder);
 
 type MatchParams = { id: string };
 type ViewOrderProps = ReturnType<typeof mapStateToProps> &
+  ReturnType<typeof mapDispatchToProps> &
   RouteComponentProps<MatchParams>;

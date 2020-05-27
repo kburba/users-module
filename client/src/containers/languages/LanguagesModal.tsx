@@ -4,7 +4,11 @@ import Modal from 'react-modal';
 import { useForm } from 'react-hook-form';
 import { Button, CircularProgress } from '@material-ui/core';
 import { Clear as ClearIcon, Save as SaveIcon } from '@material-ui/icons';
-import { LanguageActions, Language } from '../../store/types/languageTypes';
+import {
+  LanguageActions,
+  Language,
+  NewLanguage,
+} from '../../store/types/languageTypes';
 import {
   setLanguagesModal,
   addLanguageAction,
@@ -15,7 +19,9 @@ import { LanguagesState } from '../../store/reducers/languagesReducer';
 import TextField from '../../components/common/TextField';
 
 type FormData = {
+  code: string;
   name: string;
+  nativeName: string;
 };
 
 function LanguagesModal({
@@ -28,21 +34,30 @@ function LanguagesModal({
 }: LangModalProps) {
   const { register, handleSubmit, errors } = useForm<FormData>({
     defaultValues: {
+      code: initialValues?.code || '',
       name: initialValues?.name || '',
+      nativeName: initialValues?.nativeName || '',
     },
   });
 
-  const handleAdd = (data) => {
-    addLanguage(data.name);
+  const handleAdd = (data: FormData) => {
+    const newLanguage = {
+      code: data.code,
+      name: data.name,
+      nativeName: data.nativeName,
+    };
+    addLanguage(newLanguage);
   };
 
-  function handleEdit(data) {
+  function handleEdit(data: FormData) {
     if (!initialValues) {
       return;
     }
     const updatedLanguage = {
       _id: initialValues._id,
+      code: data.code,
       name: data.name,
+      nativeName: data.nativeName,
     };
     updateLanguage(updatedLanguage);
   }
@@ -56,12 +71,36 @@ function LanguagesModal({
     >
       <form onSubmit={handleSubmit(initialValues ? handleEdit : handleAdd)}>
         <TextField
-          label="Language"
+          label="Code"
+          placeholder="Enter code"
+          inputRef={register({
+            required: 'Please add code',
+            maxLength: {
+              value: 2,
+              message: 'Should not exceed 2 characters',
+            },
+          })}
+          name="code"
+          defaultValue={initialValues?.code}
+          error={errors.code?.message}
+          autofocus
+        />
+        <TextField
+          label="Language Name"
           placeholder="Enter name"
           inputRef={register({ required: 'Please add name' })}
           name="name"
           defaultValue={initialValues?.name}
           error={errors.name?.message}
+          autofocus
+        />
+        <TextField
+          label="Native Name"
+          placeholder="Enter native name"
+          inputRef={register({ required: 'Please add native name' })}
+          name="nativeName"
+          defaultValue={initialValues?.nativeName}
+          error={errors.nativeName?.message}
           autofocus
         />
         <div style={{ marginTop: '15px' }}>
@@ -104,7 +143,8 @@ const mapStateToProps = ({ languagesReducer }: RootState): MapStateToProps => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<LanguageActions>) => ({
   setModal: (status: boolean) => dispatch(setLanguagesModal(status)),
-  addLanguage: (name: string) => dispatch(addLanguageAction(name)),
+  addLanguage: (newLanguage: NewLanguage) =>
+    dispatch(addLanguageAction(newLanguage)),
   updateLanguage: (language: Language) =>
     dispatch(updateLanguageAction(language)),
 });

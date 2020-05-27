@@ -8,6 +8,7 @@ import {
   LOGIN_USER,
   LOGIN_USER_ERROR,
   LOGOUT_USER,
+  GET_CURRENT_USER,
 } from './types';
 // Register user
 export const registerUser = (userData, history) => (dispatch) => {
@@ -39,6 +40,12 @@ export function loginUserError(errors: { email?: string }): AuthActions {
   return {
     type: LOGIN_USER_ERROR,
     errors,
+  };
+}
+
+export function getCurrentUser() {
+  return {
+    type: GET_CURRENT_USER,
   };
 }
 

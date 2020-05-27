@@ -12,8 +12,11 @@ import {
   DELETE_ORDER_SUCCESS,
   DELETE_ORDER,
   DELETE_ORDER_ERROR,
+  GET_ORDER_BY_ID_STARTED,
+  GET_ORDER_BY_ID_SUCCEED,
+  GET_ORDER_BY_ID_FAILED,
 } from '../actions/types';
-import { Order } from '../types/orderTypes';
+import { Order, OrderActions } from '../types/orderTypes';
 
 export type OrdersState = {
   error: null | string | { message: string };
@@ -22,21 +25,34 @@ export type OrdersState = {
   isLoading: boolean;
   isSubmitting: boolean;
   modalIsOpen: boolean;
+  orderById: Order | null;
   orders: Order[];
 };
 
 const initialState: OrdersState = {
-  error: null,
-  isDeleting: false,
-  isLoadedOrders: false,
-  isLoading: false,
-  isSubmitting: false,
-  modalIsOpen: false,
   orders: [],
+  orderById: null,
+  modalIsOpen: false,
+  isSubmitting: false,
+  isLoading: false,
+  isLoadedOrders: false,
+  isDeleting: false,
+  error: null,
 };
 
-export default (state = initialState, action): OrdersState => {
+export default (state = initialState, action: OrderActions): OrdersState => {
   switch (action.type) {
+    case GET_ORDER_BY_ID_STARTED:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case GET_ORDER_BY_ID_SUCCEED:
+      return {
+        ...state,
+        isLoading: false,
+        orderById: action.payload,
+      };
     case ADD_ORDER:
     case UPDATE_ORDER:
       return {
@@ -106,8 +122,10 @@ export default (state = initialState, action): OrdersState => {
     case ADD_ORDER_ERROR:
     case UPDATE_ORDER_ERROR:
     case DELETE_ORDER_ERROR:
+    case GET_ORDER_BY_ID_FAILED:
       return {
         ...state,
+        isLoading: false,
         isDeleting: false,
         isSubmitting: false,
         error: action.error,

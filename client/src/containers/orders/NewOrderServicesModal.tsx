@@ -1,37 +1,132 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { Button } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
-import SelectField from '../../components/common/SelectField';
-import Table from '../../components/table/Table';
+import SelectField, {
+  SelectFieldOption,
+} from '../../components/common/SelectField';
 import TextField from '../../components/common/TextField';
-import columns from '../../components/table/columns';
+import { ValueTypes } from '../../components/table/columns';
+import { formatValue } from '../../utils/utils';
+import { Service, ServiceWithDetails } from '../../store/types/serviceTypes';
+
+const serviceTypesOptions = [
+  {
+    value: 'proofreading',
+    text: 'Proofreading',
+  },
+  {
+    value: 'translation',
+    text: 'Translation',
+  },
+  {
+    value: 'editing',
+    text: 'Editing',
+  },
+];
+
+interface FormData {
+  pagesQty: string;
+  selectedService: string;
+}
 
 export default function NewOrderServicesModal({
-  errors,
-  filteredServices,
-  handleServiceFilterChange,
   isOpen,
-  languagesFrom,
-  languagesTo,
-  registerRef,
-  serviceTypesOptions,
-  servicesFilter,
-  // servicesTableActions,
+  services,
   setModal,
   addService,
+}: {
+  services: Service[];
+  isOpen: boolean;
+  setModal: (status: boolean) => void;
+  addService: (newService: ServiceWithDetails) => void;
 }) {
-  const {
-    handleSubmit,
-    register,
-    errors: formErrors,
-    setValue,
-    watch,
-  } = useForm<FormData>();
+  const [servicesFilter, setServicesFilter] = useState<
+    Pick<Service, 'type'> & { from: string; selectedService: string }
+  >({
+    type: 'translation',
+    from: '',
+    selectedService: '',
+  });
+
+  const { handleSubmit, register, errors, watch } = useForm<FormData>();
+
+  const languagesFrom: SelectFieldOption[] = [];
+  const languagesTo: SelectFieldOption[] = [];
+
+  services.forEach((service) => {
+    if (
+      service.type === servicesFilter.type &&
+      languagesFrom.findIndex((x) => x.value === service.from._id) === -1
+    ) {
+      languagesFrom.push({
+        text: service.from.name,
+        value: service.from._id,
+      });
+    }
+
+    if (
+      service.type === servicesFilter.type &&
+      service.from._id === servicesFilter.from &&
+      languagesTo.findIndex((x) => x.value === service._id) === -1
+    ) {
+      languagesTo.push({
+        text: service.to.name,
+        value: service._id,
+      });
+    }
+  });
+
+  function handleServiceFilterChange(name: string, value: string | number) {
+    const newFilter = {
+      ...servicesFilter,
+      [name]: value,
+    };
+    if (name === 'type' || name === 'from') {
+      newFilter.selectedService = '';
+    }
+    if (name === 'type') {
+      newFilter.selectedService = '';
+      newFilter.from = '';
+    }
+    if (
+      name === 'from' &&
+      services.filter((x) => x.from._id === value).length > 0
+    ) {
+      newFilter.selectedService = services.filter(
+        (x) => x.from._id === value
+      )[0]._id;
+    }
+
+    setServicesFilter(newFilter);
+  }
 
   function onSubmit(values) {
-    console.log('submitting', values);
+    const selectedService = services.find(
+      (x) => x._id === values.selectedService
+    );
+    if (selectedService) {
+      const { pagesQty } = values;
+      const newService: ServiceWithDetails = {
+        ...selectedService,
+        pagesQty,
+        totalPrice: selectedService
+          ? selectedService.price * parseFloat(values.pagesQty)
+          : null,
+      };
+      console.log('submitting newService', newService);
+      addService(newService);
+      setModal(false);
+    }
   }
+  const selectedService = services.find(
+    (x) => x._id === watch('selectedService')
+  );
+
+  const price = selectedService ? selectedService.price : null;
+  const totalPrice =
+    price && watch('pagesQty') ? price * parseFloat(watch('pagesQty')) : null;
+
   return (
     <Modal
       isOpen={isOpen}
@@ -55,13 +150,14 @@ export default function NewOrderServicesModal({
           onChange={handleServiceFilterChange}
         />
         <SelectField
-          value={servicesFilter.to}
-          name="to"
+          value={servicesFilter.selectedService}
+          name="selectedService"
           label="To"
           inputRef={register({ required: 'Please choose language' })}
           disabled={servicesFilter.from === ''}
           options={languagesTo}
           onChange={handleServiceFilterChange}
+          error={errors.selectedService?.message}
         />
         <TextField
           name="pagesQty"
@@ -70,12 +166,10 @@ export default function NewOrderServicesModal({
           placeholder="Please enter number of pages"
           error={errors.pagesQty?.message}
         />
-        {/* <Table
-          data={filteredServices}
-          columns={[columns.from, columns.to, columns.price]}
-          uniqueKey="_id"
-        /> */}
-        <div>Sum: {}</div>
+        <div>Price: {price && formatValue(price, ValueTypes.currency)}</div>
+        <div>
+          Sum: {totalPrice && formatValue(totalPrice, ValueTypes.currency)}
+        </div>
         <Button variant="contained" color="primary" type="submit">
           Add Service
         </Button>

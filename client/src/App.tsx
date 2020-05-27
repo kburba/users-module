@@ -22,6 +22,8 @@ import LanguagesContainer from './containers/languages/LanguagesContainer';
 import ServicesContainer from './containers/services/ServicesContainer';
 import OrdersContainer from './containers/orders/OrdersContainer';
 import ClientsContainer from './containers/clients/ClientsContainer';
+import NewOrderForm from './containers/orders/NewOrderForm';
+import ViewOrder from './containers/orders/ViewOrder';
 
 export const history = createBrowserHistory();
 
@@ -66,7 +68,10 @@ export default function App() {
                 component={ServicesContainer}
               />
               <PrivateRoute path="/clients" component={ClientsContainer} />
-              <PrivateRoute path="/orders" component={OrdersContainer} />
+              <PrivateRoute path="/orders/new" component={NewOrderForm} />
+              <PrivateRoute path="/orders/:id" component={ViewOrder} />
+              <PrivateRoute exact path="/orders" component={OrdersContainer} />
+
               <Route exact path="/not-found" component={NotFound} />
             </Switch>
             <Footer />

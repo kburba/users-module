@@ -5,6 +5,8 @@ import {
   AddOrderAction,
   UpdateOrderAction,
   DeleteOrderAction,
+  GetOrderById,
+  Order,
 } from '../types/orderTypes';
 import {
   addOrderSuccessAction,
@@ -15,15 +17,21 @@ import {
   deleteOrderErrorAction,
   getOrdersSuccessAction,
   getOrdersErrorAction,
+  getOrderByIdSucceed,
 } from '../actions/orderActions';
 import {
   ADD_ORDER,
   UPDATE_ORDER,
   GET_ORDERS,
   DELETE_ORDER,
+  GET_ORDER_BY_ID_STARTED,
 } from '../actions/types';
 import { resetLoadingCell } from '../actions/variousActions';
-import { getOrdersIsLoadedFromState, getOrdersFromState } from './selectors';
+import {
+  getOrdersIsLoadedFromState,
+  getOrdersFromState,
+  orderFromState,
+} from './selectors';
 
 function* addOrderSaga({ payload }: AddOrderAction) {
   try {
@@ -55,6 +63,21 @@ function* deleteOrderSaga({ payload }: DeleteOrderAction) {
   }
 }
 
+function* getOrderByIdSaga({ payload }: GetOrderById) {
+  try {
+    const ordersFromCache: Order[] = yield select(orderFromState);
+    const orderFromCache = ordersFromCache.find((x) => x._id === payload);
+    if (ordersFromCache && orderFromCache) {
+      yield put(getOrderByIdSucceed(orderFromCache));
+    } else {
+      const order = yield call(Axios.get, `/api/orders/${payload}`);
+      yield put(getOrderByIdSucceed(order.data));
+    }
+  } catch (error) {
+    console.log('error', error);
+    yield put(getOrdersErrorAction(error.message));
+  }
+}
 function* getOrdersSaga() {
   try {
     const isLoaded = yield select(getOrdersIsLoadedFromState);
@@ -73,7 +96,8 @@ function* getOrdersSaga() {
 
 export default function* ordersWatcherSaga() {
   yield takeLatest(ADD_ORDER, addOrderSaga);
-  yield takeLatest(UPDATE_ORDER, updateOrderSaga);
-  yield takeLatest(GET_ORDERS, getOrdersSaga);
   yield takeLatest(DELETE_ORDER, deleteOrderSaga);
+  yield takeLatest(GET_ORDERS, getOrdersSaga);
+  yield takeLatest(GET_ORDER_BY_ID_STARTED, getOrderByIdSaga);
+  yield takeLatest(UPDATE_ORDER, updateOrderSaga);
 }

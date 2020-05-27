@@ -1,16 +1,16 @@
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
-const passport = require('passport');
+const passport = require("passport");
 
-const Language = require('../../modules/Language');
+const Language = require("../../modules/Language");
 
 // @ROUTE   DELETE api/languages/:lang_id,
 // @DESC    Delete existing language
 // @ACCESS  Private
 router.delete(
-  '/:lang_id',
-  passport.authenticate('jwt', {
+  "/:lang_id",
+  passport.authenticate("jwt", {
     session: false,
   }),
   (req, res) => {
@@ -19,7 +19,7 @@ router.delete(
         res.send(err);
       }
       if (!lang) {
-        res.status(404).json({ success: false, error: 'Language not found' });
+        res.status(404).json({ success: false, error: "Language not found" });
       }
 
       res.status(200).json({ success: true, item: lang._doc });
@@ -32,8 +32,8 @@ router.delete(
 // @DESC    Update existing language
 // @ACCESS  Private
 router.put(
-  '/:lang_id',
-  passport.authenticate('jwt', {
+  "/:lang_id",
+  passport.authenticate("jwt", {
     session: false,
   }),
   (req, res) => {
@@ -48,7 +48,7 @@ router.put(
           if (err) {
             res.send(err);
           }
-          res.json({ message: 'Language updated' });
+          res.json({ message: "Language updated" });
         });
       }
     });
@@ -59,17 +59,17 @@ router.put(
 // @DESC get all languages
 // @ACCESS Private
 router.get(
-  '/',
-  passport.authenticate('jwt', {
+  "/",
+  passport.authenticate("jwt", {
     session: false,
   }),
   (req, res) => {
-    Language.find(null, 'name createdAt')
-      .sort('name')
+    Language.find(null)
+      .sort("name")
       .then((languages) => {
         if (!languages) {
           const errors = {
-            nolanguages: 'There are no languages',
+            nolanguages: "There are no languages",
           };
           return res.status(404).json(errors);
         }
@@ -78,7 +78,7 @@ router.get(
       })
       .catch((err) => {
         res.status(404).json({
-          noposts: 'Cannot get languages',
+          noposts: "Cannot get languages",
         });
       });
   }
@@ -88,14 +88,17 @@ router.get(
 // @desc add new languages
 // @access Private
 router.post(
-  '/',
-  passport.authenticate('jwt', {
+  "/",
+  passport.authenticate("jwt", {
     session: false,
   }),
   (req, res) => {
     // get post fields
+    const { name, code, nativeName } = req.body;
     const newLang = new Language({
-      name: req.body.name,
+      code,
+      name,
+      nativeName,
     });
 
     newLang.save().then((language) => res.json(language));

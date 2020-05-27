@@ -1,8 +1,11 @@
 import { RootState } from '../reducers';
 
+export const orderFromState = ({ ordersReducer }: RootState) =>
+  ordersReducer.orders;
+
 export const getClientsIsLoadedFromState = ({ clientsReducer }: RootState) =>
   clientsReducer.isLoadedClients;
-export const getClientsFromState = ({ clientsReducer }: RootState) =>
+export const clientsFromState = ({ clientsReducer }: RootState) =>
   clientsReducer.clients;
 export const getOrdersIsLoadedFromState = ({ ordersReducer }: RootState) =>
   ordersReducer.isLoadedOrders;

@@ -28,7 +28,7 @@ import {
 
 function* addLanguageSaga({ payload }: AddLanguageAction) {
   try {
-    const response = yield call(Axios.post, 'api/languages', { name: payload });
+    const response = yield call(Axios.post, 'api/languages', payload);
     yield put(addLanguageSuccessAction(response.data));
   } catch (error) {
     put(addLanguageErrorAction(error.response.data));

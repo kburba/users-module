@@ -7,7 +7,7 @@ import {
   UPDATE_CLIENT,
   GET_CLIENT_BY_ID,
 } from '../actions/types';
-import { getClientsIsLoadedFromState, getClientsFromState } from './selectors';
+import { getClientsIsLoadedFromState, clientsFromState } from './selectors';
 import {
   getClientsSuccessAction,
   getClientsErrorAction,
@@ -26,14 +26,26 @@ import {
   UpdateClientAction,
   GetClientById,
 } from '../types/clientTypes';
-import { history } from '../../App';
+import store from '../store';
+import { logoutUser } from '../actions/authActions';
+
+function apiFetch(params) {
+  return Axios.get(params)
+    .then((response) => response)
+    .catch((errors) => {
+      console.log('errors', errors);
+      if (errors.response.status === 401) {
+        console.log('response 401, call refreshToken');
+        store.dispatch(logoutUser());
+        throw new Error('unauthorised');
+      }
+      throw errors;
+    });
+}
 
 function* getClientByIdSaga({ payload }: GetClientById) {
   try {
-    const response = yield call(Axios.get, `/api/clients/${payload}`);
-    if (!response.ok && response.code === 401) {
-      history.push('/login');
-    }
+    const response = yield call(apiFetch, `/api/clients/${payload}`);
     yield put(getClientByIdSuccess(response.data));
   } catch (error) {
     yield put(getClientByIdError(error.message));
@@ -72,10 +84,10 @@ function* getClientsSaga() {
   try {
     const isLoaded = yield select(getClientsIsLoadedFromState);
     if (isLoaded) {
-      const clientsFromState = yield select(getClientsFromState);
-      yield put(getClientsSuccessAction(clientsFromState));
+      const clientsFromCache = yield select(clientsFromState);
+      yield put(getClientsSuccessAction(clientsFromCache));
     } else {
-      const clients = yield call(Axios.get, '/api/clients');
+      const clients = yield call(apiFetch, '/api/clients');
       yield put(getClientsSuccessAction(clients.data));
     }
   } catch (error) {
