@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
 const passport = require("passport");
+const tokenList = {};
 
 // load input validation
 const validateRegisterInput = require("../../validation/register");
@@ -109,12 +110,17 @@ router.post("/login", (req, res) => {
           payload,
           keys.secretOrKey,
           {
-            expiresIn: 60 * 15, // 15mins
+            expiresIn: 5, // 15 min
           },
           (err, token) => {
+            const refreshToken = jwt.sign(payload, keys.refreshTokenSecret, {
+              expiresIn: 30 * 24 * 60 * 60 * 1000, // 30 days
+            });
+            tokenList[refreshToken] = { user: user.email, refreshToken };
             res.json({
               success: true,
               token: "Bearer " + token,
+              refreshToken,
             });
           }
         );
@@ -124,6 +130,38 @@ router.post("/login", (req, res) => {
       }
     });
   });
+});
+
+// @ROUTE POST /api/users/token
+// @DESC Renew access token
+// @ACCESS Private
+
+router.post("/token", (req, res) => {
+  const postData = req.body;
+  if (postData.refreshToken && postData.refreshToken in tokenList) {
+    const user = postData.user;
+    const payload = {
+      id: user._id,
+      name: user.name,
+      avatar: user.avatar,
+    };
+
+    // Sign token
+    jwt.sign(
+      payload,
+      keys.secretOrKey,
+      {
+        expiresIn: 60 * 15, // 15 min
+      },
+      (err, token) => {
+        res.json({
+          token: "Bearer " + token,
+        });
+      }
+    );
+  } else {
+    res.status(404).json({ error: "Unauthorised request" });
+  }
 });
 
 // @route POST api/users/me

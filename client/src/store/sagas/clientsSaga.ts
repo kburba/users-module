@@ -26,22 +26,7 @@ import {
   UpdateClientAction,
   GetClientById,
 } from '../types/clientTypes';
-import store from '../store';
-import { logoutUser } from '../actions/authActions';
-
-function apiFetch(params) {
-  return Axios.get(params)
-    .then((response) => response)
-    .catch((errors) => {
-      console.log('errors', errors);
-      if (errors.response.status === 401) {
-        console.log('response 401, call refreshToken');
-        store.dispatch(logoutUser());
-        throw new Error('unauthorised');
-      }
-      throw errors;
-    });
-}
+import { apiFetch } from '../storeUtils';
 
 function* getClientByIdSaga({ payload }: GetClientById) {
   try {

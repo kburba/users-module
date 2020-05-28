@@ -26,9 +26,10 @@ function* loginUserSaga({ payload }: LoginUserType) {
     const { email, password } = payload;
     const response = yield call(loginApi, { email, password });
     // Save to localStorage
-    const { token } = response.data;
+    const { token, refreshToken } = response.data;
 
     yield localStorage.setItem('jwtToken', token);
+    yield localStorage.setItem('refreshToken', refreshToken);
 
     // Set token to Auth header
     setAuthToken(token);
