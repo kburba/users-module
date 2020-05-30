@@ -25,10 +25,14 @@ import {
   getLanguagesIsLoadedFromState,
   getLanguagesFromState,
 } from './selectors';
+import { apiFetch } from '../storeUtils';
 
 function* addLanguageSaga({ payload }: AddLanguageAction) {
   try {
-    const response = yield call(Axios.post, 'api/languages', payload);
+    const response = yield call(apiFetch, 'api/languages', {
+      method: 'POST',
+      data: payload,
+    });
     yield put(addLanguageSuccessAction(response.data));
   } catch (error) {
     put(addLanguageErrorAction(error.response.data));
@@ -38,7 +42,10 @@ function* addLanguageSaga({ payload }: AddLanguageAction) {
 function* updateLanguageSaga({ payload }: UpdateLanguageAction) {
   try {
     const { _id, name } = payload;
-    yield call(Axios.put, `api/languages/${_id}`, { name });
+    yield call(apiFetch, `api/languages/${_id}`, {
+      method: 'POST',
+      data: { name },
+    });
     yield put(updateLanguageSuccessAction(payload));
   } catch (error) {
     put(updateLanguageErrorAction(error.response.data));
@@ -47,7 +54,9 @@ function* updateLanguageSaga({ payload }: UpdateLanguageAction) {
 
 function* deleteLanguageSaga({ payload }: DeleteLanguageAction) {
   try {
-    yield call(Axios.delete, `api/languages/${payload}`);
+    yield call(apiFetch, `api/languages/${payload}`, {
+      method: 'DELETE',
+    });
     yield put(deleteLanguagesSuccessAction(payload));
   } catch (error) {
     yield put(deleteLanguageErrorAction(error.message));
@@ -61,7 +70,7 @@ function* getLanguagesSaga() {
       const languagesFromState = yield select(getLanguagesFromState);
       yield put(getLanguagesSuccessAction(languagesFromState));
     } else {
-      const languages = yield call(Axios.get, 'api/languages');
+      const languages = yield call(apiFetch, 'api/languages');
       yield put(getLanguagesSuccessAction(languages.data));
     }
   } catch (error) {
