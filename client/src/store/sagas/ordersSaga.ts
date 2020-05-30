@@ -1,5 +1,4 @@
 import { takeLatest, put, call, select } from 'redux-saga/effects';
-import Axios from 'axios';
 import { history } from '../../App';
 import {
   AddOrderAction,
@@ -32,10 +31,14 @@ import {
   getOrdersFromState,
   orderFromState,
 } from './selectors';
+import { apiFetch } from '../storeUtils';
 
 function* addOrderSaga({ payload }: AddOrderAction) {
   try {
-    const response = yield call(Axios.post, '/api/orders', payload);
+    const response = yield call(apiFetch, '/api/orders', {
+      method: 'POST',
+      data: payload,
+    });
     yield put(addOrderSuccessAction(response.data));
     history.push('/orders');
   } catch (error) {
@@ -46,7 +49,10 @@ function* addOrderSaga({ payload }: AddOrderAction) {
 function* updateOrderSaga({ payload }: UpdateOrderAction) {
   try {
     const { _id, ...order } = payload;
-    const updatedOrder = yield call(Axios.put, `/api/orders/${_id}`, order);
+    const updatedOrder = yield call(apiFetch, `/api/orders/${_id}`, {
+      method: 'PUT',
+      data: order,
+    });
     yield put(updateOrderSuccessAction(updatedOrder.data));
   } catch (error) {
     yield put(updateOrderErrorAction(error.response.data));
@@ -55,7 +61,7 @@ function* updateOrderSaga({ payload }: UpdateOrderAction) {
 
 function* deleteOrderSaga({ payload }: DeleteOrderAction) {
   try {
-    yield call(Axios.delete, `/api/orders/${payload}`);
+    yield call(apiFetch, `/api/orders/${payload}`);
     yield put(deleteOrdersSuccessAction(payload));
     yield put(resetLoadingCell());
   } catch (error) {
@@ -70,7 +76,7 @@ function* getOrderByIdSaga({ payload }: GetOrderById) {
     if (ordersFromCache && orderFromCache) {
       yield put(getOrderByIdSucceed(orderFromCache));
     } else {
-      const order = yield call(Axios.get, `/api/orders/${payload}`);
+      const order = yield call(apiFetch, `/api/orders/${payload}`);
       yield put(getOrderByIdSucceed(order.data));
     }
   } catch (error) {
@@ -85,7 +91,7 @@ function* getOrdersSaga() {
       const ordersFromState = yield select(getOrdersFromState);
       yield put(getOrdersSuccessAction(ordersFromState));
     } else {
-      const orders = yield call(Axios.get, '/api/orders');
+      const orders = yield call(apiFetch, '/api/orders');
       yield put(getOrdersSuccessAction(orders.data));
     }
   } catch (error) {

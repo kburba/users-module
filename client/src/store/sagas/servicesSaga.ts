@@ -1,5 +1,4 @@
 import { takeLatest, put, call, select } from 'redux-saga/effects';
-import Axios from 'axios';
 import {
   AddServiceAction,
   UpdateServiceAction,
@@ -26,10 +25,14 @@ import {
   getServicesIsLoadedFromState,
 } from './selectors';
 import { resetLoadingCell } from '../actions/variousActions';
+import { apiFetch } from '../storeUtils';
 
 function* addServiceSaga({ payload }: AddServiceAction) {
   try {
-    const response = yield call(Axios.post, '/api/services', payload);
+    const response = yield call(apiFetch, '/api/services', {
+      method: 'POST',
+      data: payload,
+    });
     yield put(addServiceSuccessAction(response.data));
   } catch (error) {
     put(addServiceErrorAction(error.response.data));
@@ -39,11 +42,10 @@ function* addServiceSaga({ payload }: AddServiceAction) {
 function* updateServiceSaga({ payload }: UpdateServiceAction) {
   try {
     const { _id, ...service } = payload;
-    const updatedService = yield call(
-      Axios.put,
-      `/api/services/${_id}`,
-      service
-    );
+    const updatedService = yield call(apiFetch, `/api/services/${_id}`, {
+      method: 'PUT',
+      data: service,
+    });
     yield put(updateServiceSuccessAction(updatedService.data));
   } catch (error) {
     put(updateServiceErrorAction(error.response.data));
@@ -52,7 +54,9 @@ function* updateServiceSaga({ payload }: UpdateServiceAction) {
 
 function* deleteServiceSaga({ payload }: DeleteServiceAction) {
   try {
-    yield call(Axios.delete, `/api/services/${payload}`);
+    yield call(apiFetch, `/api/services/${payload}`, {
+      method: 'DELETE',
+    });
     yield put(deleteServicesSuccessAction(payload));
     yield put(resetLoadingCell());
   } catch (error) {
@@ -67,7 +71,7 @@ function* getServicesSaga() {
       const servicesFromState = yield select(getServicesFromState);
       yield put(getServicesSuccessAction(servicesFromState));
     } else {
-      const services = yield call(Axios.get, '/api/services');
+      const services = yield call(apiFetch, '/api/services');
       yield put(getServicesSuccessAction(services.data));
     }
   } catch (error) {

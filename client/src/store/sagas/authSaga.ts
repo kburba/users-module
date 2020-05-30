@@ -1,5 +1,4 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
-import Axios from 'axios';
 import { LOGIN_USER, GET_CURRENT_USER } from '../actions/types';
 import {
   setCurrentUser,
@@ -8,7 +7,7 @@ import {
 } from '../actions/authActions';
 import setAuthToken from '../../utils/setAuthToken';
 import { LoginUserType } from '../types/authTypes';
-import { loginApi } from '../storeUtils';
+import { loginApi, apiFetch } from '../storeUtils';
 
 function* loginUserSaga({ payload }: LoginUserType) {
   try {
@@ -32,7 +31,7 @@ function* loginUserSaga({ payload }: LoginUserType) {
 
 function* getCurrentUserSaga() {
   try {
-    const response = yield call(Axios.get, '/api/users/me');
+    const response = yield call(apiFetch, '/api/users/me');
     yield put(setCurrentUser(response.data));
   } catch (e) {
     console.log('error current user', e.message);

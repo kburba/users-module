@@ -1,5 +1,4 @@
 import { takeLatest, put, call, select } from 'redux-saga/effects';
-import Axios from 'axios';
 import {
   GET_LANGUAGES,
   DELETE_LANGUAGE,
