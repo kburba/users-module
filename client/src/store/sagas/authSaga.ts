@@ -7,19 +7,8 @@ import {
   getCurrentUser,
 } from '../actions/authActions';
 import setAuthToken from '../../utils/setAuthToken';
-
-interface LoginUserType {
-  type: typeof LOGIN_USER;
-  payload: { email: string; password: string };
-}
-
-function loginApi(authParams) {
-  return Axios.post('/api/users/login', authParams)
-    .then((response) => response)
-    .catch((errors) => {
-      throw errors;
-    });
-}
+import { LoginUserType } from '../types/authTypes';
+import { loginApi } from '../storeUtils';
 
 function* loginUserSaga({ payload }: LoginUserType) {
   try {
@@ -44,7 +33,6 @@ function* loginUserSaga({ payload }: LoginUserType) {
 function* getCurrentUserSaga() {
   try {
     const response = yield call(Axios.get, '/api/users/me');
-    console.log('response', response.data);
     yield put(setCurrentUser(response.data));
   } catch (e) {
     console.log('error current user', e.message);

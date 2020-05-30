@@ -43,3 +43,8 @@ interface SetCurrentUser {
 interface LogoutUser {
   type: typeof LOGOUT_USER;
 }
+
+export interface LoginUserType {
+  type: typeof LOGIN_USER;
+  payload: { email: string; password: string };
+}

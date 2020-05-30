@@ -40,7 +40,10 @@ function* getClientByIdSaga({ payload }: GetClientById) {
 function* updateClientSaga({ payload }: UpdateClientAction) {
   try {
     const { _id, ...Client } = payload;
-    const updatedClient = yield call(Axios.put, `/api/clients/${_id}`, Client);
+    const updatedClient = yield call(apiFetch, `/api/clients/${_id}`, {
+      method: 'PUT',
+      data: Client,
+    });
     yield put(updateClientSuccessAction(updatedClient.data));
   } catch (error) {
     yield put(updateClientErrorAction(error.response.data));
@@ -49,7 +52,9 @@ function* updateClientSaga({ payload }: UpdateClientAction) {
 
 function* deleteClientSaga({ payload }: DeleteClient) {
   try {
-    yield call(Axios.delete, `/api/clients/${payload}`);
+    yield call(apiFetch, `/api/clients/${payload}`, {
+      method: 'DELETE',
+    });
     yield put(deleteClientsSuccessAction(payload));
   } catch (error) {
     yield put(deleteClientErrorAction(error.message));
@@ -58,7 +63,10 @@ function* deleteClientSaga({ payload }: DeleteClient) {
 
 function* addClientSaga({ payload }: AddClient) {
   try {
-    const response = yield call(Axios.post, '/api/clients', payload);
+    const response = yield call(apiFetch, '/api/clients', {
+      method: 'POST',
+      data: payload,
+    });
     yield put(addClientSuccessAction(response.data));
   } catch (error) {
     put(addClientErrorAction(error.response.data));
