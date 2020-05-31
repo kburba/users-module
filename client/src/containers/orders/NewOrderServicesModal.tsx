@@ -114,7 +114,6 @@ export default function NewOrderServicesModal({
           ? selectedService.price * parseFloat(values.pagesQty)
           : null,
       };
-      console.log('submitting newService', newService);
       addService(newService);
       setModal(false);
     }

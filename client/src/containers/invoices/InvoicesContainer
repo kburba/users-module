@@ -1,0 +1,11 @@
+import React from 'react';
+//  invoiceID
+//  dueDate
+//  clientID
+//  items
+//  sum
+//  payment
+
+export default function InvoicesContainer() {
+  return <div></div>;
+}

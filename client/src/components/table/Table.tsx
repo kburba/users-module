@@ -20,6 +20,7 @@ export type TableColumn = {
   totalsType?: 'avg' | 'sum';
   isEditable?: boolean;
   linkTo?: string;
+  linkKey?: string;
   cellType?: string;
 };
 
@@ -117,7 +118,10 @@ export default function Table<T>({
                     | number
                     | JSX.Element = formattedValue;
                   if (column.linkTo) {
-                    const link = `${column.linkTo}/${item[uniqueKey]}`;
+                    const key = column.linkKey
+                      ? item[column.key][column.linkKey]
+                      : item[uniqueKey];
+                    const link = `${column.linkTo}/${key}`;
                     columnValue = <Link to={link}>{formattedValue}</Link>;
                   }
                   const title: string =

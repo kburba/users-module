@@ -32,13 +32,15 @@ class Navbar extends Component {
 
     const authenticatedList = (
       <ul className="navbar-nav ml-auto">
-        <img
-          src={user.avatar}
-          title={user.name}
-          className="rounded-circle"
-          style={{ height: '40px', width: '40px', marginRight: '15px' }}
-          alt={user.name}
-        />
+        {user && (
+          <img
+            src={user.avatar}
+            title={user.name}
+            className="rounded-circle"
+            style={{ height: '40px', width: '40px', marginRight: '15px' }}
+            alt={user.name}
+          />
+        )}
         <li className="nav-item">
           <span className="nav-link" onClick={this.onLogoutClick}>
             Logout

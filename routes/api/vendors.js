@@ -3,60 +3,60 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 
-const ClientsController = require("../../controllers/ClientsController.ts");
+const VendorsController = require("../../controllers/VendorsController.ts");
 
-// @ROUTE   DELETE api/clients/:client_id,
-// @DESC    Delete existing client
+// @ROUTE   DELETE api/vendors/:vendor_id,
+// @DESC    Delete existing vendor
 // @ACCESS  Private
 router.delete(
-  "/:client_id",
+  "/:vendor_id",
   passport.authenticate("jwt", {
     session: false,
   }),
-  ClientsController.deleteById
+  VendorsController.deleteById
 );
 
-// @ROUTE   PUT api/clients/:client_id,
-// @DESC    Update existing client
+// @ROUTE   PUT api/vendors/:vendor_id,
+// @DESC    Update existing vendor
 // @ACCESS  Private
 router.put(
-  "/:client_id",
+  "/:vendor_id",
   passport.authenticate("jwt", {
     session: false,
   }),
-  ClientsController.updateById
+  VendorsController.updateById
 );
 
-// @ROUTE GET api/clients/:id
-// @DESC get client info by id
+// @ROUTE GET api/vendors/:id
+// @DESC get vendor info by id
 // @ACCESS Private
 router.get(
-  "/:client_id",
+  "/:vendor_id",
   passport.authenticate("jwt", {
     session: false,
   }),
-  ClientsController.getById
+  VendorsController.getById
 );
 
-// @ROUTE GET api/clients
-// @DESC get all clients
+// @ROUTE GET api/vendors
+// @DESC get all vendors
 // @ACCESS Private
 router.get(
   "/",
   passport.authenticate("jwt", {
     session: false,
   }),
-  ClientsController.getAll
+  VendorsController.getAll
 );
 
-// @route POST api/clients
-// @desc add new clients
+// @route POST api/vendors
+// @desc add new vendors
 // @access Private
 router.post(
   "/",
   passport.authenticate("jwt", {
     session: false,
   }),
-  ClientsController.addNew
+  VendorsController.addNew
 );
 module.exports = router;

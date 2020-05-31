@@ -74,9 +74,9 @@ router.get(
   }),
   (req, res) => {
     const orderId = req.params.id;
-    Order.findById(orderId, "client createdAt updatedAt details services total")
+    Order.findById(orderId)
       .sort("-createdAt")
-      .populate("client", "name")
+      .populate("clients", "name")
       .populate({
         path: "services.service",
         populate: { path: "from to", select: "name" },
@@ -103,9 +103,9 @@ router.get(
     session: false,
   }),
   (req, res) => {
-    Order.find(null, "client createdAt updatedAt details services total")
+    Order.find(null)
       .sort("-createdAt")
-      .populate("client", "name")
+      .populate("clients", "name")
       .populate({
         path: "services.service",
         populate: { path: "from to", select: "name" },
@@ -138,12 +138,13 @@ router.post(
 
     // get post fields
 
-    const { details, services, total, client } = req.body;
+    const { details, services, total, client, comments } = req.body;
     const newOrder = new Order({
       details,
       services,
       client,
       total,
+      comments,
     });
 
     newOrder

@@ -8,7 +8,7 @@ import './styles/index.scss';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import setAuthToken from './utils/setAuthToken';
-import { setCurrentUser, logoutUser } from './store/actions/authActions';
+import { setCurrentUser, getCurrentUser } from './store/actions/authActions';
 
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
@@ -40,8 +40,8 @@ if (localStorage.jwtToken) {
   // check if token is expired
   const currentTime = Date.now() / 1000;
   if (decoded.exp < currentTime) {
-    store.dispatch(logoutUser());
-    window.location.replace('/login');
+    store.dispatch(getCurrentUser());
+    // window.location.replace('/login');
   }
 }
 

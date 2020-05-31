@@ -42,28 +42,30 @@ function ViewOrder({ orders, match, orderById, getOrderById }: ViewOrderProps) {
     : [];
   return (
     <Container>
-      <Link to="/orders">Back to orders</Link>
+      <Link to="/orders">{'< Orders'}</Link>
       <div>
         {order && (
           <h2>
             {order.details.orderId}: {order.details.name}
           </h2>
         )}
-        <h3>Order details</h3>
+        <h3>Details</h3>
         <div>
           {order && (
             <div>
               <div>Created: {moment(order.createdAt).format('LLLL')}</div>
+              <div>Status: {order.status}</div>
+              <div>
+                Client:
+                <Link to={`/clients/${order.client._id}`}>
+                  {order.client.name}
+                </Link>
+              </div>
             </div>
           )}
+          <button type="button">Create invoice</button>
         </div>
-        <h3>Client</h3>
-        <div>
-          {order && order.client && (
-            <Link to={`/clients/${order.client._id}`}>{order.client.name}</Link>
-          )}
-        </div>
-        <h3>Order services</h3>
+        <h3>Services</h3>
         {order && (
           <Table
             data={flatServices}
@@ -79,6 +81,11 @@ function ViewOrder({ orders, match, orderById, getOrderById }: ViewOrderProps) {
             // actions={servicesTableActions}
           />
         )}
+        <h3>Vendors</h3>
+        <h3>Vocabulary</h3>
+        <h3>Attachments</h3>
+        <h3>Comments</h3>
+        <div>{order?.comments && order.comments}</div>
         {order?.total && <h2>Total: {formatCurrency(order.total)}</h2>}
       </div>
     </Container>

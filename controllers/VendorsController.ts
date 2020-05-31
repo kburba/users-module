@@ -1,13 +1,12 @@
-const Client = require("../modules/Client");
-const Order = require("../modules/Order");
+const Vendor = require("../modules/Vendor");
 
 exports.deleteById = function (req, res) {
-  Client.findByIdAndDelete(req.params.client_id, (err, lang) => {
+  Vendor.findByIdAndDelete(req.params.vendor_id, (err, lang) => {
     if (err) {
       res.send(err);
     }
     if (!lang) {
-      res.status(404).json({ success: false, error: "client not found" });
+      res.status(404).json({ success: false, error: "vendor not found" });
     }
 
     res.status(200).json({ success: true, item: lang._doc });
@@ -15,49 +14,49 @@ exports.deleteById = function (req, res) {
 };
 
 exports.updateById = function (req, res) {
-  Client.findById(req.params.client_id, (err, client) => {
+  Vendor.findById(req.params.vendor_id, (err, vendor) => {
     if (err) {
       res.send(err);
     }
-    if (client) {
-      client.name = req.body.name;
+    if (vendor) {
+      vendor.name = req.body.name;
 
-      client.save((err) => {
+      vendor.save((err) => {
         if (err) {
           res.send(err);
         }
-        res.json(client);
+        res.json(vendor);
       });
     }
   });
 };
 
 exports.getById = function (req, res) {
-  Client.findById(req.params.client_id)
-    .then((client) => {
-      if (!client) {
+  Vendor.findById(req.params.vendor_id)
+    .then((vendor) => {
+      if (!vendor) {
         const errors = {
-          message: "There are no client",
+          message: "There are no vendor",
           details: "",
         };
         return res.status(404).json(errors);
       }
       Order.find({
-        client: req.params.client_id,
+        vendor: req.params.vendor_id,
       })
         .sort("-createdAt")
-        .populate("clients", "name")
+        .populate("vendors", "name")
         .populate({
           path: "services.service",
           populate: { path: "from to", select: "name" },
         })
         .then((orders) => {
-          const response = { ...client._doc, orders };
+          const response = { ...vendor._doc, orders };
           return res.status(200).json(response);
         })
         .catch((err) => {
           const errors = {
-            message: "Error getting client orders",
+            message: "Error getting vendor orders",
             details: err,
           };
           return res.status(404).json(errors);
@@ -65,7 +64,7 @@ exports.getById = function (req, res) {
     })
     .catch((err) => {
       res.status(404).json({
-        message: "Cannot get client",
+        message: "Cannot get vendor",
         details: err,
       });
     });
@@ -73,30 +72,30 @@ exports.getById = function (req, res) {
 
 exports.addNew = function (req, res) {
   // get post fields
-  const newClient = new Client({
+  const newClient = new Vendor({
     name: req.body.name,
   });
 
-  newClient.save().then((client) => res.json(client));
+  newClient.save().then((vendor) => res.json(vendor));
 };
 
 exports.getAll = function (req, res) {
-  Client.find(null, "name createdAt")
+  Vendor.find(null, "name createdAt")
     .sort("name")
-    .then((clients) => {
-      if (!clients) {
+    .then((vendors) => {
+      if (!vendors) {
         const errors = {
-          noclients: "There are no clients",
+          noclients: "There are no vendors",
         };
 
         return res.status(404).json(errors);
       }
 
-      res.status(200).json(clients);
+      res.status(200).json(vendors);
     })
     .catch((err) => {
       res.status(404).json({
-        noposts: "Cannot get clients",
+        noposts: "Cannot get vendors",
       });
     });
 };

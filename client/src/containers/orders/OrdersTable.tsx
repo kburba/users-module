@@ -29,6 +29,8 @@ export const ordersColumns: TableColumn[] = [
     key: 'client',
     subKey: 'name',
     title: 'Client',
+    linkTo: '/clients',
+    linkKey: '_id',
   },
   {
     key: 'details',

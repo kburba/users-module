@@ -21,21 +21,38 @@ function ClientView({ match, getClient, clientById }: ReduxProps) {
     }
   }, [getClient, clientId, clientById]);
 
+  const clientOrdersFinished =
+    clientById?.orders.filter((x) => x.status === 'finished') || [];
+  const clientdOrdersInProgress =
+    clientById?.orders.filter((x) => x.status !== 'finished') || [];
+
   return (
     <div>
-      <h3>Client info</h3>
-      <div>TODO: client's dictionary</div>
-      <div>{clientById?.name}</div>
+      <h1>{clientById?.name}</h1>
+
+      <h3>Details</h3>
       <h3>Orders</h3>
-      {clientById?.orders && (
-        <Table
-          data={clientById.orders}
-          columns={ordersColumns}
-          // isLoading={isLoading || isDeleting}
-          // actions={tableActions}
-          uniqueKey="_id"
-        />
-      )}
+      <div>
+        <button type="button">Create invoice</button>
+      </div>
+      <p>In progress:</p>
+      <Table
+        data={clientdOrdersInProgress}
+        columns={ordersColumns}
+        // isLoading={isLoading || isDeleting}
+        // actions={tableActions}
+        uniqueKey="_id"
+      />
+      <p>Finished:</p>
+      <Table
+        data={clientOrdersFinished}
+        columns={ordersColumns}
+        // isLoading={isLoading || isDeleting}
+        // actions={tableActions}
+        uniqueKey="_id"
+      />
+      <h3>Invoices</h3>
+      <h3>Dictionary</h3>
     </div>
   );
 }

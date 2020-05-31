@@ -10,14 +10,12 @@ import {
 } from '../../store/actions/serviceActions';
 import { RootState } from '../../store/reducers';
 import { LanguageActions } from '../../store/types/languageTypes';
-import classnames from 'classnames';
 import TextField from '../../components/common/TextField';
 import SelectField from '../../components/common/SelectField';
 
 export function ServicesModal({
   addService,
   isEditingId,
-  isLoadingLanguages,
   isSubmitting,
   languages,
   modalIsOpen,
@@ -44,7 +42,7 @@ export function ServicesModal({
   }
 
   const existingLangsTo = services
-    .filter((x) => x.from._id === watch('from'))
+    .filter((x) => x.from._id === watch('from') && x.type === watch('type'))
     .map((x) => x.to._id);
   const langTo = languages
     .filter(
@@ -69,6 +67,13 @@ export function ServicesModal({
     value: lang._id,
   }));
 
+  const serviceTypesDropdown = ['Proofreading', 'Editing', 'Translation'].map(
+    (service) => ({
+      text: service,
+      value: service.toLowerCase(),
+    })
+  );
+
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -77,24 +82,13 @@ export function ServicesModal({
       contentLabel="Example Modal"
     >
       <form onSubmit={handleSubmit(service?._id ? handleEdit : handleAdd)}>
-        <div>
-          <label htmlFor="type">Name:</label>
-          <select
-            name="type"
-            className={classnames('form-control form-control-lg', {
-              'is-invalid': !!errors.type,
-            })}
-            ref={register({ required: 'Required' })}
-            defaultValue={service?.type}
-          >
-            <option value="proofreading">Proofreading</option>
-            <option value="editing">Editing</option>
-            <option value="translation">Translation</option>
-          </select>
-          {!!errors.type && (
-            <div className="invalid-feedback">{errors.type?.message}</div>
-          )}
-        </div>
+        <SelectField
+          defaultValue={service?.type || 'translation'}
+          name="type"
+          label="Type"
+          inputRef={register({ required: 'Required' })}
+          options={serviceTypesDropdown}
+        />
         <SelectField
           defaultValue={service?.from._id}
           name="from"
@@ -137,7 +131,6 @@ export function ServicesModal({
 
 const mapStateToProps = ({ servicesReducer, languagesReducer }: RootState) => ({
   isEditingId: servicesReducer.isEditingId,
-  isLoadingLanguages: languagesReducer.isLoading,
   isSubmitting: servicesReducer.isSubmitting,
   languages: languagesReducer.languages,
   modalIsOpen: servicesReducer.modalIsOpen,

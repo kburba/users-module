@@ -10,6 +10,7 @@ import {
 } from '../../store/actions/clientActions';
 import { ClientsActions, Client } from '../../store/types/clientTypes';
 import { ValueTypes } from '../../components/table/columns';
+import { Button } from '@material-ui/core';
 
 export const clientsColumns: TableColumn[] = [
   {
@@ -57,13 +58,27 @@ function ClientsTable({
   ];
 
   return (
-    <Table
-      data={clients}
-      columns={clientsColumns}
-      uniqueKey="_id"
-      actions={tableActions}
-      isLoading={isLoadingClients}
-    />
+    <>
+      <div className="titleContainer">
+        <h1>Clients</h1>
+        <div className="text-right margin--bottom">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setModal(true)}
+          >
+            + Add Client
+          </Button>
+        </div>
+      </div>
+      <Table
+        data={clients}
+        columns={clientsColumns}
+        uniqueKey="_id"
+        actions={tableActions}
+        isLoading={isLoadingClients}
+      />
+    </>
   );
 }
 

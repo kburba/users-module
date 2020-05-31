@@ -1,19 +1,19 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const passport = require('passport');
+const passport = require("passport");
 
 // Validation
-const validateServiceInput = require('../../validation/services');
+const validateServiceInput = require("../../validation/services");
 
 // Models
-const Service = require('../../modules/Service');
+const Service = require("../../modules/Service");
 
 // @ROUTE   DELETE api/services/:service_id,
 // @DESC    Delete existing service
 // @ACCESS  Private
 router.delete(
-  '/:service_id',
-  passport.authenticate('jwt', {
+  "/:service_id",
+  passport.authenticate("jwt", {
     session: false,
   }),
   (req, res) => {
@@ -24,7 +24,7 @@ router.delete(
       if (!service) {
         return res
           .status(404)
-          .json({ success: false, error: 'Service not found' });
+          .json({ success: false, error: "Service not found" });
       }
 
       return res.status(200).json({ success: true, item: service._doc });
@@ -36,14 +36,14 @@ router.delete(
 // @DESC    Update existing service
 // @ACCESS  Private
 router.put(
-  '/:service_id',
-  passport.authenticate('jwt', {
+  "/:service_id",
+  passport.authenticate("jwt", {
     session: false,
   }),
   (req, res) => {
     Service.findById(req.params.service_id).then((service) => {
       if (!service) {
-        return res.status(404).send('Service not found');
+        return res.status(404).send("Service not found");
       }
 
       const { errors, isValid } = validateServiceInput(req.body);
@@ -65,14 +65,14 @@ router.put(
         .then((updatedService) => {
           updatedService.populate(
             {
-              path: 'from to',
-              select: 'name',
+              path: "from to",
+              select: "name",
             },
             (err, doc) => {
               if (err) {
                 return res
                   .status(400)
-                  .json({ message: 'Could not populate language' });
+                  .json({ message: "Could not populate language" });
               }
               return res.json(doc);
             }
@@ -87,19 +87,19 @@ router.put(
 // @DESC get all services
 // @ACCESS Private
 router.get(
-  '/',
-  passport.authenticate('jwt', {
+  "/",
+  passport.authenticate("jwt", {
     session: false,
   }),
   (req, res) => {
     Service.find()
-      .sort('type')
-      .populate('from', 'name')
-      .populate('to', 'name')
+      .sort("from")
+      .populate("from", "name")
+      .populate("to", "name")
       .then((services) => {
         if (!services) {
           const errors = {
-            noItems: 'There are no services',
+            noItems: "There are no services",
           };
           return res.status(404).json(errors);
         }
@@ -108,7 +108,7 @@ router.get(
       })
       .catch((err) => {
         return res.status(404).json({
-          notFound: 'Cannot get services',
+          notFound: "Cannot get services",
         });
       });
   }
@@ -118,8 +118,8 @@ router.get(
 // @desc add new services
 // @access Private
 router.post(
-  '/',
-  passport.authenticate('jwt', {
+  "/",
+  passport.authenticate("jwt", {
     session: false,
   }),
   (req, res) => {
@@ -142,14 +142,14 @@ router.post(
       .then((savedDoc) => {
         savedDoc.populate(
           {
-            path: 'from to',
-            select: 'name',
+            path: "from to",
+            select: "name",
           },
           (err, populatedDoc) => {
             if (err) {
               return res
                 .status(400)
-                .json({ message: 'Could not populate language' });
+                .json({ message: "Could not populate language" });
             }
             return res.json(populatedDoc);
           }

@@ -20,7 +20,6 @@ export function apiFetch(url: string, otherParams?: AxiosRequestConfig) {
   })
     .then((response) => response)
     .catch((errors) => {
-      console.log('errors', errors);
       if (errors.response.status === 401) {
         const user = store.getState().auth.user;
         const refreshToken = localStorage.getItem('refreshToken');

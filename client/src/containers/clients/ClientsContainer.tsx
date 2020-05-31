@@ -1,6 +1,6 @@
 import React, { Dispatch } from 'react';
 import { connect } from 'react-redux';
-import { Button, Container } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import { Switch } from 'react-router-dom';
 import Spinner from '../../components/common/Spinner';
 import { RootState } from '../../store/reducers';
@@ -21,18 +21,6 @@ function ClientsContainer({ isLoadingClients, setModal }: ReduxProps) {
   }
   return (
     <Container>
-      <div className="titleContainer">
-        <h1>Clients</h1>
-        <div className="text-right margin--bottom">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setModal(true)}
-          >
-            + Add Client
-          </Button>
-        </div>
-      </div>
       <Switch>
         <PrivateRoute exact path="/clients/" component={ClientsTable} />
         <PrivateRoute path="/clients/:id" component={ClientView} />

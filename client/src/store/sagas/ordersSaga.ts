@@ -61,7 +61,9 @@ function* updateOrderSaga({ payload }: UpdateOrderAction) {
 
 function* deleteOrderSaga({ payload }: DeleteOrderAction) {
   try {
-    yield call(apiFetch, `/api/orders/${payload}`);
+    yield call(apiFetch, `/api/orders/${payload}`, {
+      method: 'DELETE',
+    });
     yield put(deleteOrdersSuccessAction(payload));
     yield put(resetLoadingCell());
   } catch (error) {

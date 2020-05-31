@@ -17,7 +17,7 @@ export interface AuthState {
     email?: string;
     password?: string;
   };
-  user: {};
+  user: null | {};
 }
 
 interface LoginUser {

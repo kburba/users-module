@@ -30,6 +30,7 @@ interface FormData {
   pagesQty: string;
   total: number;
   client: string;
+  comments: string;
 }
 
 function NewOrderForm({
@@ -57,7 +58,7 @@ function NewOrderForm({
     getClients();
   }, [getClients]);
 
-  function onSubmit(values) {
+  function onSubmit(values: FormData) {
     const newOrder: {
       details: {
         name: string;
@@ -66,6 +67,7 @@ function NewOrderForm({
       client: string;
       services: any[];
       total: number;
+      comments?: string;
     } = {
       details: {
         name: values.name,
@@ -73,6 +75,7 @@ function NewOrderForm({
       },
       client: values.client,
       services: [],
+      comments: values.comments,
       total: totalPrice,
     };
     orderServices.forEach((service) => {
@@ -116,7 +119,7 @@ function NewOrderForm({
   return (
     <Container>
       <div className="newOrder">
-        <Link to="/orders">Back to orders</Link>
+        <Link to="/orders">`{'< Orders'}`</Link>
         <h1>New Order</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="section">
@@ -174,6 +177,17 @@ function NewOrderForm({
               actions={servicesTableActions}
             />
           </div>
+          <div className="section">
+            <h3>Additional info:</h3>
+            <TextField
+              label="Comments"
+              placeholder="Please leave your comments here"
+              inputRef={register}
+              defaultValue=""
+              name="comments"
+              error={errors.comments?.message}
+            />
+          </div>
           <div
             style={{
               textAlign: 'right',
@@ -215,7 +229,6 @@ function NewOrderForm({
           setModal={setModalIsOpen}
           addService={(newService: ServiceWithDetails) => {
             const updatedServices = [...orderServices];
-            console.log('newService', newService);
             updatedServices.unshift(newService);
             setOrderServices(updatedServices);
             setValue('pagesQty', '');

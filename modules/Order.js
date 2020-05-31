@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 // Create Schema
 const OrderSchema = new Schema(
   {
+    invoiceID: String,
     details: {
       name: {
         type: String,
@@ -17,7 +18,7 @@ const OrderSchema = new Schema(
     },
     client: {
       type: Schema.Types.ObjectId,
-      ref: "client",
+      ref: "clients",
     },
     services: [
       {
@@ -43,6 +44,7 @@ const OrderSchema = new Schema(
     status: {
       type: String,
     },
+    comments: String,
   },
   {
     timestamps: true,

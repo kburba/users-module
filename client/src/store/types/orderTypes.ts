@@ -47,6 +47,10 @@ export type NewOrder = {
     service: string;
     price: number;
   }[];
+  client: string;
+  total: number;
+  comments?: string;
+  status?: string;
 };
 
 export type UpdatedOrder = {
@@ -74,6 +78,8 @@ export interface Order {
   services: OrderService[];
   client: Client;
   createdAt: moment.Moment;
+  status?: string;
+  comments?: string;
   total: number;
 }
 
