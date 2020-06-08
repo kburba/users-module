@@ -43,13 +43,13 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 
 // use Routes
-app.use("/api/users", users);
-app.use("/api/profile", profile);
-app.use("/api/posts", posts);
-app.use("/api/languages", languages);
-app.use("/api/services", services);
-app.use("/api/orders", orders);
 app.use("/api/clients", clients);
+app.use("/api/languages", languages);
+app.use("/api/orders", orders);
+app.use("/api/posts", posts);
+app.use("/api/profile", profile);
+app.use("/api/services", services);
+app.use("/api/users", users);
 app.use("/api/vendors", vendors);
 
 // serve static assets if in production

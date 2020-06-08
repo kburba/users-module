@@ -44,7 +44,8 @@ export function apiFetch(url: string, otherParams?: AxiosRequestConfig) {
               });
           })
           .catch((err) => {
-            // handle token error
+            store.dispatch(logoutUser());
+            throw new Error('unauthorised');
           });
       }
       throw errors;

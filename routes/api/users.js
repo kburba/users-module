@@ -140,6 +140,7 @@ router.post("/token", (req, res) => {
   const postData = req.body;
   if (postData.refreshToken && postData.refreshToken in tokenList) {
     const user = postData.user;
+    console.log("user", user);
     const payload = {
       id: user._id,
       name: user.name,
