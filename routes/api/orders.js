@@ -105,7 +105,7 @@ router.get(
   (req, res) => {
     Order.find(null)
       .sort("-createdAt")
-      .populate("clients", "name")
+      .populate("client", "name")
       .populate({
         path: "services.service",
         populate: { path: "from to", select: "name" },

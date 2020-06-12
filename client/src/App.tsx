@@ -28,8 +28,8 @@ import LoginMUI from './components/auth/LoginMUI';
 
 export const history = createBrowserHistory();
 
-if (localStorage.jwtToken) {
-  const token = localStorage.jwtToken;
+if (localStorage.access_token) {
+  const token = localStorage.access_token;
 
   // Set token to Auth header
   setAuthToken(token);

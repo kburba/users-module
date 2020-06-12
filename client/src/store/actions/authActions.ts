@@ -60,7 +60,8 @@ export function setCurrentUser(decoded): AuthActions {
 // Logout user
 export function logoutUser(): AuthActions {
   // Remove token from local storage
-  localStorage.removeItem('jwtToken');
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
 
   // Delete auth token
   setAuthToken(null);

@@ -22,16 +22,15 @@ export function apiFetch(url: string, otherParams?: AxiosRequestConfig) {
     .catch((errors) => {
       if (errors.response.status === 401) {
         const user = store.getState().auth.user;
-        const refreshToken = localStorage.getItem('refreshToken');
+        const refresh_token = localStorage.getItem('refresh_token');
         return Axios.post('/api/users/token', {
-          refreshToken,
-          user,
+          refresh_token,
         })
           .then((res) => {
             // handle new token
-            const { token } = res.data;
-            localStorage.setItem('jwtToken', token);
-            setAuthToken(token);
+            const { access_token } = res.data;
+            localStorage.setItem('access_token', access_token);
+            setAuthToken(access_token);
             return Axios.request({
               url,
               method: otherParams ? otherParams.method : 'GET',

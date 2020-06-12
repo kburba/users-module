@@ -8,7 +8,7 @@ import { AuthActions, AuthState } from '../types/authTypes';
 import JwtDecode from 'jwt-decode';
 
 function getInitialUserData() {
-  const token = localStorage.getItem('jwtToken');
+  const token = localStorage.getItem('access_token');
   if (token) {
     return JwtDecode<{ exp: number }>(token);
   }
