@@ -7,7 +7,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,18 +16,6 @@ import { RootState } from '../../store/reducers';
 import { AuthActions } from '../../store/types/authTypes';
 import { loginUser } from '../../store/actions/authActions';
 import { connect } from 'react-redux';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Verti App
-      </Link>
-      {new Date().getFullYear()}
-    </Typography>
-  );
-}
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -63,9 +50,6 @@ function LoginMUI({ loginUser, authErrors }: ReduxProps) {
   function onSubmit(data: FormData) {
     loginUser(data);
   }
-
-  console.log('authErrors', authErrors);
-  console.log('errors', errors);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -137,9 +121,6 @@ function LoginMUI({ loginUser, authErrors }: ReduxProps) {
           </Grid>
         </form>
       </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
     </Container>
   );
 }

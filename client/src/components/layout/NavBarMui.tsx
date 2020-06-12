@@ -12,6 +12,7 @@ import { AuthActions } from '../../store/types/authTypes';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { RootState } from '../../store/reducers';
+import { Box } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,7 +24,11 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
     },
     title: {
-      flexGrow: 1,
+      color: 'white',
+      textDecoration: 'none',
+    },
+    mainMenu: {
+      marginRight: theme.spacing(5),
     },
   })
 );
@@ -32,7 +37,7 @@ function NavBarMUI({ auth, logoutUser }: ReduxProps) {
   const classes = useStyles();
 
   const guestList = (
-    <>
+    <div>
       <Button
         className={classes.menuButton}
         component={RouterLink}
@@ -40,21 +45,23 @@ function NavBarMUI({ auth, logoutUser }: ReduxProps) {
       >
         Sign Up
       </Button>
-      <Button component={RouterLink} to="/login">
+      <Button className={classes.menuButton} component={RouterLink} to="/login">
         Login
       </Button>
-    </>
+    </div>
   );
 
   const authenticatedList = (
-    <>
+    <div>
       <span></span>
-      <Button onClick={logoutUser}>Logout</Button>
-    </>
+      <Button className={classes.menuButton} onClick={logoutUser}>
+        Logout
+      </Button>
+    </div>
   );
 
   return (
-    <div className={classes.root}>
+    <div>
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -65,10 +72,47 @@ function NavBarMUI({ auth, logoutUser }: ReduxProps) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          <Typography
+            className={classes.title}
+            variant="h6"
+            component={RouterLink}
+            to="/"
+          >
             Verti App
           </Typography>
-          {auth.isAuthenticated ? authenticatedList : guestList}
+          <Box flexGrow="1" display="flex" justifyContent="flex-end">
+            <div className={classes.mainMenu}>
+              <Button
+                className={classes.menuButton}
+                component={RouterLink}
+                to="/orders"
+              >
+                Orders
+              </Button>
+              <Button
+                className={classes.menuButton}
+                component={RouterLink}
+                to="/clients"
+              >
+                Clients
+              </Button>
+              <Button
+                className={classes.menuButton}
+                component={RouterLink}
+                to="/services"
+              >
+                Services
+              </Button>
+              <Button
+                className={classes.menuButton}
+                component={RouterLink}
+                to="/languages"
+              >
+                Languages
+              </Button>
+            </div>
+            {auth.isAuthenticated ? authenticatedList : guestList}
+          </Box>
         </Toolbar>
       </AppBar>
     </div>

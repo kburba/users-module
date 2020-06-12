@@ -5,16 +5,14 @@ import { Provider } from 'react-redux';
 import store from './store/store';
 import JwtDecode from 'jwt-decode';
 import './styles/index.scss';
-import { CssBaseline, Container } from '@material-ui/core';
+import { CssBaseline } from '@material-ui/core';
 import 'typeface-roboto';
 
 import setAuthToken from './utils/setAuthToken';
 import { setCurrentUser, getCurrentUser } from './store/actions/authActions';
 
-import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import Landing from './components/layout/Landing';
-import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Dashboard from './components/Dashboard';
 import PrivateRoute from './components/common/PrivateRoute';
@@ -52,39 +50,32 @@ export default function App() {
     <Provider store={store}>
       <Router history={history}>
         <CssBaseline>
-          <Container maxWidth={false}>
-            <div className="App">
-              <Navbar />
-              <NavBarMUI />
-              <Switch>
-                <Route exact path="/" component={Landing} />
-                <Route exact path="/login" component={LoginMUI} />
-                <Route exact path="/register" component={Register} />
-                <PrivateRoute exact path="/dashboard" component={Dashboard} />
-                <PrivateRoute
-                  exact
-                  path="/languages"
-                  component={LanguagesContainer}
-                />
-                <PrivateRoute
-                  exact
-                  path="/services"
-                  component={ServicesContainer}
-                />
-                <PrivateRoute path="/clients" component={ClientsContainer} />
-                <PrivateRoute path="/orders/new" component={NewOrderForm} />
-                <PrivateRoute path="/orders/:id" component={ViewOrder} />
-                <PrivateRoute
-                  exact
-                  path="/orders"
-                  component={OrdersContainer}
-                />
+          <div className="App">
+            <NavBarMUI />
+            <Switch>
+              <Route exact path="/" component={Landing} />
+              <Route exact path="/login" component={LoginMUI} />
+              <Route exact path="/register" component={Register} />
+              <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              <PrivateRoute
+                exact
+                path="/languages"
+                component={LanguagesContainer}
+              />
+              <PrivateRoute
+                exact
+                path="/services"
+                component={ServicesContainer}
+              />
+              <PrivateRoute path="/clients" component={ClientsContainer} />
+              <PrivateRoute path="/orders/new" component={NewOrderForm} />
+              <PrivateRoute path="/orders/:id" component={ViewOrder} />
+              <PrivateRoute exact path="/orders" component={OrdersContainer} />
 
-                <Route exact path="/not-found" component={NotFound} />
-              </Switch>
-              <Footer />
-            </div>
-          </Container>
+              <Route exact path="/not-found" component={NotFound} />
+            </Switch>
+            <Footer />
+          </div>
         </CssBaseline>
       </Router>
     </Provider>

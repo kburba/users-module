@@ -13,6 +13,7 @@ import { LanguageActions } from '../store/types/languageTypes';
 import { OrdersState } from '../store/reducers/ordersReducer';
 import { ServicesState } from '../store/reducers/servicesReducer';
 import { LanguagesState } from '../store/reducers/languagesReducer';
+import { Container } from '@material-ui/core';
 
 function Dashboard({
   getClients,
@@ -32,7 +33,7 @@ function Dashboard({
   }, [getClients, getServices, getOrders, getLanguages]);
 
   return (
-    <div className="container">
+    <Container className="container">
       <h1>Dashboard</h1>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
@@ -67,7 +68,7 @@ function Dashboard({
           </Link>
         </div>
       </div>
-    </div>
+    </Container>
   );
 }
 
