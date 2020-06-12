@@ -8,6 +8,7 @@ import {
 import setAuthToken from '../../utils/setAuthToken';
 import { LoginUserType } from '../types/authTypes';
 import { loginApi, apiFetch } from '../storeUtils';
+import { history } from '../../App';
 
 function* loginUserSaga({ payload }: LoginUserType) {
   try {
@@ -24,6 +25,7 @@ function* loginUserSaga({ payload }: LoginUserType) {
 
     // Set current user
     yield put(getCurrentUser());
+    history.push('/');
   } catch (error) {
     yield put(loginUserError(error.response.data));
   }

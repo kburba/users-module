@@ -1,26 +1,21 @@
-import React, { Dispatch, useEffect } from 'react';
+import React, { Dispatch } from 'react';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import classnames from 'classnames';
 import { loginUser } from '../../store/actions/authActions';
 
-import { history } from '../../App';
 import { RootState } from '../../store/reducers';
 import { AuthActions } from '../../store/types/authTypes';
+
+import './login.scss';
 
 type FormData = {
   email: string;
   password: string;
 };
 
-function Login({ loginUser, isAuthenticated, authErrors }: LoginProps) {
+function Login({ loginUser, authErrors }: LoginProps) {
   const { handleSubmit, register, errors } = useForm<FormData>();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      history.push('/dashboard');
-    }
-  }, [isAuthenticated]);
 
   function onSubmit(data: FormData) {
     loginUser(data);

@@ -42,9 +42,9 @@ class Navbar extends Component {
           />
         )}
         <li className="nav-item">
-          <span className="nav-link" onClick={this.onLogoutClick}>
+          <button className="nav-link" onClick={this.onLogoutClick}>
             Logout
-          </span>
+          </button>
         </li>
       </ul>
     );

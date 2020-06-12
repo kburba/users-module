@@ -110,7 +110,7 @@ router.post("/login", (req, res) => {
           payload,
           keys.secretOrKey,
           {
-            expiresIn: 5, // 15 min
+            expiresIn: 60 * 15, // 15 min
           },
           (err, token) => {
             const refreshToken = jwt.sign(payload, keys.refreshTokenSecret, {
@@ -140,7 +140,6 @@ router.post("/token", (req, res) => {
   const postData = req.body;
   if (postData.refreshToken && postData.refreshToken in tokenList) {
     const user = postData.user;
-    console.log("user", user);
     const payload = {
       id: user._id,
       name: user.name,

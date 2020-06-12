@@ -76,7 +76,7 @@ router.get(
     const orderId = req.params.id;
     Order.findById(orderId)
       .sort("-createdAt")
-      .populate("clients", "name")
+      .populate("client", "name")
       .populate({
         path: "services.service",
         populate: { path: "from to", select: "name" },

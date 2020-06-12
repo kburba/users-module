@@ -5,7 +5,8 @@ import { Provider } from 'react-redux';
 import store from './store/store';
 import JwtDecode from 'jwt-decode';
 import './styles/index.scss';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { CssBaseline, Container } from '@material-ui/core';
+import 'typeface-roboto';
 
 import setAuthToken from './utils/setAuthToken';
 import { setCurrentUser, getCurrentUser } from './store/actions/authActions';
@@ -24,6 +25,8 @@ import OrdersContainer from './containers/orders/OrdersContainer';
 import ClientsContainer from './containers/clients/ClientsContainer';
 import NewOrderForm from './containers/orders/NewOrderForm';
 import ViewOrder from './containers/orders/ViewOrder';
+import NavBarMUI from './components/layout/NavBarMui';
+import LoginMUI from './components/auth/LoginMUI';
 
 export const history = createBrowserHistory();
 
@@ -41,7 +44,6 @@ if (localStorage.jwtToken) {
   const currentTime = Date.now() / 1000;
   if (decoded.exp < currentTime) {
     store.dispatch(getCurrentUser());
-    // window.location.replace('/login');
   }
 }
 
@@ -50,32 +52,39 @@ export default function App() {
     <Provider store={store}>
       <Router history={history}>
         <CssBaseline>
-          <div className="App">
-            <Navbar />
-            <Switch>
-              <Route exact path="/" component={Landing} />
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/register" component={Register} />
-              <PrivateRoute exact path="/dashboard" component={Dashboard} />
-              <PrivateRoute
-                exact
-                path="/languages"
-                component={LanguagesContainer}
-              />
-              <PrivateRoute
-                exact
-                path="/services"
-                component={ServicesContainer}
-              />
-              <PrivateRoute path="/clients" component={ClientsContainer} />
-              <PrivateRoute path="/orders/new" component={NewOrderForm} />
-              <PrivateRoute path="/orders/:id" component={ViewOrder} />
-              <PrivateRoute exact path="/orders" component={OrdersContainer} />
+          <Container maxWidth={false}>
+            <div className="App">
+              <Navbar />
+              <NavBarMUI />
+              <Switch>
+                <Route exact path="/" component={Landing} />
+                <Route exact path="/login" component={LoginMUI} />
+                <Route exact path="/register" component={Register} />
+                <PrivateRoute exact path="/dashboard" component={Dashboard} />
+                <PrivateRoute
+                  exact
+                  path="/languages"
+                  component={LanguagesContainer}
+                />
+                <PrivateRoute
+                  exact
+                  path="/services"
+                  component={ServicesContainer}
+                />
+                <PrivateRoute path="/clients" component={ClientsContainer} />
+                <PrivateRoute path="/orders/new" component={NewOrderForm} />
+                <PrivateRoute path="/orders/:id" component={ViewOrder} />
+                <PrivateRoute
+                  exact
+                  path="/orders"
+                  component={OrdersContainer}
+                />
 
-              <Route exact path="/not-found" component={NotFound} />
-            </Switch>
-            <Footer />
-          </div>
+                <Route exact path="/not-found" component={NotFound} />
+              </Switch>
+              <Footer />
+            </div>
+          </Container>
         </CssBaseline>
       </Router>
     </Provider>
