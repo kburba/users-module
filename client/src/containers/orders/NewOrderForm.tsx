@@ -22,6 +22,9 @@ import { ClientsActions } from '../../store/types/clientTypes';
 import { formatValue } from '../../utils/utils';
 import columns, { ValueTypes } from '../../components/table/columns';
 import NewOrderServicesModal from './NewOrderServicesModal';
+import { VariousActions } from '../../store/types/variousTypes';
+import { VariousState } from '../../store/reducers/variousReducer';
+import { setLoadingCell } from '../../store/actions/variousActions';
 
 interface FormData {
   name: string;
@@ -46,9 +49,7 @@ function NewOrderForm({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [orderServices, setOrderServices] = useState<ServiceWithDetails[]>([]);
 
-  const { handleSubmit, register, errors, setValue, watch } = useForm<
-    FormData
-  >();
+  const { handleSubmit, register, errors, setValue } = useForm<FormData>();
 
   useEffect(() => {
     getServices();
@@ -91,18 +92,18 @@ function NewOrderForm({
 
   const servicesTableActions: TableAction[] = [
     {
-      type: 'addToList',
+      type: 'edit',
       action: (service: Service) => {
-        const updatedServices = [...orderServices];
-        const newService = {
-          ...service,
-          pagesQty: watch('pagesQty'),
-          totalPrice: service.price * parseFloat(watch('pagesQty')),
-        };
-        console.log('newService', newService);
-        updatedServices.unshift(newService);
-        setOrderServices(updatedServices);
-        setValue('pagesQty', '');
+        console.log('editing', service._id);
+      },
+    },
+    {
+      type: 'delete',
+      action: (service: Service) => {
+        setLoadingCell({ column: 'actions', row: service._id });
+        setOrderServices(
+          orderServices.filter((serv) => serv._id !== service._id)
+        );
       },
     },
   ];
@@ -119,7 +120,7 @@ function NewOrderForm({
   return (
     <Container>
       <div className="newOrder">
-        <Link to="/orders">`{'< Orders'}`</Link>
+        <Link to="/orders">{'< Orders'}</Link>
         <h1>New Order</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="section">
@@ -251,11 +252,15 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = (
-  dispatch: Dispatch<ServiceActions | OrderActions | ClientsActions>
+  dispatch: Dispatch<
+    ServiceActions | OrderActions | ClientsActions | VariousActions
+  >
 ) => ({
   getServices: () => dispatch(getServicesAction()),
   getClients: () => dispatch(getClientsAction()),
   addOrder: (newOrder: NewOrder) => dispatch(addOrderAction(newOrder)),
+  setLoadingCell: (cell: VariousState['isLoadingCell']) =>
+    dispatch(setLoadingCell(cell)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewOrderForm);

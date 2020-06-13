@@ -21,7 +21,6 @@ export function apiFetch(url: string, otherParams?: AxiosRequestConfig) {
     .then((response) => response)
     .catch((errors) => {
       if (errors.response.status === 401) {
-        const user = store.getState().auth.user;
         const refresh_token = localStorage.getItem('refresh_token');
         return Axios.post('/api/users/token', {
           refresh_token,

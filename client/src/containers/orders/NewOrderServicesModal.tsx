@@ -160,6 +160,7 @@ export default function NewOrderServicesModal({
         />
         <TextField
           name="pagesQty"
+          defaultValue={1}
           inputRef={register({ required: 'Please enter number of pages' })}
           label="Number of pages"
           placeholder="Please enter number of pages"
