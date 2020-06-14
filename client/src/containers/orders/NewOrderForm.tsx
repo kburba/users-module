@@ -48,8 +48,12 @@ function NewOrderForm({
 }: NewOrderProps) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [orderServices, setOrderServices] = useState<ServiceWithDetails[]>([]);
+  const [
+    isEditingService,
+    setIsEditingService,
+  ] = useState<ServiceWithDetails | null>(null);
 
-  const { handleSubmit, register, errors, setValue } = useForm<FormData>();
+  const { handleSubmit, register, errors } = useForm<FormData>();
 
   useEffect(() => {
     getServices();
@@ -90,11 +94,26 @@ function NewOrderForm({
     addOrder(newOrder);
   }
 
+  function handleServiceAdd(newService: ServiceWithDetails) {
+    setOrderServices([newService, ...orderServices]);
+  }
+
+  function handleServiceUpdate(updatedService: ServiceWithDetails) {
+    const updatedServices = orderServices.map((current) => {
+      if (current._id === updatedService._id) {
+        return updatedService;
+      }
+      return current;
+    });
+    setOrderServices(updatedServices);
+  }
+
   const servicesTableActions: TableAction[] = [
     {
       type: 'edit',
-      action: (service: Service) => {
-        console.log('editing', service._id);
+      action: (service: ServiceWithDetails) => {
+        setIsEditingService(service);
+        setModalIsOpen(true);
       },
     },
     {
@@ -115,6 +134,10 @@ function NewOrderForm({
   const totalPrice = orderServices.reduce(
     (prev, curr) => prev + (curr.totalPrice ? curr.totalPrice : 0),
     0
+  );
+
+  const filteredServices = services.filter(
+    (serv) => orderServices.findIndex((x) => x._id === serv._id) === -1
   );
 
   return (
@@ -226,14 +249,12 @@ function NewOrderForm({
         </form>
         <NewOrderServicesModal
           isOpen={modalIsOpen}
-          services={services}
+          services={isEditingService ? services : filteredServices}
+          isEditing={isEditingService}
           setModal={setModalIsOpen}
-          addService={(newService: ServiceWithDetails) => {
-            const updatedServices = [...orderServices];
-            updatedServices.unshift(newService);
-            setOrderServices(updatedServices);
-            setValue('pagesQty', '');
-          }}
+          addService={handleServiceAdd}
+          updateService={handleServiceUpdate}
+          resetEditing={() => setIsEditingService(null)}
         />
       </div>
     </Container>

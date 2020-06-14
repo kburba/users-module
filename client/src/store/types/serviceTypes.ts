@@ -25,7 +25,7 @@ export interface ServiceForm {
 }
 
 export type ServiceWithDetails = Service & {
-  pagesQty: string | null;
+  pagesQty: string;
   totalPrice: number | null;
 };
 

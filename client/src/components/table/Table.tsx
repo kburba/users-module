@@ -67,7 +67,7 @@ export default function Table<T>({
 }: TableProps<T>) {
   const [sort, setSort] = useState<TableSort>({
     key: sortBy || '',
-    asc: false,
+    asc: true,
   });
   const { register, errors, handleSubmit } = useForm();
 
@@ -92,8 +92,10 @@ export default function Table<T>({
   function compare(a, b) {
     const valueA = sort.subKey ? a[sort.key][sort.subKey] : a[sort.key];
     const valueB = sort.subKey ? b[sort.key][sort.subKey] : b[sort.key];
-    if (valueA > valueB) return 1;
-    if (valueA < valueB) return -1;
+    if (typeof valueA === 'string') valueA.toLowerCase();
+    if (typeof valueB === 'string') valueB.toLowerCase();
+    if (valueA < valueB) return 1;
+    if (valueA > valueB) return -1;
     return 0;
   }
 

@@ -94,8 +94,8 @@ router.get(
   (req, res) => {
     Service.find()
       .sort("from")
-      .populate("from", "name")
-      .populate("to", "name")
+      .populate("from", "name code")
+      .populate("to", "name code")
       .then((services) => {
         if (!services) {
           const errors = {

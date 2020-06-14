@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Modal from 'react-modal';
 import { Button } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
-import SelectField, {
-  SelectFieldOption,
-} from '../../components/common/SelectField';
+import SelectField from '../../components/common/SelectField';
 import TextField from '../../components/common/TextField';
 import { ValueTypes } from '../../components/table/columns';
 import { formatValue } from '../../utils/utils';
@@ -26,80 +24,55 @@ const serviceTypesOptions = [
 ];
 
 interface FormData {
+  from: string;
   pagesQty: string;
   selectedService: string;
 }
 
 export default function NewOrderServicesModal({
+  addService,
+  isEditing,
   isOpen,
   services,
   setModal,
-  addService,
+  updateService,
+  resetEditing,
 }: {
-  services: Service[];
-  isOpen: boolean;
-  setModal: (status: boolean) => void;
   addService: (newService: ServiceWithDetails) => void;
+  isEditing: ServiceWithDetails | null;
+  isOpen: boolean;
+  services: Service[];
+  setModal: (status: boolean) => void;
+  updateService: (updatedService: ServiceWithDetails) => void;
+  resetEditing: () => void;
 }) {
-  const [servicesFilter, setServicesFilter] = useState<
-    Pick<Service, 'type'> & { from: string; selectedService: string }
-  >({
-    type: 'translation',
-    from: '',
-    selectedService: '',
-  });
+  const { handleSubmit, register, errors, watch, reset } = useForm<FormData>();
 
-  const { handleSubmit, register, errors, watch } = useForm<FormData>();
+  const languagesFrom = services
+    .filter((serv, index, arr) => {
+      const typeFilter = isEditing ? isEditing.type : watch('type');
+      const isCorrectType = serv.type === typeFilter;
+      const isDuplicate =
+        index === arr.findIndex((x) => x.from.name === serv.from.name);
+      return isCorrectType && !isDuplicate;
+    })
+    .map((serv) => ({
+      text: serv.from.name,
+      value: serv.from._id,
+    }));
 
-  const languagesFrom: SelectFieldOption[] = [];
-  const languagesTo: SelectFieldOption[] = [];
-
-  services.forEach((service) => {
-    if (
-      service.type === servicesFilter.type &&
-      languagesFrom.findIndex((x) => x.value === service.from._id) === -1
-    ) {
-      languagesFrom.push({
-        text: service.from.name,
-        value: service.from._id,
-      });
-    }
-
-    if (
-      service.type === servicesFilter.type &&
-      service.from._id === servicesFilter.from &&
-      languagesTo.findIndex((x) => x.value === service._id) === -1
-    ) {
-      languagesTo.push({
-        text: service.to.name,
-        value: service._id,
-      });
-    }
-  });
-
-  function handleServiceFilterChange(name: string, value: string | number) {
-    const newFilter = {
-      ...servicesFilter,
-      [name]: value,
-    };
-    if (name === 'type' || name === 'from') {
-      newFilter.selectedService = '';
-    }
-    if (name === 'type') {
-      newFilter.selectedService = '';
-      newFilter.from = '';
-    }
-    if (
-      name === 'from' &&
-      services.filter((x) => x.from._id === value).length > 0
-    ) {
-      newFilter.selectedService = services.filter(
-        (x) => x.from._id === value
-      )[0]._id;
-    }
-
-    setServicesFilter(newFilter);
-  }
+  const languagesTo = services
+    .filter((serv, index, arr) => {
+      const typeFilter = isEditing ? isEditing.type : watch('type');
+      const fromFilter = isEditing ? isEditing.from._id : watch('from');
+      const isCorrectType = serv.type === typeFilter;
+      const isCorrectFrom = serv.from._id === fromFilter;
+      return isCorrectType && isCorrectFrom;
+    })
+    .map((serv) => ({
+      text: serv.to.name,
+      value: serv._id,
+    }));
 
   function onSubmit(values) {
     const selectedService = services.find(
@@ -114,13 +87,19 @@ export default function NewOrderServicesModal({
           ? selectedService.price * parseFloat(values.pagesQty)
           : null,
       };
-      addService(newService);
+      if (isEditing) {
+        updateService(newService);
+      } else {
+        addService(newService);
+      }
       setModal(false);
+      reset();
+      resetEditing();
     }
   }
-  const selectedService = services.find(
-    (x) => x._id === watch('selectedService')
-  );
+  const selectedService = isEditing
+    ? isEditing
+    : services.find((x) => x._id === watch('selectedService'));
 
   const price = selectedService ? selectedService.price : null;
   const totalPrice =
@@ -129,49 +108,59 @@ export default function NewOrderServicesModal({
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={(): void => setModal(false)}
+      onRequestClose={(): void => {
+        setModal(false);
+        reset();
+        resetEditing();
+      }}
       className="VertiModal"
       contentLabel="Example Modal"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <SelectField
-          value={servicesFilter.type}
-          name="type"
+          defaultValue={isEditing ? isEditing.type : ''}
+          inputRef={register({ required: 'Please choose type' })}
           label="Type"
+          name="type"
           options={serviceTypesOptions}
-          onChange={handleServiceFilterChange}
         />
         <SelectField
-          value={servicesFilter.from}
-          name="from"
+          defaultValue={isEditing ? isEditing.from._id : ''}
+          error={errors.from?.message}
+          inputRef={register({
+            required: 'Please choose language',
+          })}
           label="From"
+          name="from"
           options={languagesFrom}
-          onChange={handleServiceFilterChange}
         />
         <SelectField
-          value={servicesFilter.selectedService}
-          name="selectedService"
-          label="To"
-          inputRef={register({ required: 'Please choose language' })}
-          disabled={servicesFilter.from === ''}
-          options={languagesTo}
-          onChange={handleServiceFilterChange}
+          defaultValue={isEditing ? isEditing._id : ''}
+          disabled={watch().from === ''}
           error={errors.selectedService?.message}
+          inputRef={register({
+            required: 'Please choose language',
+          })}
+          label="To"
+          name="selectedService"
+          options={languagesTo}
         />
         <TextField
-          name="pagesQty"
-          defaultValue={1}
-          inputRef={register({ required: 'Please enter number of pages' })}
-          label="Number of pages"
-          placeholder="Please enter number of pages"
+          defaultValue={isEditing ? isEditing.pagesQty : 1}
           error={errors.pagesQty?.message}
+          inputRef={register({
+            required: 'Please enter number of pages',
+          })}
+          label="Number of pages"
+          name="pagesQty"
+          placeholder="Please enter number of pages"
         />
         <div>Price: {price && formatValue(price, ValueTypes.currency)}</div>
         <div>
           Sum: {totalPrice && formatValue(totalPrice, ValueTypes.currency)}
         </div>
         <Button variant="contained" color="primary" type="submit">
-          Add Service
+          {isEditing ? 'Save Changes' : 'Add Service'}
         </Button>
       </form>
     </Modal>

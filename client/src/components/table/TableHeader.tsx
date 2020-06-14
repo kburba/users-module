@@ -17,7 +17,6 @@ export default function TableHeader({
   setSort: (newSort: TableSort) => void;
 }) {
   function handleSortClick(column: TableColumn) {
-    const key = column.subKey ? column.subKey : column.key;
     setSort({
       key: column.key,
       ...(column.subKey && { subKey: column.subKey }),
@@ -48,10 +47,10 @@ export default function TableHeader({
               })}
             >
               {column.title}
-              {active && !sort.asc && (
+              {active && sort.asc && (
                 <ArrowDownwardIcon style={{ fontSize: '1rem' }} />
               )}
-              {active && sort.asc && (
+              {active && !sort.asc && (
                 <ArrowUpwarnIcon style={{ fontSize: '1rem' }} />
               )}
             </th>
