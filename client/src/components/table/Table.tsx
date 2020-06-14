@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
@@ -8,9 +8,17 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { useForm } from 'react-hook-form';
 import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
-import { formatValue, calcTotals } from '../../utils/utils';
+import { formatValue } from '../../utils/utils';
 import { VariousState } from '../../store/reducers/variousReducer';
 import { ValueTypes } from './columns';
+import TableFooter from './TableFooter';
+import TableHeader from './TableHeader';
+
+export type TableSort = {
+  key: string;
+  subKey?: string;
+  asc: boolean;
+};
 
 export type TableColumn = {
   key: string;
@@ -19,6 +27,7 @@ export type TableColumn = {
   valueType?: ValueTypes;
   totalsType?: 'avg' | 'sum';
   isEditable?: boolean;
+  isSortable?: boolean;
   linkTo?: string;
   linkKey?: string;
   cellType?: string;
@@ -30,30 +39,36 @@ export type TableAction = {
 };
 
 type TableProps<T> = {
-  data: T[];
-  columns: TableColumn[];
-  uniqueKey: string;
   actions?: TableAction[];
+  columns: TableColumn[];
+  data: T[];
+  editingRow?: string;
   isLoading?: boolean;
   isLoadingCell?: VariousState['isLoadingCell'];
-  onRowClickRoute?: string;
-  editingRow?: string;
-  onSubmit?(item: T, values): void;
   onCancel?(): void;
+  onRowClickRoute?: string;
+  onSubmit?(item: T, values): void;
+  sortBy?: string;
+  uniqueKey: string;
 };
 
 export default function Table<T>({
   actions,
-  isLoadingCell,
-  columns,
   data,
   editingRow,
   isLoading,
+  isLoadingCell,
   onCancel,
   onRowClickRoute,
   onSubmit,
+  sortBy,
   uniqueKey,
+  columns,
 }: TableProps<T>) {
+  const [sort, setSort] = useState<TableSort>({
+    key: sortBy || '',
+    asc: false,
+  });
   const { register, errors, handleSubmit } = useForm();
 
   function handleActionClick(type: TableAction['type'], item: T) {
@@ -74,28 +89,29 @@ export default function Table<T>({
     }
   }
 
-  const totals = calcTotals<T>(data, columns);
+  function compare(a, b) {
+    const valueA = sort.subKey ? a[sort.key][sort.subKey] : a[sort.key];
+    const valueB = sort.subKey ? b[sort.key][sort.subKey] : b[sort.key];
+    if (valueA > valueB) return 1;
+    if (valueA < valueB) return -1;
+    return 0;
+  }
+
+  const sortedData = data.sort(compare);
+
+  if (sort.asc) sortedData.reverse();
 
   return (
     <div className="table">
-      <table>
-        <thead>
-          <tr>
-            {columns.map((column, index) => (
-              <th
-                key={index + column.key}
-                className={classnames({
-                  'text-right': column.valueType === ValueTypes.currency,
-                })}
-              >
-                {column.title}
-              </th>
-            ))}
-            {actions && <th>Action</th>}
-          </tr>
-        </thead>
+      <table cellPadding="0" cellSpacing="0">
+        <TableHeader
+          columns={columns}
+          withActions={!!actions}
+          sort={sort}
+          setSort={setSort}
+        />
         <tbody>
-          {data.map((item) => {
+          {sortedData.map((item) => {
             const isEditingRow = editingRow === item[uniqueKey];
             function handleEdit(values) {
               handleEditSubmit(item, values);
@@ -242,23 +258,7 @@ export default function Table<T>({
             );
           })}
         </tbody>
-        <tfoot>
-          <tr>
-            {columns.map((column, index) => {
-              return (
-                <td
-                  key={index + column.key}
-                  className={classnames({
-                    'text-right': column.valueType === ValueTypes.currency,
-                  })}
-                >
-                  {formatValue(totals[column.key], column.valueType)}
-                </td>
-              );
-            })}
-            <td />
-          </tr>
-        </tfoot>
+        <TableFooter data={data} columns={columns} />
       </table>
     </div>
   );

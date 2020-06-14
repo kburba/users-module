@@ -1,6 +1,5 @@
 import React, { useEffect, Dispatch } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { getClientsAction } from '../store/actions/clientActions';
 import { RootState } from '../store/reducers';
 import { getOrdersAction } from '../store/actions/orderActions';
@@ -13,17 +12,29 @@ import { LanguageActions } from '../store/types/languageTypes';
 import { OrdersState } from '../store/reducers/ordersReducer';
 import { ServicesState } from '../store/reducers/servicesReducer';
 import { LanguagesState } from '../store/reducers/languagesReducer';
-import { Container } from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
+import {
+  Container,
+  Card,
+  CardActionArea,
+  CardContent,
+  Typography,
+  CardActions,
+  Button,
+  Grid,
+} from '@material-ui/core';
+import { AuthState } from '../store/types/authTypes';
 
 function Dashboard({
+  clients,
   getClients,
-  getServices,
   getLanguages,
   getOrders,
-  orders,
+  getServices,
+  isAuthenticated,
   languages,
+  orders,
   services,
-  clients,
 }: ReduxProps) {
   useEffect(() => {
     getClients();
@@ -32,42 +43,64 @@ function Dashboard({
     getLanguages();
   }, [getClients, getServices, getOrders, getLanguages]);
 
+  const CARDS = [
+    {
+      title: 'Orders',
+      description: orders.length,
+      link: '/orders',
+    },
+    {
+      title: 'Clients',
+      description: clients.length,
+      link: '/clients',
+    },
+    {
+      title: 'Services',
+      description: services.length,
+      link: '/services',
+    },
+    {
+      title: 'Languages',
+      description: languages.length,
+      link: '/languages',
+    },
+  ];
+
   return (
     <Container className="container">
       <h1>Dashboard</h1>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div>
-          <h3>Orders</h3>
-          <div>Total orders: {orders.length}</div>
-          <Link to="/orders">
-            <button className="btn">Go to Orders</button>
-          </Link>
-        </div>
-        <div>
-          <h3>Clients</h3>
-          <div>Total clients: {clients.length}</div>
-          <Link to="/clients">
-            <button className="btn">Go to Clients</button>
-          </Link>
-        </div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div>
-          <h3>Services</h3>
-
-          <div>Total services: {services.length}</div>
-          <Link to="/services">
-            <button className="btn">Go to Services</button>
-          </Link>
-        </div>
-        <div>
-          <h3>Languages</h3>
-          <div>Total languages: {languages.length}</div>
-          <Link to="/languages">
-            <button className="btn">Go to Languages</button>
-          </Link>
-        </div>
-      </div>
+      <Grid container spacing={1}>
+        {CARDS.map((item) => (
+          <Grid item key={item.title} lg={12}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    {item.title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    {item.description}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+              <CardActions>
+                <Button
+                  size="small"
+                  color="primary"
+                  component={RouterLink}
+                  to={item.link}
+                >
+                  Go to {item.title}
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
     </Container>
   );
 }
@@ -77,6 +110,7 @@ type ReduxStateProps = {
   clients: ClientsState['clients'];
   services: ServicesState['services'];
   languages: LanguagesState['languages'];
+  isAuthenticated: AuthState['isAuthenticated'];
 };
 
 const mapStateToProps = ({
@@ -84,11 +118,13 @@ const mapStateToProps = ({
   clientsReducer,
   servicesReducer,
   languagesReducer,
+  auth,
 }: RootState): ReduxStateProps => ({
   orders: ordersReducer.orders,
   clients: clientsReducer.clients,
   services: servicesReducer.services,
   languages: languagesReducer.languages,
+  isAuthenticated: auth.isAuthenticated,
 });
 
 const mapDispatchToProps = (

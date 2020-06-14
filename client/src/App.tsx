@@ -7,12 +7,12 @@ import JwtDecode from 'jwt-decode';
 import './styles/index.scss';
 import { CssBaseline } from '@material-ui/core';
 import 'typeface-roboto';
+import 'typeface-nunito';
 
 import setAuthToken from './utils/setAuthToken';
 import { setCurrentUser, getCurrentUser } from './store/actions/authActions';
 
 import Footer from './components/layout/Footer';
-import Landing from './components/layout/Landing';
 import Register from './components/auth/Register';
 import Dashboard from './components/Dashboard';
 import PrivateRoute from './components/common/PrivateRoute';
@@ -53,7 +53,7 @@ export default function App() {
           <div className="App">
             <NavBarMUI />
             <Switch>
-              <Route exact path="/" component={Landing} />
+              <Route exact path="/" component={Dashboard} />
               <Route exact path="/login" component={LoginMUI} />
               <Route exact path="/register" component={Register} />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />

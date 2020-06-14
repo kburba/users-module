@@ -43,6 +43,7 @@ const OrderSchema = new Schema(
     },
     status: {
       type: String,
+      default: "created",
     },
     comments: String,
   },

@@ -16,38 +16,42 @@ import { ValueTypes } from '../../components/table/columns';
 
 export const ordersColumns: TableColumn[] = [
   {
-    key: 'createdAt',
-    title: 'Created',
     valueType: ValueTypes.timestamp,
+    title: 'Created',
+    key: 'createdAt',
+    isSortable: true,
   },
   {
-    key: 'details',
-    subKey: 'orderId',
     title: 'ID',
+    subKey: 'orderId',
+    key: 'details',
   },
   {
+    isSortable: true,
     key: 'client',
+    linkKey: '_id',
+    linkTo: '/clients',
     subKey: 'name',
     title: 'Client',
-    linkTo: '/clients',
-    linkKey: '_id',
   },
   {
+    isSortable: true,
     key: 'details',
+    linkTo: '/orders',
     subKey: 'name',
     title: 'Name',
-    linkTo: '/orders',
   },
   {
+    cellType: 'services',
     key: 'services',
     title: 'Services',
-    cellType: 'services',
   },
   {
+    isSortable: true,
     key: 'total',
     title: 'Total',
-    valueType: ValueTypes.currency,
     totalsType: 'sum',
+    valueType: ValueTypes.currency,
   },
 ];
 
@@ -78,11 +82,12 @@ function OrdersTable({
       </div>
       {orders.length > 0 && (
         <Table<Order>
-          data={orders}
-          columns={ordersColumns}
-          isLoading={isLoading || isDeleting}
           actions={tableActions}
+          columns={ordersColumns}
+          data={orders}
+          isLoading={isLoading || isDeleting}
           uniqueKey="_id"
+          sortBy="total"
         />
       )}
     </div>

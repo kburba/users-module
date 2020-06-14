@@ -1,53 +1,89 @@
 .table {
-    table {
-        width: 100%;
+  table {
+    width: 100%;
 
-        thead {
-            tr {
-                th {
-                    padding: 5px;
-                    &:last-child {
-                        text-align: right;
-                    }
-                }
-            }
-        }
+    thead {
+      tr {
+        th {
+          font-family: 'Nunito', sans-serif;
+          font-size: 1rem;
+          font-weight: 400;
+          padding: 5px;
+          text-align: inherit;
 
-        tbody {
-            tr {
-                &:hover {
-                    td {
-                        background-color: rgba(0, 0, 0, 0.05);
-                    }
-                }
-                &.editing {
-                    td {
-                        height: 100px;
-                    }
-                }
-                td {
-                    padding: 2px;
-                    vertical-align: middle;
-                    height: 50px;
-                    transition: background-color 0.2s ease-in-out, height 0.2s ease-in-out;
-                }
-                td.clickable {
-                    cursor: pointer;
-                }
-                td:last-child {
-                    text-align: right;
-                }
-            }
-        }
+          &:last-child {
+            text-align: right;
+          }
 
-        tfoot {
-            border-top: 2px solid lightgray;
-            tr {
-                td {
-                    font-weight: bold;
-                    padding: 5px 0;
-                }
+          &.sortable {
+            cursor: pointer;
+          }
+
+          &.active {
+            display: flex;
+            color: blueviolet;
+            align-items: center;
+            svg {
+              margin-left: 3px;
             }
+          }
+
+          &.text-right {
+            text-align: right;
+            justify-content: flex-end;
+          }
         }
+      }
     }
+
+    tbody {
+      tr {
+        color: grey;
+
+        a {
+          text-decoration: none;
+          color: blueviolet;
+          border-bottom: 2px solid transparent;
+          padding-bottom: 2px;
+          transition: border-bottom 0.2s ease-in-out;
+
+          &:hover {
+            border-bottom-color: blueviolet;
+          }
+        }
+        &:hover {
+          td {
+            background-color: rgba(0, 0, 0, 0.05);
+          }
+        }
+        &.editing {
+          td {
+            height: 100px;
+          }
+        }
+        td {
+          padding: 2px;
+          vertical-align: middle;
+          height: 50px;
+          transition: background-color 0.2s ease-in-out, height 0.2s ease-in-out;
+        }
+        td.clickable {
+          cursor: pointer;
+        }
+        td:last-child {
+          text-align: right;
+        }
+      }
+    }
+
+    tfoot {
+      border-top: 2px solid lightgray;
+      tr {
+        td {
+          font-weight: bold;
+          padding: 5px 0;
+        }
+      }
+    }
+  }
 }
