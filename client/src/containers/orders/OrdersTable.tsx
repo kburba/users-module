@@ -13,7 +13,15 @@ import { setLoadingCell } from '../../store/actions/variousActions';
 import { VariousState } from '../../store/reducers/variousReducer';
 import { VariousActions } from '../../store/types/variousTypes';
 import { ValueTypes } from '../../components/table/columns';
+import { columns, orderColumns } from './../../components/table/columns';
 
+const tableColumns = [
+  columns.createdAt,
+  orderColumns.id,
+  orderColumns.client,
+  orderColumns.services,
+  orderColumns.total,
+];
 export const ordersColumns: TableColumn[] = [
   {
     valueType: ValueTypes.timestamp,
@@ -83,7 +91,7 @@ function OrdersTable({
       {orders.length > 0 && (
         <Table<Order>
           actions={tableActions}
-          columns={ordersColumns}
+          columns={tableColumns}
           data={orders}
           isLoading={isLoading || isDeleting}
           uniqueKey="_id"

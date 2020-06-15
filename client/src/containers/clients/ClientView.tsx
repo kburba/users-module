@@ -5,7 +5,14 @@ import { getClientById } from '../../store/actions/clientActions';
 import { RootState } from '../../store/reducers';
 import { ClientsActions } from '../../store/types/clientTypes';
 import Table from '../../components/table/Table';
-import { ordersColumns } from '../orders/OrdersTable';
+import { columns, orderColumns } from './../../components/table/columns';
+
+const tableColumns = [
+  columns.createdAt,
+  orderColumns.name,
+  orderColumns.services,
+  orderColumns.total,
+];
 
 function ClientView({ match, getClient, clientById }: ReduxProps) {
   const clientId = match.params.id;
@@ -21,11 +28,6 @@ function ClientView({ match, getClient, clientById }: ReduxProps) {
     }
   }, [getClient, clientId, clientById]);
 
-  const clientOrdersFinished =
-    clientById?.orders.filter((x) => x.status === 'finished') || [];
-  const clientdOrdersInProgress =
-    clientById?.orders.filter((x) => x.status !== 'finished') || [];
-
   return (
     <div>
       <h1>{clientById?.name}</h1>
@@ -35,22 +37,13 @@ function ClientView({ match, getClient, clientById }: ReduxProps) {
       <div>
         <button type="button">Create invoice</button>
       </div>
-      <p>In progress:</p>
-      <Table
-        data={clientdOrdersInProgress}
-        columns={ordersColumns}
-        // isLoading={isLoading || isDeleting}
-        // actions={tableActions}
-        uniqueKey="_id"
-      />
-      <p>Finished:</p>
-      <Table
-        data={clientOrdersFinished}
-        columns={ordersColumns}
-        // isLoading={isLoading || isDeleting}
-        // actions={tableActions}
-        uniqueKey="_id"
-      />
+      {clientById && (
+        <Table
+          data={clientById.orders}
+          columns={tableColumns}
+          uniqueKey="_id"
+        />
+      )}
       <h3>Invoices</h3>
       <h3>Dictionary</h3>
     </div>

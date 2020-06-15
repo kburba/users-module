@@ -10,6 +10,7 @@ import {
   LOGOUT_USER,
   GET_CURRENT_USER,
 } from './types';
+import { history } from '../../App';
 // Register user
 export const registerUser = (userData, history) => (dispatch) => {
   axios
@@ -68,6 +69,9 @@ export function logoutUser(): AuthActions {
 
   // set current user to empty object
   setCurrentUser({});
+
+  // Redirect to login
+  history.push('/login');
 
   return {
     type: LOGOUT_USER,

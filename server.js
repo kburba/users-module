@@ -33,7 +33,11 @@ mongoose
     useUnifiedTopology: true,
     useFindAndModify: false,
   })
-  .then(() => console.log("Successfully connected to MongoDB"))
+  .then(() =>
+    console.log(
+      `${new Date().toLocaleString()}:  Successfully connected to MongoDB`
+    )
+  )
   .catch((err) => console.log("Error ", err));
 
 // Passport middleware
@@ -43,14 +47,14 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 
 // use Routes
-app.use("/api/clients", clients);
-app.use("/api/languages", languages);
-app.use("/api/orders", orders);
-app.use("/api/posts", posts);
-app.use("/api/profile", profile);
-app.use("/api/services", services);
-app.use("/api/users", users);
 app.use("/api/vendors", vendors);
+app.use("/api/users", users);
+app.use("/api/services", services);
+app.use("/api/profile", profile);
+app.use("/api/posts", posts);
+app.use("/api/orders", orders);
+app.use("/api/languages", languages);
+app.use("/api/clients", clients);
 
 // serve static assets if in production
 if (process.env.NODE_ENV === "production") {
@@ -65,5 +69,5 @@ if (process.env.NODE_ENV === "production") {
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
-  console.log("Server running on " + port);
+  console.log(`${new Date().toLocaleString()}:  Server running on ${port}`);
 });

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import moment from 'moment';
 import { RootState } from '../../store/reducers';
-import columns from '../../components/table/columns';
+import { serviceColumns } from '../../components/table/columns';
 import Table from '../../components/table/Table';
 import { Container } from '@material-ui/core';
 import { getOrderById } from '../../store/actions/orderActions';
@@ -70,12 +70,12 @@ function ViewOrder({ orders, match, orderById, getOrderById }: ViewOrderProps) {
           <Table
             data={flatServices}
             columns={[
-              columns.type,
-              columns.from,
-              columns.to,
-              columns.pagesQty,
-              columns.price,
-              columns.totalPrice,
+              serviceColumns.type,
+              serviceColumns.from,
+              serviceColumns.to,
+              serviceColumns.pagesQty,
+              serviceColumns.price,
+              serviceColumns.totalPrice,
             ]}
             uniqueKey="_id"
             // actions={servicesTableActions}

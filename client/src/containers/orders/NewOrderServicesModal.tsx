@@ -62,7 +62,7 @@ export default function NewOrderServicesModal({
     }));
 
   const languagesTo = services
-    .filter((serv, index, arr) => {
+    .filter((serv) => {
       const typeFilter = isEditing ? isEditing.type : watch('type');
       const fromFilter = isEditing ? isEditing.from._id : watch('from');
       const isCorrectType = serv.type === typeFilter;

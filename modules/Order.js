@@ -17,13 +17,13 @@ const OrderSchema = new Schema(
       },
     },
     client: {
-      type: Schema.Types.ObjectId,
+      type: Schema.ObjectId,
       ref: "clients",
     },
     services: [
       {
         service: {
-          type: Schema.Types.ObjectId,
+          type: Schema.ObjectId,
           ref: "services",
         },
         pagesQty: {

@@ -9,24 +9,12 @@ import {
   getClientsAction,
 } from '../../store/actions/clientActions';
 import { ClientsActions, Client } from '../../store/types/clientTypes';
-import { ValueTypes } from '../../components/table/columns';
 import { Button } from '@material-ui/core';
+import { clientColumns } from '../../components/table/columns';
 
-export const clientsColumns: TableColumn[] = [
-  {
-    key: '_id',
-    title: 'ID',
-  },
-  {
-    key: 'createdAt',
-    title: 'Created',
-    valueType: ValueTypes.timestamp,
-  },
-  {
-    key: 'name',
-    title: 'Name',
-    linkTo: '/clients',
-  },
+const TableColumns: TableColumn[] = [
+  clientColumns.name,
+  clientColumns.sumOfOrders,
 ];
 
 function ClientsTable({
@@ -73,7 +61,7 @@ function ClientsTable({
       </div>
       <Table
         data={clients}
-        columns={clientsColumns}
+        columns={TableColumns}
         uniqueKey="_id"
         actions={tableActions}
         isLoading={isLoadingClients}

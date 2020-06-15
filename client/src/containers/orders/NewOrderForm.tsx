@@ -10,41 +10,41 @@ import {
   Service,
   ServiceWithDetails,
 } from '../../store/types/serviceTypes';
-import { getServicesAction } from '../../store/actions/serviceActions';
-import { NewOrder, OrderActions } from '../../store/types/orderTypes';
-import { addOrderAction } from '../../store/actions/orderActions';
-import { RootState } from '../../store/reducers';
-import TextField from '../../components/common/TextField';
+import NewOrderServicesModal from './NewOrderServicesModal';
 import SelectField from '../../components/common/SelectField';
 import Table, { TableAction } from '../../components/table/Table';
-import { getClientsAction } from '../../store/actions/clientActions';
+import TextField from '../../components/common/TextField';
+import { serviceColumns, ValueTypes } from '../../components/table/columns';
 import { ClientsActions } from '../../store/types/clientTypes';
-import { formatValue } from '../../utils/utils';
-import columns, { ValueTypes } from '../../components/table/columns';
-import NewOrderServicesModal from './NewOrderServicesModal';
+import { NewOrder, OrderActions } from '../../store/types/orderTypes';
+import { RootState } from '../../store/reducers';
 import { VariousActions } from '../../store/types/variousTypes';
 import { VariousState } from '../../store/reducers/variousReducer';
+import { addOrderAction } from '../../store/actions/orderActions';
+import { formatValue } from '../../utils/utils';
+import { getClientsAction } from '../../store/actions/clientActions';
+import { getServicesAction } from '../../store/actions/serviceActions';
 import { setLoadingCell } from '../../store/actions/variousActions';
 
 interface FormData {
-  name: string;
-  orderId: string;
-  service: Service;
-  pagesQty: string;
-  total: number;
   client: string;
   comments: string;
+  name: string;
+  orderId: string;
+  pagesQty: string;
+  service: Service;
+  total: number;
 }
 
 function NewOrderForm({
-  addOrder,
-  clients,
-  getClients,
-  getServices,
-  history,
-  isSubmitting,
-  ordersQty,
   services,
+  ordersQty,
+  isSubmitting,
+  history,
+  getServices,
+  getClients,
+  clients,
+  addOrder,
 }: NewOrderProps) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [orderServices, setOrderServices] = useState<ServiceWithDetails[]>([]);
@@ -187,22 +187,26 @@ function NewOrderForm({
                 + Add Service
               </Button>
             </div>
-            <Table
-              data={orderServices}
-              columns={[
-                columns.type,
-                columns.from,
-                columns.to,
-                columns.pagesQty,
-                columns.price,
-                columns.totalPrice,
-              ]}
-              uniqueKey="_id"
-              actions={servicesTableActions}
-            />
+            {orderServices.length > 0 ? (
+              <Table
+                data={orderServices}
+                columns={[
+                  serviceColumns.type,
+                  serviceColumns.from,
+                  serviceColumns.to,
+                  serviceColumns.pagesQty,
+                  serviceColumns.price,
+                  serviceColumns.totalPrice,
+                ]}
+                uniqueKey="_id"
+                actions={servicesTableActions}
+              />
+            ) : (
+              <div>No services.</div>
+            )}
           </div>
           <div className="section">
-            <h3>Additional info:</h3>
+            <h2>Additional info</h2>
             <TextField
               label="Comments"
               placeholder="Please leave your comments here"
