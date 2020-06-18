@@ -81,36 +81,38 @@ function NavBarMUI({ auth, logoutUser }: ReduxProps) {
             Verti App
           </Typography>
           <Box flexGrow="1" display="flex" justifyContent="flex-end">
-            <div className={classes.mainMenu}>
-              <Button
-                className={classes.menuButton}
-                component={RouterLink}
-                to="/orders"
-              >
-                Orders
-              </Button>
-              <Button
-                className={classes.menuButton}
-                component={RouterLink}
-                to="/clients"
-              >
-                Clients
-              </Button>
-              <Button
-                className={classes.menuButton}
-                component={RouterLink}
-                to="/services"
-              >
-                Services
-              </Button>
-              <Button
-                className={classes.menuButton}
-                component={RouterLink}
-                to="/languages"
-              >
-                Languages
-              </Button>
-            </div>
+            {auth.isAuthenticated && (
+              <div className={classes.mainMenu}>
+                <Button
+                  className={classes.menuButton}
+                  component={RouterLink}
+                  to="/orders"
+                >
+                  Orders
+                </Button>
+                <Button
+                  className={classes.menuButton}
+                  component={RouterLink}
+                  to="/clients"
+                >
+                  Clients
+                </Button>
+                <Button
+                  className={classes.menuButton}
+                  component={RouterLink}
+                  to="/services"
+                >
+                  Services
+                </Button>
+                <Button
+                  className={classes.menuButton}
+                  component={RouterLink}
+                  to="/languages"
+                >
+                  Languages
+                </Button>
+              </div>
+            )}
             {auth.isAuthenticated ? authenticatedList : guestList}
           </Box>
         </Toolbar>

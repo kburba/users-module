@@ -65,6 +65,7 @@ function ClientsTable({
         uniqueKey="_id"
         actions={tableActions}
         isLoading={isLoadingClients}
+        sortBy="sumOfOrders"
       />
     </>
   );

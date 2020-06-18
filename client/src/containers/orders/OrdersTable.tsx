@@ -2,7 +2,7 @@ import React, { Dispatch } from 'react';
 import { connect } from 'react-redux';
 import { Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import Table, { TableColumn, TableAction } from '../../components/table/Table';
+import Table, { TableAction } from '../../components/table/Table';
 import { OrderActions, Order } from '../../store/types/orderTypes';
 import {
   deleteOrderAction,
@@ -12,55 +12,15 @@ import { RootState } from '../../store/reducers';
 import { setLoadingCell } from '../../store/actions/variousActions';
 import { VariousState } from '../../store/reducers/variousReducer';
 import { VariousActions } from '../../store/types/variousTypes';
-import { ValueTypes } from '../../components/table/columns';
 import { columns, orderColumns } from './../../components/table/columns';
 
-const tableColumns = [
+const TableColumns = [
   columns.createdAt,
   orderColumns.id,
   orderColumns.client,
+  orderColumns.details,
   orderColumns.services,
   orderColumns.total,
-];
-export const ordersColumns: TableColumn[] = [
-  {
-    valueType: ValueTypes.timestamp,
-    title: 'Created',
-    key: 'createdAt',
-    isSortable: true,
-  },
-  {
-    title: 'ID',
-    subKey: 'orderId',
-    key: 'details',
-  },
-  {
-    isSortable: true,
-    key: 'client',
-    linkKey: '_id',
-    linkTo: '/clients',
-    subKey: 'name',
-    title: 'Client',
-  },
-  {
-    isSortable: true,
-    key: 'details',
-    linkTo: '/orders',
-    subKey: 'name',
-    title: 'Name',
-  },
-  {
-    cellType: 'services',
-    key: 'services',
-    title: 'Services',
-  },
-  {
-    isSortable: true,
-    key: 'total',
-    title: 'Total',
-    totalsType: 'sum',
-    valueType: ValueTypes.currency,
-  },
 ];
 
 function OrdersTable({
@@ -91,7 +51,7 @@ function OrdersTable({
       {orders.length > 0 && (
         <Table<Order>
           actions={tableActions}
-          columns={tableColumns}
+          columns={TableColumns}
           data={orders}
           isLoading={isLoading || isDeleting}
           uniqueKey="_id"

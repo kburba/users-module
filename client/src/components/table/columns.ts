@@ -34,6 +34,13 @@ export const orderColumns: Column = {
     subKey: 'orderId',
     key: 'details',
   },
+  details: {
+    isSortable: true,
+    key: 'details',
+    linkTo: '/orders',
+    subKey: 'name',
+    title: 'Name',
+  },
   name: {
     isSortable: true,
     key: 'details',
