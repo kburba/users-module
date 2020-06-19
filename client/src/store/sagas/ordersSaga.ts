@@ -93,7 +93,10 @@ function* getOrdersSaga() {
       const ordersFromState = yield select(getOrdersFromState);
       yield put(getOrdersSuccessAction(ordersFromState));
     } else {
-      const orders = yield call(apiFetch, '/api/orders');
+      const orders = yield call(
+        apiFetch,
+        '/api/orders?from=2020-05-30&to=2020-05-31'
+      );
       yield put(getOrdersSuccessAction(orders.data));
     }
   } catch (error) {

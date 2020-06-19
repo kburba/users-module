@@ -65,7 +65,7 @@ router.get(
   }),
   (req, res) => {
     Language.find(null)
-      .sort("name")
+      .sort("-name")
       .then((languages) => {
         if (!languages) {
           const errors = {

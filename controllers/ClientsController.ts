@@ -116,23 +116,4 @@ exports.getAll = function (req, res) {
         noposts: "Cannot get clients",
       });
     });
-
-  // Client.find(null, "name createdAt")
-  //   .sort("name")
-  //   .then((clients) => {
-  //     if (!clients) {
-  //       const errors = {
-  //         noclients: "There are no clients",
-  //       };
-
-  //       return res.status(404).json(errors);
-  //     }
-
-  //     res.status(200).json(clients);
-  //   })
-  //   .catch((err) => {
-  //     res.status(404).json({
-  //       noposts: "Cannot get clients",
-  //     });
-  //   });
 };

@@ -9,6 +9,24 @@ interface Column {
   [key: string]: TableColumn;
 }
 
+export const languagesColumns: Column = {
+  code: {
+    key: 'code',
+    title: 'Code',
+    isSortable: true,
+  },
+  name: {
+    key: 'name',
+    title: 'Name',
+    isSortable: true,
+  },
+  nativeName: {
+    key: 'nativeName',
+    title: 'Native Name',
+    isSortable: true,
+  },
+};
+
 export const clientColumns: Column = {
   sumOfOrders: {
     isSortable: true,
@@ -74,17 +92,19 @@ export const serviceColumns: Column = {
     key: 'from',
     subKey: 'name',
     title: 'From',
+    isSortable: true,
   },
   to: {
     key: 'to',
     subKey: 'name',
     title: 'To',
+    isSortable: true,
   },
   price: {
     key: 'price',
     title: 'Price',
     valueType: ValueTypes.currency,
-    isEditable: true,
+    isSortable: true,
   },
   pagesQty: {
     key: 'pagesQty',

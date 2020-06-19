@@ -48,13 +48,16 @@ export default function NewOrderServicesModal({
 }) {
   const { handleSubmit, register, errors, watch, reset } = useForm<FormData>();
 
+  const typeFilter = isEditing ? isEditing.type : watch('type');
   const languagesFrom = services
+    .filter((serv) => serv.type === typeFilter)
     .filter((serv, index, arr) => {
-      const typeFilter = isEditing ? isEditing.type : watch('type');
-      const isCorrectType = serv.type === typeFilter;
       const isDuplicate =
-        index === arr.findIndex((x) => x.from.name === serv.from.name);
-      return isCorrectType && !isDuplicate;
+        index ===
+        arr.findIndex(
+          (x) => x.type === typeFilter && x.from.name === serv.from.name
+        );
+      return isDuplicate;
     })
     .map((serv) => ({
       text: serv.from.name,

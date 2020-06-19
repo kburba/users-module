@@ -11,11 +11,9 @@ import { RootState } from '../../store/reducers';
 import { VariousState } from '../../store/reducers/variousReducer';
 import { setLoadingCell } from '../../store/actions/variousActions';
 import { VariousActions } from '../../store/types/variousTypes';
-import { columns, serviceColumns } from '../../components/table/columns';
+import { serviceColumns } from '../../components/table/columns';
 
 export const servicesColumns: TableColumn[] = [
-  columns.id,
-  columns.createdAt,
   serviceColumns.type,
   serviceColumns.from,
   serviceColumns.to,

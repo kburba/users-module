@@ -4,6 +4,7 @@ const router = express.Router();
 const passport = require("passport");
 
 const validateOrdersInput = require("../../validation/orders");
+const formatQueryFromRequest = require("../../utils/formatQueryRequest");
 
 const Language = require("../../modules/Language");
 const Order = require("../../modules/Order");
@@ -103,7 +104,9 @@ router.get(
     session: false,
   }),
   (req, res) => {
-    Order.find(null)
+    const query = formatQueryFromRequest(req.query);
+
+    Order.find(query)
       .sort("-createdAt")
       .populate("client", "name")
       .populate({

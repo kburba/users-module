@@ -1,6 +1,6 @@
-import React, { Dispatch, useState } from 'react';
+import React, { Dispatch } from 'react';
 import { connect } from 'react-redux';
-import Table, { TableColumn, TableAction } from '../../components/table/Table';
+import Table, { TableAction } from '../../components/table/Table';
 import { Language, LanguageActions } from '../../store/types/languageTypes';
 import {
   deleteLanguageAction,
@@ -8,50 +8,22 @@ import {
   updateLanguageAction,
 } from '../../store/actions/languageActions';
 import { RootState } from '../../store/reducers';
-import { ValueTypes } from '../../components/table/columns';
-
-const languagesColumns: TableColumn[] = [
-  {
-    key: 'createdAt',
-    title: 'Created',
-    valueType: ValueTypes.timestamp,
-  },
-  {
-    key: 'code',
-    title: 'Code',
-    isEditable: true,
-  },
-  {
-    key: 'name',
-    title: 'Name',
-    isEditable: true,
-  },
-  {
-    key: 'nativeName',
-    title: 'Native Name',
-    isEditable: true,
-  },
+import { languagesColumns } from '../../components/table/columns';
+const TableColumns = [
+  languagesColumns.code,
+  languagesColumns.name,
+  languagesColumns.nativeName,
 ];
-
-type NewLanguage = {
-  code: string;
-  name: string;
-  nativeName: string;
-};
 
 function LanguagesTable({
   deleteLanguage,
   isLoading,
   languages,
-  updateLanguage,
 }: LangTableProps) {
-  const [editingItem, setEditingItem] = useState<string | undefined>(undefined);
   const tableActions: TableAction[] = [
     {
       type: 'edit',
-      action: (language: Language) => {
-        setEditingItem(language._id);
-      },
+      action: (language: Language) => {},
     },
     {
       type: 'delete',
@@ -59,25 +31,13 @@ function LanguagesTable({
     },
   ];
 
-  function handleEditLanguage(language: Language, newValues: NewLanguage) {
-    updateLanguage({
-      _id: language._id,
-      code: newValues.code,
-      name: newValues.name,
-      nativeName: newValues.nativeName,
-    });
-  }
-
   return (
     <Table<Language>
       data={languages}
-      columns={languagesColumns}
+      columns={TableColumns}
       uniqueKey="_id"
       actions={tableActions}
       isLoading={isLoading}
-      editingRow={editingItem}
-      onSubmit={handleEditLanguage}
-      onCancel={() => setEditingItem(undefined)}
     />
   );
 }

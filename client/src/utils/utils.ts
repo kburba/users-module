@@ -34,7 +34,7 @@ export function formatValue(
   }
   switch (valueType) {
     case ValueTypes.timestamp:
-      return moment(value).fromNow();
+      return moment(value).format('lll');
     case ValueTypes.currency:
       return new Intl.NumberFormat('en-GB', {
         style: 'currency',

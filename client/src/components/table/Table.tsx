@@ -2,12 +2,9 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
-import { IconButton, TextField } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { useForm } from 'react-hook-form';
-import DoneIcon from '@material-ui/icons/Done';
-import ClearIcon from '@material-ui/icons/Clear';
 import { formatValue } from '../../utils/utils';
 import { VariousState } from '../../store/reducers/variousReducer';
 import { ValueTypes } from './columns';
@@ -26,7 +23,6 @@ export type TableColumn = {
   subKey?: string;
   valueType?: ValueTypes;
   totalsType?: 'avg' | 'sum';
-  isEditable?: boolean;
   isSortable?: boolean;
   linkTo?: string;
   linkKey?: string;
@@ -42,12 +38,9 @@ type TableProps<T> = {
   actions?: TableAction[];
   columns: TableColumn[];
   data: T[];
-  editingRow?: string;
   isLoading?: boolean;
   isLoadingCell?: VariousState['isLoadingCell'];
-  onCancel?(): void;
   onRowClickRoute?: string;
-  onSubmit?(item: T, values): void;
   sortBy?: string;
   uniqueKey: string;
 };
@@ -55,12 +48,9 @@ type TableProps<T> = {
 export default function Table<T>({
   actions,
   data,
-  editingRow,
   isLoading,
   isLoadingCell,
-  onCancel,
   onRowClickRoute,
-  onSubmit,
   sortBy,
   uniqueKey,
   columns,
@@ -69,7 +59,6 @@ export default function Table<T>({
     key: sortBy || '',
     asc: true,
   });
-  const { register, errors, handleSubmit } = useForm();
 
   function handleActionClick(type: TableAction['type'], item: T) {
     if (actions) {
@@ -77,15 +66,6 @@ export default function Table<T>({
       if (clickAction) {
         clickAction.action(item);
       }
-    }
-  }
-
-  function handleEditSubmit(item, values) {
-    if (typeof onSubmit !== 'undefined') {
-      onSubmit(item, values);
-    }
-    if (typeof onCancel !== 'undefined') {
-      onCancel();
     }
   }
 
@@ -114,15 +94,8 @@ export default function Table<T>({
         />
         <tbody>
           {sortedData.map((item) => {
-            const isEditingRow = editingRow === item[uniqueKey];
-            function handleEdit(values) {
-              handleEditSubmit(item, values);
-            }
             return (
-              <tr
-                key={item[uniqueKey]}
-                className={classnames({ editing: isEditingRow })}
-              >
+              <tr key={item[uniqueKey]}>
                 {columns.map((column, index) => {
                   const cellIsLoading =
                     isLoadingCell?.column === column.key &&
@@ -146,27 +119,6 @@ export default function Table<T>({
                     column.valueType === ValueTypes.timestamp
                       ? moment(item[column.key]).format('LLL')
                       : value;
-                  if (isEditingRow && column.isEditable) {
-                    return (
-                      <td
-                        key={index + column.key}
-                        className={classnames({
-                          clickable: onRowClickRoute,
-                        })}
-                        title={title}
-                      >
-                        <TextField
-                          inputRef={register({ required: true })}
-                          defaultValue={value}
-                          name={column.key}
-                          error={typeof errors[column.key] !== 'undefined'}
-                          helperText={
-                            typeof errors[column.key] !== 'undefined' && 'Error'
-                          }
-                        />
-                      </td>
-                    );
-                  }
                   if (column.cellType === 'services') {
                     return (
                       <td key={index + column.key}>
@@ -193,69 +145,53 @@ export default function Table<T>({
                     </td>
                   );
                 })}
-                {typeof editingRow === 'string' && isEditingRow ? (
-                  <td>
-                    <IconButton
-                      type="button"
-                      onClick={handleSubmit(handleEdit)}
-                    >
-                      <DoneIcon />
-                    </IconButton>
-                    <IconButton type="button" onClick={onCancel}>
-                      <ClearIcon />
-                    </IconButton>
-                  </td>
-                ) : (
-                  <td
-                    className={classnames({
-                      loading:
-                        isLoadingCell?.column === 'actions' &&
-                        isLoadingCell?.row === item[uniqueKey],
+                <td
+                  className={classnames({
+                    loading:
+                      isLoadingCell?.column === 'actions' &&
+                      isLoadingCell?.row === item[uniqueKey],
+                  })}
+                >
+                  {actions &&
+                    actions.map((action) => {
+                      if (action.type === 'edit') {
+                        return (
+                          <IconButton
+                            key={action.type}
+                            type="button"
+                            onClick={() => handleActionClick('edit', item)}
+                            disabled={isLoading}
+                          >
+                            <CreateIcon />
+                          </IconButton>
+                        );
+                      }
+                      if (action.type === 'delete') {
+                        return (
+                          <IconButton
+                            key={action.type}
+                            type="button"
+                            onClick={() => handleActionClick('delete', item)}
+                            disabled={isLoading}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        );
+                      }
+                      if (action.type === 'addToList') {
+                        return (
+                          <button
+                            key={action.type}
+                            type="button"
+                            onClick={() => handleActionClick('addToList', item)}
+                          >
+                            Add
+                          </button>
+                        );
+                      }
+                      return null;
                     })}
-                  >
-                    {actions &&
-                      actions.map((action) => {
-                        if (action.type === 'edit') {
-                          return (
-                            <IconButton
-                              key={action.type}
-                              type="button"
-                              onClick={() => handleActionClick('edit', item)}
-                              disabled={isLoading}
-                            >
-                              <CreateIcon />
-                            </IconButton>
-                          );
-                        }
-                        if (action.type === 'delete') {
-                          return (
-                            <IconButton
-                              key={action.type}
-                              type="button"
-                              onClick={() => handleActionClick('delete', item)}
-                              disabled={isLoading}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          );
-                        }
-                        if (action.type === 'addToList') {
-                          return (
-                            <button
-                              key={action.type}
-                              type="button"
-                              onClick={() =>
-                                handleActionClick('addToList', item)
-                              }
-                            >
-                              Add
-                            </button>
-                          );
-                        }
-                        return null;
-                      })}
-                  </td>
-                )}
+                </td>
               </tr>
             );
           })}
