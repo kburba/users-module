@@ -15,6 +15,7 @@ import {
   GET_ORDER_BY_ID_STARTED,
   GET_ORDER_BY_ID_SUCCEED,
   GET_ORDER_BY_ID_FAILED,
+  ORDER_IS_EDITING,
 } from './types';
 import {
   OrderActions,
@@ -25,6 +26,13 @@ import {
   GetOrderByIdSucceed,
   GetOrderByIdFailed,
 } from '../types/orderTypes';
+
+export function setIsEditingOrder(status: boolean): OrderActions {
+  return {
+    type: ORDER_IS_EDITING,
+    payload: status,
+  };
+}
 
 export function setOrdersModal(status: boolean): OrderActions {
   return {

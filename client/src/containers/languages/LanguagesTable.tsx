@@ -1,6 +1,6 @@
 import React, { Dispatch } from 'react';
 import { connect } from 'react-redux';
-import Table, { TableAction } from '../../components/table/Table';
+import Table from '../../components/table/Table';
 import { Language, LanguageActions } from '../../store/types/languageTypes';
 import {
   deleteLanguageAction,
@@ -20,23 +20,11 @@ function LanguagesTable({
   isLoading,
   languages,
 }: LangTableProps) {
-  const tableActions: TableAction[] = [
-    {
-      type: 'edit',
-      action: (language: Language) => {},
-    },
-    {
-      type: 'delete',
-      action: (language: Language) => deleteLanguage(language._id),
-    },
-  ];
-
   return (
     <Table<Language>
       data={languages}
       columns={TableColumns}
       uniqueKey="_id"
-      actions={tableActions}
       isLoading={isLoading}
     />
   );

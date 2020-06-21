@@ -2,12 +2,9 @@ import React, { Dispatch } from 'react';
 import { connect } from 'react-redux';
 import { Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import Table, { TableAction } from '../../components/table/Table';
+import Table from '../../components/table/Table';
 import { OrderActions, Order } from '../../store/types/orderTypes';
-import {
-  deleteOrderAction,
-  setOrdersModal,
-} from '../../store/actions/orderActions';
+import { setOrdersModal } from '../../store/actions/orderActions';
 import { RootState } from '../../store/reducers';
 import { setLoadingCell } from '../../store/actions/variousActions';
 import { VariousState } from '../../store/reducers/variousReducer';
@@ -22,22 +19,7 @@ const TableColumns = [
   orderColumns.total,
 ];
 
-function OrdersTable({
-  orders,
-  deleteOrder,
-  isDeleting,
-  isLoading,
-}: OrderTableProps) {
-  const tableActions: TableAction[] = [
-    {
-      type: 'delete',
-      action: (order: Order) => {
-        setLoadingCell({ column: 'actions', row: order._id });
-        deleteOrder(order._id);
-      },
-    },
-  ];
-
+function OrdersTable({ orders, isDeleting, isLoading }: OrderTableProps) {
   return (
     <div>
       <div className="text-right margin--bottom">
@@ -49,7 +31,6 @@ function OrdersTable({
       </div>
       {orders.length > 0 && (
         <Table<Order>
-          actions={tableActions}
           columns={TableColumns}
           data={orders}
           isLoading={isLoading || isDeleting}
@@ -69,7 +50,6 @@ const mapStateToProps = ({ ordersReducer }: RootState) => ({
 const mapDispatchToProps = (
   dispatch: Dispatch<OrderActions | VariousActions>
 ) => ({
-  deleteOrder: (id: string) => dispatch(deleteOrderAction(id)),
   setModal: (status: boolean) => dispatch(setOrdersModal(status)),
   setLoadingCell: (cell: VariousState['isLoadingCell']) =>
     dispatch(setLoadingCell(cell)),

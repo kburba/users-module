@@ -15,12 +15,14 @@ import {
   GET_ORDER_BY_ID_STARTED,
   GET_ORDER_BY_ID_SUCCEED,
   GET_ORDER_BY_ID_FAILED,
+  ORDER_IS_EDITING,
 } from '../actions/types';
 import { Order, OrderActions } from '../types/orderTypes';
 
 export type OrdersState = {
   error: null | string | { message: string };
   isDeleting: boolean;
+  isEditingOrder: boolean;
   isLoadedOrders: boolean;
   isLoading: boolean;
   isSubmitting: boolean;
@@ -30,18 +32,25 @@ export type OrdersState = {
 };
 
 const initialState: OrdersState = {
-  orders: [],
-  orderById: null,
-  modalIsOpen: false,
-  isSubmitting: false,
-  isLoading: false,
-  isLoadedOrders: false,
-  isDeleting: false,
   error: null,
+  isDeleting: false,
+  isEditingOrder: false,
+  isLoadedOrders: false,
+  isLoading: false,
+  isSubmitting: false,
+  modalIsOpen: false,
+  orderById: null,
+  orders: [],
 };
 
 export default (state = initialState, action: OrderActions): OrdersState => {
   switch (action.type) {
+    case ORDER_IS_EDITING: {
+      return {
+        ...state,
+        isEditingOrder: action.payload,
+      };
+    }
     case GET_ORDER_BY_ID_STARTED:
       return {
         ...state,

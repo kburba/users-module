@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { RootState } from '../../store/reducers';
 import { serviceColumns, ValueTypes } from '../../components/table/columns';
 import Table from '../../components/table/Table';
 import { Container } from '@material-ui/core';
-import { getOrderById } from '../../store/actions/orderActions';
-import { GetOrderById } from '../../store/types/orderTypes';
+import {
+  getOrderById,
+  deleteOrderAction,
+} from '../../store/actions/orderActions';
+import { OrderActions } from '../../store/types/orderTypes';
 import { Dispatch } from 'redux';
 import { formatValue } from '../../utils/utils';
+import { OrdersState } from '../../store/reducers/ordersReducer';
 
 function formatCurrency(value) {
   if (typeof value === 'number') {
@@ -20,7 +23,12 @@ function formatCurrency(value) {
   return '';
 }
 
-function ViewOrder({ match, orderById, getOrderById }: ViewOrderProps) {
+function ViewOrder({
+  match,
+  orderById,
+  getOrderById,
+  deleteOrder,
+}: ViewOrderProps) {
   const orderId = match.params.id;
 
   useEffect(() => {
@@ -44,13 +52,12 @@ function ViewOrder({ match, orderById, getOrderById }: ViewOrderProps) {
     <Container>
       <Link to="/orders">{'< Orders'}</Link>
       <div>
-        {order && (
-          <h2>
-            {order.details.orderId}: {order.details.name}
-          </h2>
-        )}
+        {order && <h1>{order.details.name}</h1>}
+        <div className="section">
+          <h2>Details</h2>
+        </div>
         <h3>Details</h3>
-        <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           {order && (
             <div>
               <div>
@@ -65,7 +72,14 @@ function ViewOrder({ match, orderById, getOrderById }: ViewOrderProps) {
               </div>
             </div>
           )}
-          <button type="button">Create invoice</button>
+          {order && (
+            <div>
+              <button type="button">Create invoice</button>
+              <button type="button" onClick={() => deleteOrder(order._id)}>
+                Delete Order
+              </button>
+            </div>
+          )}
         </div>
         <h3>Services</h3>
         {order && (
@@ -94,11 +108,16 @@ function ViewOrder({ match, orderById, getOrderById }: ViewOrderProps) {
   );
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<GetOrderById>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<OrderActions>) => ({
   getOrderById: (id: string) => dispatch(getOrderById(id)),
+  deleteOrder: (id: string) => dispatch(deleteOrderAction(id)),
 });
 
-const mapStateToProps = ({ ordersReducer }: RootState) => ({
+const mapStateToProps = ({
+  ordersReducer,
+}: {
+  ordersReducer: OrdersState;
+}) => ({
   orderById: ordersReducer.orderById,
 });
 

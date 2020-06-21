@@ -16,6 +16,7 @@ import {
   GET_ORDER_BY_ID_STARTED,
   GET_ORDER_BY_ID_SUCCEED,
   GET_ORDER_BY_ID_FAILED,
+  ORDER_IS_EDITING,
 } from '../actions/types';
 import { Service } from './serviceTypes';
 import { Client } from './clientTypes';
@@ -83,13 +84,14 @@ export interface Order {
   total: number;
 }
 
-export type OrderActions =
-  | Get
-  | GetById
-  | Add
-  | Update
-  | Delete
-  | SetOrdersModal;
+export type OrderActions = Get | GetById | Add | Update | Delete | OtherActions;
+
+type OtherActions = SetIsEditingOrder | SetOrdersModal;
+
+export type SetIsEditingOrder = {
+  type: typeof ORDER_IS_EDITING;
+  payload: boolean;
+};
 
 export type SetOrdersModal = {
   type: typeof ORDERS_MODAL_ISOPEN;

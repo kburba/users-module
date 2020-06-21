@@ -11,10 +11,6 @@
           padding: 10px 0;
           text-align: inherit;
 
-          &:last-child {
-            text-align: right;
-          }
-
           &.sortable {
             cursor: pointer;
           }
