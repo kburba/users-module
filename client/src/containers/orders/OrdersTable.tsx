@@ -54,7 +54,6 @@ function OrdersTable({
           data={orders}
           isLoading={isLoading || isDeleting}
           uniqueKey="_id"
-          // sortBy="createdAt"
         />
       )}
     </div>

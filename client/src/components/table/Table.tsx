@@ -103,9 +103,10 @@ export default function Table<T>({
                   const value = column.subKey
                     ? item[column.key][column.subKey]
                     : item[column.key];
-                  const formattedValue = column.valueType
-                    ? formatValue(value, column.valueType)
-                    : value;
+                  const formattedValue =
+                    typeof column.valueType !== 'undefined'
+                      ? formatValue(value, column.valueType)
+                      : value;
                   let columnValue:
                     | string
                     | number
