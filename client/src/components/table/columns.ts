@@ -69,8 +69,6 @@ export const orderColumns: Column = {
   client: {
     isSortable: true,
     key: 'client',
-    linkKey: '_id',
-    linkTo: '/clients',
     subKey: 'name',
     title: 'Client',
   },

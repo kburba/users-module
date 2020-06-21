@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import moment from 'moment';
 import { RootState } from '../../store/reducers';
-import { serviceColumns } from '../../components/table/columns';
+import { serviceColumns, ValueTypes } from '../../components/table/columns';
 import Table from '../../components/table/Table';
 import { Container } from '@material-ui/core';
 import { getOrderById } from '../../store/actions/orderActions';
 import { GetOrderById } from '../../store/types/orderTypes';
 import { Dispatch } from 'redux';
+import { formatValue } from '../../utils/utils';
 
 function formatCurrency(value) {
   if (typeof value === 'number') {
@@ -20,7 +20,7 @@ function formatCurrency(value) {
   return '';
 }
 
-function ViewOrder({ orders, match, orderById, getOrderById }: ViewOrderProps) {
+function ViewOrder({ match, orderById, getOrderById }: ViewOrderProps) {
   const orderId = match.params.id;
 
   useEffect(() => {
@@ -53,7 +53,9 @@ function ViewOrder({ orders, match, orderById, getOrderById }: ViewOrderProps) {
         <div>
           {order && (
             <div>
-              <div>Created: {moment(order.createdAt).format('LLLL')}</div>
+              <div>
+                Created: {formatValue(order.createdAt, ValueTypes.timestamp)}
+              </div>
               <div>Status: {order.status}</div>
               <div>
                 Client:
@@ -97,7 +99,6 @@ const mapDispatchToProps = (dispatch: Dispatch<GetOrderById>) => ({
 });
 
 const mapStateToProps = ({ ordersReducer }: RootState) => ({
-  orders: ordersReducer.orders,
   orderById: ordersReducer.orderById,
 });
 

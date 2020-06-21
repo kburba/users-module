@@ -67,7 +67,7 @@ function* deleteOrderSaga({ payload }: DeleteOrderAction) {
     yield put(deleteOrdersSuccessAction(payload));
     yield put(resetLoadingCell());
   } catch (error) {
-    yield put(deleteOrderErrorAction(error.response.data.error));
+    yield put(deleteOrderErrorAction(error));
   }
 }
 
@@ -93,10 +93,7 @@ function* getOrdersSaga() {
       const ordersFromState = yield select(getOrdersFromState);
       yield put(getOrdersSuccessAction(ordersFromState));
     } else {
-      const orders = yield call(
-        apiFetch,
-        '/api/orders?from=2020-05-30&to=2020-05-31'
-      );
+      const orders = yield call(apiFetch, '/api/orders');
       yield put(getOrdersSuccessAction(orders.data));
     }
   } catch (error) {

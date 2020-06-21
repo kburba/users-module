@@ -107,7 +107,7 @@ router.get(
     const query = formatQueryFromRequest(req.query);
 
     Order.find(query)
-      .sort("-createdAt")
+      .sort("createdAt")
       .populate("client", "name")
       .populate({
         path: "services.service",

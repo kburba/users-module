@@ -77,7 +77,7 @@ export interface Order {
   details: OrderDetails;
   services: OrderService[];
   client: Client;
-  createdAt: moment.Moment;
+  createdAt: string;
   status?: string;
   comments?: string;
   total: number;

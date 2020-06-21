@@ -103,7 +103,9 @@ export default function Table<T>({
                   const value = column.subKey
                     ? item[column.key][column.subKey]
                     : item[column.key];
-                  const formattedValue = formatValue(value, column.valueType);
+                  const formattedValue = column.valueType
+                    ? formatValue(value, column.valueType)
+                    : value;
                   let columnValue:
                     | string
                     | number
@@ -117,7 +119,7 @@ export default function Table<T>({
                   }
                   const title: string =
                     column.valueType === ValueTypes.timestamp
-                      ? moment(item[column.key]).format('LLL')
+                      ? moment(item[column.key]).format('ll LT')
                       : value;
                   if (column.cellType === 'services') {
                     return (

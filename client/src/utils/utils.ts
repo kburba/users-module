@@ -25,21 +25,32 @@ export function calcTotals<T>(data: T[], columns: TableColumn[]) {
   return totals;
 }
 
-export function formatValue(
-  value: number,
-  valueType?: TableColumn['valueType']
-) {
+type FormatValues =
+  | {
+      valueType: typeof ValueTypes.timestamp;
+      value: string;
+    }
+  | {
+      valueType: typeof ValueTypes.currency;
+      value: number;
+    };
+
+export function formatValue(value: number | string, valueType: ValueTypes) {
   if (typeof value === 'undefined') {
     return '';
   }
   switch (valueType) {
     case ValueTypes.timestamp:
-      return moment(value).format('lll');
-    case ValueTypes.currency:
-      return new Intl.NumberFormat('en-GB', {
-        style: 'currency',
-        currency: 'EUR',
-      }).format(value);
+      return moment(value).format('ll LT');
+    case ValueTypes.currency: {
+      if (typeof value === 'number') {
+        return new Intl.NumberFormat('en-GB', {
+          style: 'currency',
+          currency: 'EUR',
+        }).format(value);
+      }
+      return value;
+    }
     default:
       return value;
   }

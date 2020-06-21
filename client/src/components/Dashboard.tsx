@@ -23,7 +23,14 @@ import {
   Button,
   Grid,
 } from '@material-ui/core';
-import { AuthState } from '../store/types/authTypes';
+import { formatValue } from '../utils/utils';
+import { ValueTypes } from './table/columns';
+
+type Card = {
+  title: string;
+  description: number | string;
+  link: string;
+};
 
 function Dashboard({
   clients,
@@ -31,7 +38,6 @@ function Dashboard({
   getLanguages,
   getOrders,
   getServices,
-  isAuthenticated,
   languages,
   orders,
   services,
@@ -43,10 +49,13 @@ function Dashboard({
     getLanguages();
   }, [getClients, getServices, getOrders, getLanguages]);
 
-  const CARDS = [
+  const CARDS: Card[] = [
     {
       title: 'Orders',
-      description: orders.length,
+      description: `${orders.length}: ${formatValue(
+        orders.reduce((prev, next) => prev + next.total, 0),
+        ValueTypes.currency
+      )}`,
       link: '/orders',
     },
     {
@@ -110,7 +119,6 @@ type ReduxStateProps = {
   clients: ClientsState['clients'];
   services: ServicesState['services'];
   languages: LanguagesState['languages'];
-  isAuthenticated: AuthState['isAuthenticated'];
 };
 
 const mapStateToProps = ({
@@ -124,7 +132,6 @@ const mapStateToProps = ({
   clients: clientsReducer.clients,
   services: servicesReducer.services,
   languages: languagesReducer.languages,
-  isAuthenticated: auth.isAuthenticated,
 });
 
 const mapDispatchToProps = (

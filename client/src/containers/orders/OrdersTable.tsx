@@ -16,7 +16,6 @@ import { columns, orderColumns } from './../../components/table/columns';
 
 const TableColumns = [
   columns.createdAt,
-  orderColumns.id,
   orderColumns.client,
   orderColumns.details,
   orderColumns.services,
@@ -55,7 +54,7 @@ function OrdersTable({
           data={orders}
           isLoading={isLoading || isDeleting}
           uniqueKey="_id"
-          sortBy="createdAt"
+          // sortBy="createdAt"
         />
       )}
     </div>

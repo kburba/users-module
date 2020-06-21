@@ -105,8 +105,12 @@ export default function NewOrderServicesModal({
     : services.find((x) => x._id === watch('selectedService'));
 
   const price = selectedService ? selectedService.price : null;
-  const totalPrice =
-    price && watch('pagesQty') ? price * parseFloat(watch('pagesQty')) : null;
+
+  const totalPrice = isEditing
+    ? isEditing.price * parseFloat(isEditing.pagesQty)
+    : price && watch('pagesQty')
+    ? price * parseFloat(watch('pagesQty'))
+    : null;
 
   return (
     <Modal

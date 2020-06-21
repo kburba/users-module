@@ -17,6 +17,9 @@ export default function TableFooter({
     <tfoot>
       <tr>
         {columns.map((column, index) => {
+          const value = column.valueType
+            ? formatValue(totals[column.key], column.valueType)
+            : totals[column.key];
           return (
             <td
               key={index + column.key}
@@ -24,7 +27,7 @@ export default function TableFooter({
                 'text-right': column.valueType === ValueTypes.currency,
               })}
             >
-              {formatValue(totals[column.key], column.valueType)}
+              {value}
             </td>
           );
         })}
