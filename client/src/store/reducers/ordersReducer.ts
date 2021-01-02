@@ -29,6 +29,7 @@ export type OrdersState = {
   modalIsOpen: boolean;
   orderById: Order | null;
   orders: Order[];
+  ordersCacheKey: string;
 };
 
 const initialState: OrdersState = {
@@ -41,6 +42,7 @@ const initialState: OrdersState = {
   modalIsOpen: false,
   orderById: null,
   orders: [],
+  ordersCacheKey: '',
 };
 
 export default (state = initialState, action: OrderActions): OrdersState => {
@@ -123,10 +125,11 @@ export default (state = initialState, action: OrderActions): OrdersState => {
     case GET_ORDERS_SUCCESS:
       return {
         ...state,
-        orders: action.payload,
-        isLoading: false,
-        isLoadedOrders: true,
         error: null,
+        isLoadedOrders: true,
+        isLoading: false,
+        orders: action.payload.orders,
+        ordersCacheKey: action.payload.cacheKey,
       };
     case ADD_ORDER_ERROR:
     case UPDATE_ORDER_ERROR:

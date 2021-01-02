@@ -25,6 +25,7 @@ import {
 } from '@material-ui/core';
 import { formatValue } from '../utils/utils';
 import { ValueTypes } from './table/columns';
+import moment from 'moment';
 
 type Card = {
   title: string;
@@ -43,9 +44,11 @@ function Dashboard({
   services,
 }: ReduxProps) {
   useEffect(() => {
+    const from = moment().subtract(30, 'days').format('L');
+    const to = moment().format('L');
     getClients();
     getServices();
-    getOrders();
+    getOrders(from, to);
     getLanguages();
   }, [getClients, getServices, getOrders, getLanguages]);
 
@@ -140,7 +143,7 @@ const mapDispatchToProps = (
   >
 ) => ({
   getClients: () => dispatch(getClientsAction()),
-  getOrders: () => dispatch(getOrdersAction()),
+  getOrders: (from: string, to: string) => dispatch(getOrdersAction(from, to)),
   getServices: () => dispatch(getServicesAction()),
   getLanguages: () => dispatch(getLanguagesAction()),
 });

@@ -4,6 +4,8 @@ import { createBrowserHistory } from 'history';
 import { Provider } from 'react-redux';
 import store from './store/store';
 import JwtDecode from 'jwt-decode';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
 import './styles/index.scss';
 import { CssBaseline } from '@material-ui/core';
 import 'typeface-roboto';

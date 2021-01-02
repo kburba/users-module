@@ -10,6 +10,7 @@ import { setLoadingCell } from '../../store/actions/variousActions';
 import { VariousState } from '../../store/reducers/variousReducer';
 import { VariousActions } from '../../store/types/variousTypes';
 import { columns, orderColumns } from './../../components/table/columns';
+import Spinner from '../../components/common/Spinner';
 
 const TableColumns = [
   columns.createdAt,
@@ -20,6 +21,9 @@ const TableColumns = [
 ];
 
 function OrdersTable({ orders, isDeleting, isLoading }: OrderTableProps) {
+  if (isLoading) {
+    return <Spinner />;
+  }
   return (
     <div>
       <div className="text-right margin--bottom">
@@ -29,6 +33,7 @@ function OrdersTable({ orders, isDeleting, isLoading }: OrderTableProps) {
           </Button>
         </Link>
       </div>
+
       {orders.length > 0 && (
         <Table<Order>
           columns={TableColumns}

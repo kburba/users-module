@@ -1,30 +1,30 @@
 import React, { useEffect, Dispatch } from 'react';
 import { connect } from 'react-redux';
-import { Switch } from 'react-router-dom';
 import { Container } from '@material-ui/core';
 import { getOrdersAction } from '../../store/actions/orderActions';
 
 import { OrderActions } from '../../store/types/orderTypes';
-import Spinner from '../../components/common/Spinner';
 import OrdersTable from './OrdersTable';
-import PrivateRoute from '../../components/common/PrivateRoute';
-// import ViewOrder from './ViewOrder';
-// import NewOrderForm from './NewOrderForm';
 import { RootState } from '../../store/reducers';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import { OrdersState } from '../../store/reducers/ordersReducer';
+import moment from 'moment';
+import DatePicker from '../../components/common/DatePicker';
+import { Moment } from 'moment';
 
-function OrdersContainer({ getOrders, isLoading, error }: ReduxProps) {
+function OrdersContainer({ getOrders, error }: ReduxProps) {
   useEffect(() => {
-    getOrders();
+    const from = moment().startOf('month').format('L');
+    const to = moment().format('L');
+    getOrders(from, to);
   }, [getOrders]);
 
-  if (isLoading) {
-    return (
-      <Container>
-        <Spinner />
-      </Container>
-    );
+  function handleDateChange(startDate: Moment | null, endDate: Moment | null) {
+    if (startDate && endDate) {
+      const start = moment(startDate).format('L');
+      const end = moment(endDate).format('L');
+      getOrders(start, end);
+    }
   }
 
   return (
@@ -34,29 +34,24 @@ function OrdersContainer({ getOrders, isLoading, error }: ReduxProps) {
       </div>
       {error && <ErrorMessage error={error} />}
       <div>TODO: by month, by client, monthly client orders</div>
-      <Switch>
-        <PrivateRoute path="/orders" component={OrdersTable} />
-        {/* <PrivateRoute path="/orders/new" component={NewOrderForm} /> */}
-        {/* <PrivateRoute exact path="/orders/:id" component={ViewOrder} /> */}
-      </Switch>
+      <DatePicker onDateChange={handleDateChange} />
+      <OrdersTable />
     </Container>
   );
 }
 
 type MapStateToProps = {
-  isLoading: OrdersState['isLoading'];
   orders: OrdersState['orders'];
   error: OrdersState['error'];
 };
 
 const mapStateToProps = ({ ordersReducer }: RootState): MapStateToProps => ({
-  isLoading: ordersReducer.isLoading,
   orders: ordersReducer.orders,
   error: ordersReducer.error,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<OrderActions>) => ({
-  getOrders: () => dispatch(getOrdersAction()),
+  getOrders: (from: string, to: string) => dispatch(getOrdersAction(from, to)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrdersContainer);

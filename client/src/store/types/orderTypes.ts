@@ -115,11 +115,18 @@ type GetById = GetOrderById | GetOrderByIdSucceed | GetOrderByIdFailed;
 
 export type GetOrdersAction = {
   type: typeof GET_ORDERS;
+  payload: {
+    from: string;
+    to: string;
+  };
 };
 
 export interface GetOrdersSuccessAction {
   type: typeof GET_ORDERS_SUCCESS;
-  payload: Order[];
+  payload: {
+    orders: Order[];
+    cacheKey: string;
+  };
 }
 
 export interface GetOrdersErrorAction {

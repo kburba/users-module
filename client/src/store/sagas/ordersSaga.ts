@@ -6,6 +6,7 @@ import {
   DeleteOrderAction,
   GetOrderById,
   Order,
+  GetOrdersAction,
 } from '../types/orderTypes';
 import {
   addOrderSuccessAction,
@@ -30,6 +31,7 @@ import {
   getOrdersIsLoadedFromState,
   getOrdersFromState,
   orderFromState,
+  ordersCacheKeyFromState,
 } from './selectors';
 import { apiFetch } from '../storeUtils';
 
@@ -86,15 +88,17 @@ function* getOrderByIdSaga({ payload }: GetOrderById) {
     yield put(getOrdersErrorAction(error.message));
   }
 }
-function* getOrdersSaga() {
+function* getOrdersSaga({ payload }: GetOrdersAction) {
   try {
+    const requestCacheKey = `from=${payload.from}&to=${payload.to}`;
     const isLoaded = yield select(getOrdersIsLoadedFromState);
-    if (isLoaded) {
+    const ordersCacheKey = yield select(ordersCacheKeyFromState);
+    if (isLoaded && ordersCacheKey === requestCacheKey) {
       const ordersFromState = yield select(getOrdersFromState);
-      yield put(getOrdersSuccessAction(ordersFromState));
+      yield put(getOrdersSuccessAction(ordersFromState, requestCacheKey));
     } else {
-      const orders = yield call(apiFetch, '/api/orders');
-      yield put(getOrdersSuccessAction(orders.data));
+      const orders = yield call(apiFetch, `/api/orders?${requestCacheKey}`);
+      yield put(getOrdersSuccessAction(orders.data, requestCacheKey));
     }
   } catch (error) {
     console.log('error', error);

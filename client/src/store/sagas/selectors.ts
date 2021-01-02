@@ -2,6 +2,8 @@ import { RootState } from '../reducers';
 
 export const orderFromState = ({ ordersReducer }: RootState) =>
   ordersReducer.orders;
+export const ordersCacheKeyFromState = ({ ordersReducer }: RootState) =>
+  ordersReducer.ordersCacheKey;
 
 export const getClientsIsLoadedFromState = ({ clientsReducer }: RootState) =>
   clientsReducer.isLoadedClients;

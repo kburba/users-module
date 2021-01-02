@@ -95,12 +95,15 @@ export function deleteOrderErrorAction(error: string): OrderActions {
   return { type: DELETE_ORDER_ERROR, error };
 }
 
-export function getOrdersAction(): OrderActions {
-  return { type: GET_ORDERS };
+export function getOrdersAction(from: string, to: string): OrderActions {
+  return { type: GET_ORDERS, payload: { from, to } };
 }
 
-export function getOrdersSuccessAction(services: Order[]): OrderActions {
-  return { type: GET_ORDERS_SUCCESS, payload: services };
+export function getOrdersSuccessAction(
+  orders: Order[],
+  cacheKey: string
+): OrderActions {
+  return { type: GET_ORDERS_SUCCESS, payload: { orders, cacheKey } };
 }
 
 export function getOrdersErrorAction(error: any): OrderActions {
