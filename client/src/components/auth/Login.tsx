@@ -79,7 +79,7 @@ const mapStateToProps = ({ auth }: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AuthActions>) => ({
-  loginUser: (user: FormData) => dispatch(loginUser(user)),
+  loginUser: (user: FormData) => dispatch(loginUser(user.email, user.password)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

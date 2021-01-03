@@ -1,52 +1,27 @@
-import axios from 'axios';
 import setAuthToken from '../../utils/setAuthToken';
 import { AuthActions } from '../types/authTypes';
-// import jwt_decode from "jwt-decode";
-import {
-  GET_ERRORS,
-  SET_CURRENT_USER,
-  LOGIN_USER,
-  LOGIN_USER_ERROR,
-  LOGOUT_USER,
-  GET_CURRENT_USER,
-} from './types';
+
+import { SET_CURRENT_USER, LOGOUT_USER, AUTH_ACTIONS } from './types';
 import { history } from '../../App';
-// Register user
-export const registerUser = (userData, history) => (dispatch) => {
-  axios
-    .post('/api/users/register', userData)
-    .then((res) => history.push('/login'))
-    .catch((err) =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data,
-      })
-    );
-};
 
 // Login registered user
-export function loginUser(userData: {
-  email: string;
-  password: string;
-}): AuthActions {
+export function loginUser(email: string, password: string): AuthActions {
   return {
-    type: LOGIN_USER,
-    payload: userData,
+    type: AUTH_ACTIONS.LOGIN,
+    payload: { email, password },
   };
 }
 
-export function loginUserSuccess() {}
+export function loginUserSuccess() {
+  return {
+    type: AUTH_ACTIONS.LOGIN_SUCCESS,
+  };
+}
 
 export function loginUserError(errors: { email?: string }): AuthActions {
   return {
-    type: LOGIN_USER_ERROR,
+    type: AUTH_ACTIONS.LOGIN_ERROR,
     errors,
-  };
-}
-
-export function getCurrentUser() {
-  return {
-    type: GET_CURRENT_USER,
   };
 }
 

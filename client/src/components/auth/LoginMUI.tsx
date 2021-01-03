@@ -16,6 +16,7 @@ import { RootState } from '../../store/reducers';
 import { AuthActions } from '../../store/types/authTypes';
 import { loginUser } from '../../store/actions/authActions';
 import { connect } from 'react-redux';
+import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -114,9 +115,11 @@ function LoginMUI({ loginUser, authErrors }: ReduxProps) {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
+              <RouterLink to="/signup">
+                <Link href="#" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </RouterLink>
             </Grid>
           </Grid>
         </form>
@@ -131,7 +134,7 @@ const mapStateToProps = ({ auth }: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AuthActions>) => ({
-  loginUser: (user: FormData) => dispatch(loginUser(user)),
+  loginUser: (user: FormData) => dispatch(loginUser(user.email, user.password)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginMUI);

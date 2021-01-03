@@ -1,12 +1,8 @@
-import {
-  LOGOUT_USER,
-  SET_CURRENT_USER,
-  LOGIN_USER_ERROR,
-  LOGIN_USER,
-} from '../actions/types';
+import { LOGOUT_USER, SET_CURRENT_USER, AUTH_ACTIONS } from '../actions/types';
 
 export type AuthActions =
   | LoginUser
+  | LoginSuccess
   | LoginUserError
   | SetCurrentUser
   | LogoutUser;
@@ -20,16 +16,17 @@ export interface AuthState {
   user: null | {};
 }
 
-interface LoginUser {
-  type: typeof LOGIN_USER;
-  payload: {
-    email: string;
-    password: string;
-  };
+export interface LoginUser {
+  type: typeof AUTH_ACTIONS.LOGIN;
+  payload: LoginRequest;
+}
+
+interface LoginSuccess {
+  type: typeof AUTH_ACTIONS.LOGIN_SUCCESS;
 }
 
 interface LoginUserError {
-  type: typeof LOGIN_USER_ERROR;
+  type: typeof AUTH_ACTIONS.LOGIN_ERROR;
   errors: {
     email?: string;
   };
@@ -43,8 +40,14 @@ interface SetCurrentUser {
 interface LogoutUser {
   type: typeof LOGOUT_USER;
 }
-
-export interface LoginUserType {
-  type: typeof LOGIN_USER;
-  payload: { email: string; password: string };
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+export interface LoginResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  refresh_token: string;
+  scope: string;
 }

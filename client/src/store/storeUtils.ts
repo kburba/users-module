@@ -5,7 +5,7 @@ import setAuthToken from '../utils/setAuthToken';
 
 export function loginApi(authParams) {
   return Axios.post('/api/auth/login', authParams)
-    .then((response) => response)
+    .then((response) => response.data)
     .catch((errors) => {
       throw errors;
     });
@@ -15,6 +15,9 @@ export function apiFetch(url: string, otherParams?: AxiosRequestConfig) {
   // TODO handle different HTTP methods (post, put, patch, delete)
   return Axios.request({
     url,
+    headers: {
+      'Cache-Control': 'no-cache',
+    },
     method: otherParams ? otherParams.method : 'GET',
     data: otherParams ? otherParams.data : null,
   })
@@ -22,7 +25,7 @@ export function apiFetch(url: string, otherParams?: AxiosRequestConfig) {
     .catch((errors) => {
       if (errors.response.status === 401) {
         const refresh_token = localStorage.getItem('refresh_token');
-        return Axios.post('/api/users/refresh-token', {
+        return Axios.post('/api/auth/refresh-token', {
           refresh_token,
         })
           .then((res) => {

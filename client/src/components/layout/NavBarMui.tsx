@@ -41,7 +41,7 @@ function NavBarMUI({ auth, logoutUser }: ReduxProps) {
       <Button
         className={classes.menuButton}
         component={RouterLink}
-        to="/register"
+        to="/signup"
       >
         Sign Up
       </Button>

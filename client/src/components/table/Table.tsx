@@ -6,7 +6,6 @@ import { IconButton } from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { formatValue } from '../../utils/utils';
-import { VariousState } from '../../store/reducers/variousReducer';
 import { ValueTypes } from './columns';
 import TableFooter from './TableFooter';
 import TableHeader from './TableHeader';
@@ -39,7 +38,6 @@ type TableProps<T> = {
   columns: TableColumn[];
   data: T[];
   isLoading?: boolean;
-  isLoadingCell?: VariousState['isLoadingCell'];
   onRowClickRoute?: string;
   sortBy?: string;
   uniqueKey: string;
@@ -49,7 +47,6 @@ export default function Table<T>({
   actions,
   data,
   isLoading,
-  isLoadingCell,
   onRowClickRoute,
   sortBy,
   uniqueKey,
@@ -97,9 +94,7 @@ export default function Table<T>({
             return (
               <tr key={item[uniqueKey]}>
                 {columns.map((column, index) => {
-                  const cellIsLoading =
-                    isLoadingCell?.column === column.key &&
-                    isLoadingCell?.row === item[uniqueKey];
+                  const cellIsLoading = false;
                   const value = column.subKey
                     ? item[column.key][column.subKey]
                     : item[column.key];
@@ -150,9 +145,7 @@ export default function Table<T>({
                 })}
                 <td
                   className={classnames({
-                    loading:
-                      isLoadingCell?.column === 'actions' &&
-                      isLoadingCell?.row === item[uniqueKey],
+                    loading: false,
                   })}
                 >
                   {actions &&

@@ -12,21 +12,16 @@ import 'typeface-roboto';
 import 'typeface-nunito';
 
 import setAuthToken from './utils/setAuthToken';
-import { setCurrentUser, getCurrentUser } from './store/actions/authActions';
+import { setCurrentUser } from './store/actions/authActions';
 
 import Footer from './components/layout/Footer';
-import Register from './components/auth/Register';
 import Dashboard from './components/Dashboard';
 import PrivateRoute from './components/common/PrivateRoute';
 import NotFound from './components/NotFound';
-import LanguagesContainer from './containers/languages/LanguagesContainer';
-import ServicesContainer from './containers/services/ServicesContainer';
-import OrdersContainer from './containers/orders/OrdersContainer';
-import ClientsContainer from './containers/clients/ClientsContainer';
-import NewOrderForm from './containers/orders/NewOrderForm';
-import ViewOrder from './containers/orders/ViewOrder';
 import NavBarMUI from './components/layout/NavBarMui';
 import LoginMUI from './components/auth/LoginMUI';
+import SignUp from './components/auth/SignUp';
+import { getCurrentUser } from './store/actions/userActions';
 
 export const history = createBrowserHistory();
 
@@ -57,23 +52,8 @@ export default function App() {
             <Switch>
               <Route exact path="/" component={Dashboard} />
               <Route exact path="/login" component={LoginMUI} />
-              <Route exact path="/register" component={Register} />
+              <Route exact path="/signup" component={SignUp} />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
-              <PrivateRoute
-                exact
-                path="/languages"
-                component={LanguagesContainer}
-              />
-              <PrivateRoute
-                exact
-                path="/services"
-                component={ServicesContainer}
-              />
-              <PrivateRoute path="/clients" component={ClientsContainer} />
-              <PrivateRoute path="/orders/new" component={NewOrderForm} />
-              <PrivateRoute path="/orders/:id" component={ViewOrder} />
-              <PrivateRoute exact path="/orders" component={OrdersContainer} />
-
               <Route exact path="/not-found" component={NotFound} />
             </Switch>
             <Footer />

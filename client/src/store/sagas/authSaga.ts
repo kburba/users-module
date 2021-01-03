@@ -1,21 +1,18 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
-import { LOGIN_USER, GET_CURRENT_USER } from '../actions/types';
-import {
-  setCurrentUser,
-  loginUserError,
-  getCurrentUser,
-} from '../actions/authActions';
+import { AUTH_ACTIONS } from '../actions/types';
+import { loginUserError } from '../actions/authActions';
 import setAuthToken from '../../utils/setAuthToken';
-import { LoginUserType } from '../types/authTypes';
-import { loginApi, apiFetch } from '../storeUtils';
+import { loginApi } from '../storeUtils';
 import { history } from '../../App';
+import { LoginResponse, LoginUser } from '../types/authTypes';
+import { getCurrentUser } from '../actions/userActions';
 
-function* loginUserSaga({ payload }: LoginUserType) {
+function* loginUserSaga({ payload }: LoginUser) {
   try {
     const { email, password } = payload;
-    const response = yield call(loginApi, { email, password });
+    const response: LoginResponse = yield call(loginApi, { email, password });
     // Save to localStorage
-    const { access_token, refresh_token } = response.data;
+    const { access_token, refresh_token } = response;
 
     yield localStorage.setItem('access_token', 'Bearer' + access_token);
     yield localStorage.setItem('refresh_token', refresh_token);
@@ -31,16 +28,6 @@ function* loginUserSaga({ payload }: LoginUserType) {
   }
 }
 
-function* getCurrentUserSaga() {
-  try {
-    const response = yield call(apiFetch, '/api/users/me');
-    yield put(setCurrentUser(response.data));
-  } catch (e) {
-    console.log('error current user', e.message);
-  }
-}
-
-export default function* authWatcherSaga() {
-  yield takeLatest(LOGIN_USER, loginUserSaga);
-  yield takeLatest(GET_CURRENT_USER, getCurrentUserSaga);
+export default function* watchAuthSaga() {
+  yield takeLatest(AUTH_ACTIONS.LOGIN, loginUserSaga);
 }
