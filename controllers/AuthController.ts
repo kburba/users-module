@@ -1,119 +1,99 @@
-const Client = require("../modules/Client");
-const Order = require("../modules/Order");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const keys = require("../config/keys");
+const refreshTokens = [];
 
-exports.deleteById = function (req, res) {
-  Client.findByIdAndDelete(req.params.client_id, (err, lang) => {
-    if (err) {
-      res.send(err);
+// load input validation
+const validateLoginInput = require("../validation/login");
+
+// load user model
+const User = require("../modules/User");
+
+exports.login = function (req, res) {
+  const { errors, isValid } = validateLoginInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  const email = req.body.email.toLowerCase();
+  const password = req.body.password;
+
+  User.findOne({
+    email,
+  }).then((user) => {
+    if (!user) {
+      errors.email = "User not found";
+      return res.status(404).json(errors);
     }
-    if (!lang) {
-      res.status(404).json({ success: false, error: "client not found" });
-    }
 
-    res.status(200).json({ success: true, item: lang._doc });
-  });
-};
+    //check password
+    bcrypt.compare(password, user.password).then((isMatch) => {
+      if (isMatch) {
+        // User pass matched
+        const payload = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        }; // create JWT payload
 
-exports.updateById = function (req, res) {
-  Client.findById(req.params.client_id, (err, client) => {
-    if (err) {
-      res.send(err);
-    }
-    if (client) {
-      client.name = req.body.name;
-
-      client.save((err) => {
-        if (err) {
-          res.send(err);
-        }
-        res.json(client);
-      });
-    }
-  });
-};
-
-exports.getById = function (req, res) {
-  Client.findById(req.params.client_id)
-    .then((client) => {
-      if (!client) {
-        const errors = {
-          message: "There are no client",
-          details: "",
-        };
-        return res.status(404).json(errors);
+        // Sign token
+        const expireIn = 60 * 15; // 15 min
+        jwt.sign(
+          payload,
+          keys.accessTokenKey,
+          {
+            expiresIn: expireIn,
+          },
+          (err, token) => {
+            const refresh_token = jwt.sign(payload, keys.refreshTokenSecret, {
+              expiresIn: 30 * 24 * 60 * 60 * 1000, // 30 days
+            });
+            refreshTokens.push(refresh_token);
+            res.json({
+              access_token: token,
+              token_type: "bearer",
+              expires_in: expireIn,
+              refresh_token: refresh_token,
+              scope: "create",
+            });
+          }
+        );
+      } else {
+        errors.password = "Password incorrect";
+        return res.status(400).json(errors);
       }
-      Order.find({
-        client: req.params.client_id,
-      })
-        .sort("-createdAt")
-        .populate("clients", "name")
-        .populate({
-          path: "services.service",
-          populate: { path: "from to", select: "name" },
-        })
-        .then((orders) => {
-          const response = { ...client._doc, orders };
-          return res.status(200).json(response);
-        })
-        .catch((err) => {
-          const errors = {
-            message: "Error getting client orders",
-            details: err,
-          };
-          return res.status(404).json(errors);
+    });
+  });
+};
+
+exports.refresh_token = function (req, res) {
+  const { refresh_token } = req.body;
+
+  if (!refresh_token) return res.sendStatus(401);
+  if (!refreshTokens.includes(refresh_token)) return res.sendStatus(403);
+  jwt.verify(refresh_token, keys.refreshTokenSecret, (err, user) => {
+    if (err) return res.sendStatus(403);
+    const payload = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    }; // create JWT payload
+
+    // Sign token
+    const expireIn = 60 * 15; // 15 min
+    jwt.sign(
+      payload,
+      keys.accessTokenKey,
+      {
+        expiresIn: expireIn,
+      },
+      (err, token) => {
+        if (err) return res.sendStatus(403);
+        res.json({
+          access_token: token,
         });
-    })
-    .catch((err) => {
-      res.status(404).json({
-        message: "Cannot get client",
-        details: err,
-      });
-    });
-};
-
-exports.addNew = function (req, res) {
-  // get post fields
-  const newClient = new Client({
-    name: req.body.name,
-  });
-
-  newClient.save().then((client) => res.json(client));
-};
-
-exports.getAll = function (req, res) {
-  Client.aggregate([
-    {
-      $lookup: {
-        from: "orders",
-        localField: "_id",
-        foreignField: "client",
-        as: "orders",
-      },
-    },
-    {
-      $project: {
-        name: 1,
-        createdAt: 1,
-        sumOfOrders: {
-          $sum: "$orders.total",
-        },
-      },
-    },
-  ])
-    .then((clients) => {
-      if (!clients) {
-        const errors = {
-          noclients: "There are no clients",
-        };
-
-        return res.status(404).json(errors);
       }
-
-      res.status(200).json(clients);
-    })
-    .catch((err) => {
-      res.status(404).json({
-        noposts: "Cannot get clients",
-      });
-    });
+    );
+  });
 };
