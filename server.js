@@ -4,14 +4,8 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const path = require("path");
 
-const users = require("./routes/api/users");
-const profile = require("./routes/api/profile");
-const posts = require("./routes/api/posts");
-const languages = require("./routes/api/languages");
-const services = require("./routes/api/services");
-const orders = require("./routes/api/orders");
-const clients = require("./routes/api/clients");
-const vendors = require("./routes/api/vendors");
+const usersRoutes = require("./routes/api/usersRoutes");
+const authRoutes = require("./routes/api/authRoutes");
 
 const app = express();
 
@@ -47,14 +41,8 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 
 // use Routes
-app.use("/api/vendors", vendors);
-app.use("/api/users", users);
-app.use("/api/services", services);
-app.use("/api/profile", profile);
-app.use("/api/posts", posts);
-app.use("/api/orders", orders);
-app.use("/api/languages", languages);
-app.use("/api/clients", clients);
+app.use("/api/users", usersRoutes);
+app.use("/api/auth", authRoutes);
 
 // serve static assets if in production
 if (process.env.NODE_ENV === "production") {
