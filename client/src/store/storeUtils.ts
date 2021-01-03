@@ -4,7 +4,7 @@ import { logoutUser } from './actions/authActions';
 import setAuthToken from '../utils/setAuthToken';
 
 export function loginApi(authParams) {
-  return Axios.post('/api/users/login', authParams)
+  return Axios.post('/api/auth/login', authParams)
     .then((response) => response)
     .catch((errors) => {
       throw errors;
@@ -22,7 +22,7 @@ export function apiFetch(url: string, otherParams?: AxiosRequestConfig) {
     .catch((errors) => {
       if (errors.response.status === 401) {
         const refresh_token = localStorage.getItem('refresh_token');
-        return Axios.post('/api/users/token', {
+        return Axios.post('/api/users/refresh-token', {
           refresh_token,
         })
           .then((res) => {
@@ -36,12 +36,12 @@ export function apiFetch(url: string, otherParams?: AxiosRequestConfig) {
               data: otherParams ? otherParams.data : null,
             })
               .then((res2) => res2)
-              .catch((err2) => {
+              .catch(() => {
                 store.dispatch(logoutUser());
                 throw new Error('unauthorised');
               });
           })
-          .catch((err) => {
+          .catch(() => {
             store.dispatch(logoutUser());
             throw new Error('unauthorised');
           });
