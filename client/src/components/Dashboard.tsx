@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import {
   Container,
   Card,
@@ -9,22 +9,22 @@ import {
   CardActions,
   Button,
   Grid,
-} from '@material-ui/core';
+} from '@material-ui/core'
 
 type Card = {
-  title: string;
-  description: number | string;
-  link: string;
-};
+  title: string
+  description: number | string
+  link: string
+}
 
-function Dashboard() {
+function Dashboard(): JSX.Element {
   const CARDS: Card[] = [
     {
       title: 'Users',
       description: 0,
       link: '/users',
     },
-  ];
+  ]
 
   return (
     <Container className="container">
@@ -62,7 +62,7 @@ function Dashboard() {
         ))}
       </Grid>
     </Container>
-  );
+  )
 }
 
 // type ReduxStateProps = {
@@ -79,7 +79,7 @@ function Dashboard() {
 // const mapDispatchToProps = (dispatch: Dispatch<>) => ({});
 
 // export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
-export default Dashboard;
+export default Dashboard
 
 // type ReduxProps = ReturnType<typeof mapStateToProps> &
 //   ReturnType<typeof mapDispatchToProps>;

@@ -1,6 +1,20 @@
-// {
-//   "extends": ["airbnb-typescript-prettier"],
-//   "rules": {
-//     "no-underscore-dangle": "off"
-//   }
-// }
+{
+  "extends": ["airbnb-typescript-prettier"],
+  "rules": {
+    "import/no-cycle": 0,
+    "camelcase": 0,
+    "react/require-default-props": 0,
+    "no-console": 0,
+    "react/no-unescaped-entities": 0,
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+    "@typescript-eslint/no-shadow": 0,
+    "jsx-a11y/anchor-is-valid": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "react/jsx-filename-extension": [
+      1,
+      { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
+    ],
+    "react/jsx-props-no-spreading": 0
+  }
+}

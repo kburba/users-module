@@ -1,51 +1,52 @@
-import React from 'react';
-import { Router, Route, Switch } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
-import { Provider } from 'react-redux';
-import store from './store/store';
-import JwtDecode from 'jwt-decode';
-import 'react-dates/initialize';
-import 'react-dates/lib/css/_datepicker.css';
-import './styles/index.scss';
-import { CssBaseline } from '@material-ui/core';
-import 'typeface-roboto';
-import 'typeface-nunito';
+import React from 'react'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { createBrowserHistory } from 'history'
+import { Provider } from 'react-redux'
+import JwtDecode from 'jwt-decode'
+import 'react-dates/initialize'
+import 'react-dates/lib/css/_datepicker.css'
+import './styles/index.scss'
+import { CssBaseline } from '@material-ui/core'
+import 'typeface-roboto'
+import 'typeface-nunito'
 
-import setAuthToken from './utils/setAuthToken';
-import { setCurrentUser } from './store/actions/authActions';
+import setAuthToken from './utils/setAuthToken'
+import { setCurrentUser } from './store/actions/authActions'
 
-import Footer from './components/layout/Footer';
-import Dashboard from './components/Dashboard';
-import PrivateRoute from './components/common/PrivateRoute';
-import NotFound from './components/NotFound';
-import NavBarMUI from './components/layout/NavBarMui';
-import LoginMUI from './components/auth/LoginMUI';
-import SignUp from './components/auth/SignUp';
-import { getCurrentUser } from './store/actions/userActions';
+import Footer from './components/layout/Footer'
+import Dashboard from './components/Dashboard'
+import PrivateRoute from './components/common/PrivateRoute'
+import NotFound from './components/NotFound'
+import NavBarMUI from './components/layout/NavBarMui'
+import LoginMUI from './components/auth/LoginMUI'
+import SignUp from './components/auth/SignUp'
+import { getCurrentUser } from './store/actions/userActions'
+import configureStore from './store/configureStore'
 
-export const history = createBrowserHistory();
+export const history = createBrowserHistory()
+export const store = configureStore()
 
 if (localStorage.access_token) {
-  const token = localStorage.access_token;
+  const token = localStorage.access_token
 
   // Set token to Auth header
-  setAuthToken(token);
+  setAuthToken(token)
   // Decode token to get user data
-  const decoded = JwtDecode<{ exp: number }>(token);
+  const decoded = JwtDecode<{ exp: number }>(token)
   // Set current user
-  store.dispatch(setCurrentUser(decoded));
+  store.dispatch(setCurrentUser(decoded))
 
   // check if token is expired
-  const currentTime = Date.now() / 1000;
+  const currentTime = Date.now() / 1000
   if (decoded.exp < currentTime) {
-    store.dispatch(getCurrentUser());
+    store.dispatch(getCurrentUser())
   }
 }
 
-export default function App() {
+export default function App(): JSX.Element {
   return (
     <Provider store={store}>
-      <Router history={history}>
+      <Router>
         <CssBaseline>
           <div className="App">
             <NavBarMUI />
@@ -61,5 +62,5 @@ export default function App() {
         </CssBaseline>
       </Router>
     </Provider>
-  );
+  )
 }

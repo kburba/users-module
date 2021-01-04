@@ -1,22 +1,22 @@
-import React, { Dispatch } from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import { useForm } from 'react-hook-form';
-import { RootState } from '../../store/reducers';
-import { AuthActions } from '../../store/types/authTypes';
-import { loginUser } from '../../store/actions/authActions';
-import { connect } from 'react-redux';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { Dispatch } from 'react'
+import Avatar from '@material-ui/core/Avatar'
+import Button from '@material-ui/core/Button'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import TextField from '@material-ui/core/TextField'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@material-ui/core/Checkbox'
+import Link from '@material-ui/core/Link'
+import Grid from '@material-ui/core/Grid'
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
+import Container from '@material-ui/core/Container'
+import { useForm } from 'react-hook-form'
+import { connect } from 'react-redux'
+import { Link as RouterLink } from 'react-router-dom'
+import { RootState } from '../../store/reducers'
+import { AuthActions } from '../../store/types/authTypes'
+import { loginUser } from '../../store/actions/authActions'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,20 +36,21 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-}));
+}))
 
 type FormData = {
-  email: string;
-  password: string;
-};
+  email: string
+  password: string
+}
 
+// eslint-disable-next-line @typescript-eslint/no-shadow
 function LoginMUI({ loginUser, authErrors }: ReduxProps) {
-  const classes = useStyles();
+  const classes = useStyles()
 
-  const { handleSubmit, register, errors } = useForm<FormData>();
+  const { handleSubmit, register, errors } = useForm<FormData>()
 
   function onSubmit(data: FormData) {
-    loginUser(data);
+    loginUser(data)
   }
 
   return (
@@ -110,34 +111,32 @@ function LoginMUI({ loginUser, authErrors }: ReduxProps) {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link component={RouterLink} to="/" variant="body2">
                 Forgot password?
               </Link>
             </Grid>
             <Grid item>
-              <RouterLink to="/signup">
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </RouterLink>
+              <Link component={RouterLink} to="/signup" variant="body2">
+                Don't have an account? Sign Up
+              </Link>
             </Grid>
           </Grid>
         </form>
       </div>
     </Container>
-  );
+  )
 }
 
 const mapStateToProps = ({ auth }: RootState) => ({
-  isAuthenticated: auth.isAuthenticated,
   authErrors: auth.errors,
-});
+})
 
 const mapDispatchToProps = (dispatch: Dispatch<AuthActions>) => ({
+  // eslint-disable-next-line react/require-default-props
   loginUser: (user: FormData) => dispatch(loginUser(user.email, user.password)),
-});
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginMUI);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginMUI)
 
 type ReduxProps = ReturnType<typeof mapStateToProps> &
-  ReturnType<typeof mapDispatchToProps>;
+  ReturnType<typeof mapDispatchToProps>

@@ -1,18 +1,18 @@
-import React, { Dispatch } from 'react';
-import { connect } from 'react-redux';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import { logoutUser } from '../../store/actions/authActions';
-import { AuthActions } from '../../store/types/authTypes';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { Dispatch } from 'react'
+import { connect } from 'react-redux'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
+import MenuIcon from '@material-ui/icons/Menu'
+import { Link as RouterLink } from 'react-router-dom'
+import { Box } from '@material-ui/core'
+import { logoutUser } from '../../store/actions/authActions'
+import { AuthActions } from '../../store/types/authTypes'
 
-import { RootState } from '../../store/reducers';
-import { Box } from '@material-ui/core';
+import { RootState } from '../../store/reducers'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,10 +31,10 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(5),
     },
   })
-);
+)
 
 function NavBarMUI({ auth, logoutUser }: ReduxProps) {
-  const classes = useStyles();
+  const classes = useStyles()
 
   const guestList = (
     <div>
@@ -49,16 +49,16 @@ function NavBarMUI({ auth, logoutUser }: ReduxProps) {
         Login
       </Button>
     </div>
-  );
+  )
 
   const authenticatedList = (
     <div>
-      <span></span>
+      <span />
       <Button className={classes.menuButton} onClick={logoutUser}>
         Logout
       </Button>
     </div>
-  );
+  )
 
   return (
     <div>
@@ -118,18 +118,18 @@ function NavBarMUI({ auth, logoutUser }: ReduxProps) {
         </Toolbar>
       </AppBar>
     </div>
-  );
+  )
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AuthActions>) => ({
   logoutUser: () => dispatch(logoutUser()),
-});
+})
 
 const mapStateToProps = ({ auth }: RootState) => ({
-  auth: auth,
-});
+  auth,
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavBarMUI);
+export default connect(mapStateToProps, mapDispatchToProps)(NavBarMUI)
 
 type ReduxProps = ReturnType<typeof mapStateToProps> &
-  ReturnType<typeof mapDispatchToProps>;
+  ReturnType<typeof mapDispatchToProps>

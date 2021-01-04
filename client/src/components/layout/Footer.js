@@ -1,8 +1,8 @@
-import React from 'react';
-import { Typography, Box } from '@material-ui/core';
+import React from 'react'
+import { Typography, Box } from '@material-ui/core'
 
 export default () => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear()
   return (
     <footer>
       <Box mt={8}>
@@ -11,5 +11,5 @@ export default () => {
         </Typography>
       </Box>
     </footer>
-  );
-};
+  )
+}

@@ -1,57 +1,50 @@
-import moment from 'moment';
-import { TableColumn } from '../components/table/Table';
-import { ValueTypes } from '../components/table/columns';
+import moment from 'moment'
+import { TableColumn } from '../components/table/Table'
+import { ValueTypes } from '../components/table/columns'
 
-export function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
+export function onlyUnique(value, index, self): boolean {
+  return self.indexOf(value) === index
 }
 
-export function calcTotals<T>(data: T[], columns: TableColumn[]) {
-  const totals = {};
+export function calcTotals<T>(data: T[], columns: TableColumn[]): any {
+  const totals = {}
   for (let ii = 0; ii < columns.length; ii++) {
-    const column = columns[ii];
+    const column = columns[ii]
 
     if (column.totalsType === 'sum') {
       for (let yy = 0; yy < data.length; yy++) {
-        const item = data[yy];
+        const item = data[yy]
         if (typeof totals[column.key] === 'undefined') {
-          totals[column.key] = 0;
+          totals[column.key] = 0
         }
-        totals[column.key] = totals[column.key] + item[column.key];
+        totals[column.key] += item[column.key]
       }
     }
   }
 
-  return totals;
+  return totals
 }
 
-type FormatValues =
-  | {
-      valueType: typeof ValueTypes.timestamp;
-      value: string;
-    }
-  | {
-      valueType: typeof ValueTypes.currency;
-      value: number;
-    };
-
-export function formatValue(value: number | string, valueType: ValueTypes) {
+export function formatValue(
+  value: number | string,
+  valueType: ValueTypes
+): string {
   if (typeof value === 'undefined') {
-    return '';
+    return ''
   }
   switch (valueType) {
     case ValueTypes.timestamp:
-      return moment(value).format('ll LT');
+      return moment(value).format('ll LT')
     case ValueTypes.currency: {
       if (typeof value === 'number') {
         return new Intl.NumberFormat('en-GB', {
           style: 'currency',
           currency: 'EUR',
-        }).format(value);
+        }).format(value)
       }
-      return value;
+      return value
     }
     default:
-      return value;
+      return value.toString()
   }
 }
