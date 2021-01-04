@@ -7,3 +7,5 @@ import watchUsersSaga from './usersSaga'
 export default function* rootSaga() {
   yield all([fork(watchAuthSaga), fork(watchUsersSaga)])
 }
+
+export type RootState = ReturnType<typeof rootSaga>

@@ -1,8 +1,6 @@
-import setAuthToken from '../../utils/setAuthToken'
-import { AuthActions, LoginSuccess } from '../types/authTypes'
+import { AuthActions, LoginSuccess, LogoutUser } from '../types/authTypes'
 
-import { SET_CURRENT_USER, LOGOUT_USER, AUTH_ACTIONS } from './types'
-import { history } from '../../App'
+import { AUTH_ACTIONS } from './types'
 
 // Login registered user
 export function loginUser(email: string, password: string): AuthActions {
@@ -25,30 +23,9 @@ export function loginUserError(errors: { email?: string }): AuthActions {
   }
 }
 
-// Set logged user
-export function setCurrentUser(decoded): AuthActions {
-  return {
-    type: SET_CURRENT_USER,
-    payload: decoded,
-  }
-}
-
 // Logout user
-export function logoutUser(): AuthActions {
-  // Remove token from local storage
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
-
-  // Delete auth token
-  setAuthToken(null)
-
-  // set current user to empty object
-  setCurrentUser({})
-
-  // Redirect to login
-  history.push('/login')
-
+export function logoutUser(): LogoutUser {
   return {
-    type: LOGOUT_USER,
+    type: AUTH_ACTIONS.LOGOUT_USER,
   }
 }

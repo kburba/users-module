@@ -1,11 +1,18 @@
-import { LOGOUT_USER, SET_CURRENT_USER, AUTH_ACTIONS } from '../actions/types'
+import { AUTH_ACTIONS } from '../actions/types'
+import {
+  GetCurrentUser,
+  GetCurrentUserError,
+  GetCurrentUserSuccess,
+} from './userTypes'
 
 export type AuthActions =
   | LoginUser
   | LoginSuccess
   | LoginUserError
-  | SetCurrentUser
   | LogoutUser
+  | GetCurrentUser
+  | GetCurrentUserSuccess
+  | GetCurrentUserError
 
 export interface AuthState {
   isAuthenticated: boolean
@@ -13,7 +20,7 @@ export interface AuthState {
     email?: string
     password?: string
   }
-  user: null | {}
+  user: null | { exp: number }
 }
 
 export interface LoginUser {
@@ -32,13 +39,8 @@ export interface LoginUserError {
   }
 }
 
-interface SetCurrentUser {
-  type: typeof SET_CURRENT_USER
-  payload: any
-}
-
-interface LogoutUser {
-  type: typeof LOGOUT_USER
+export interface LogoutUser {
+  type: typeof AUTH_ACTIONS.LOGOUT_USER
 }
 export interface LoginRequest {
   email: string

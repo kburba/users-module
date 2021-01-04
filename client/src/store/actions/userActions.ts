@@ -35,12 +35,13 @@ export function getCurrentUser(): GetCurrentUser {
     type: USER_ACTIONS.GET_CURRENT_USER,
   }
 }
-export function getCurrentUserSuccess(): GetCurrentUserSuccess {
+export function getCurrentUserSuccess(user): GetCurrentUserSuccess {
   return {
     type: USER_ACTIONS.GET_CURRENT_USER_SUCCESS,
+    payload: user,
   }
 }
-export function getCurrentUserErrur(error: string): GetCurrentUserError {
+export function getCurrentUserError(error: string): GetCurrentUserError {
   return {
     type: USER_ACTIONS.GET_CURRENT_USER_ERROR,
     error,

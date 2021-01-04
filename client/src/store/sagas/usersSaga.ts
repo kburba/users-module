@@ -1,25 +1,31 @@
 import { takeLatest, put, call } from 'redux-saga/effects'
 import { USER_ACTIONS } from '../actions/types'
-import { setCurrentUser } from '../actions/authActions'
 import { apiFetch } from '../storeUtils'
+import {
+  getCurrentUserError,
+  getCurrentUserSuccess,
+} from '../actions/userActions'
+import { history } from '../../App'
 import { RegisterNewUser } from '../types/userTypes'
 
 function* getCurrentUserSaga() {
   try {
     const response = yield call(apiFetch, '/api/users/me')
-    yield put(setCurrentUser(response.data))
+    yield put(getCurrentUserSuccess(response.data))
   } catch (e) {
+    yield put(getCurrentUserError(e))
+
     console.log('error current user', e.message)
   }
 }
 
 function* registerUserSaga({ payload }: RegisterNewUser) {
   try {
-    const response = yield call(apiFetch, '/api/users/register', {
+    yield call(apiFetch, '/api/users/register', {
       method: 'POST',
       data: payload,
     })
-    yield put(setCurrentUser(response))
+    history.push('/login')
   } catch (e) {
     console.log('error current user', e.message)
   }

@@ -1,4 +1,4 @@
-const isEmpty = (value?: null | string | string[]): boolean =>
+const isEmpty = (value?: null | string | string[] | any): boolean =>
   value === undefined ||
   value === null ||
   value === '' ||

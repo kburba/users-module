@@ -11,7 +11,7 @@ import 'typeface-roboto'
 import 'typeface-nunito'
 
 import setAuthToken from './utils/setAuthToken'
-import { setCurrentUser } from './store/actions/authActions'
+import { logoutUser } from './store/actions/authActions'
 
 import Footer from './components/layout/Footer'
 import Dashboard from './components/Dashboard'
@@ -20,8 +20,8 @@ import NotFound from './components/NotFound'
 import NavBarMUI from './components/layout/NavBarMui'
 import LoginMUI from './components/auth/LoginMUI'
 import SignUp from './components/auth/SignUp'
-import { getCurrentUser } from './store/actions/userActions'
 import configureStore from './store/configureStore'
+import { getCurrentUserSuccess } from './store/actions/userActions'
 
 export const history = createBrowserHistory()
 export const store = configureStore()
@@ -34,12 +34,12 @@ if (localStorage.access_token) {
   // Decode token to get user data
   const decoded = JwtDecode<{ exp: number }>(token)
   // Set current user
-  store.dispatch(setCurrentUser(decoded))
+  store.dispatch(getCurrentUserSuccess(decoded))
 
   // check if token is expired
   const currentTime = Date.now() / 1000
   if (decoded.exp < currentTime) {
-    store.dispatch(getCurrentUser())
+    store.dispatch(logoutUser())
   }
 }
 
